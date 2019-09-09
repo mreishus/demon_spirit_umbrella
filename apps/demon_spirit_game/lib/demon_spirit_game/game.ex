@@ -1,4 +1,23 @@
 defmodule DemonSpiritGame.Game do
+  @moduledoc """
+  Provides a structure to hold all game state, with functions
+  to manipulate that state.
+
+  board: Map.  Keys are {x, y} tuples of integers.
+     Values are maps representing pieces.
+  white_cards: List of 2 %Cards{}.  Moves that white may use.
+  black_cards: List of 2 %Cards{}.  Moves that black may use.
+  side_card: One %Card{} that currently belongs to neither player.
+  turn: Atom, :white or :black, whose turn is it?
+  winner: nil, or atom :white or :black.  Who has won?
+
+  Example of cards rotating.
+  - White: [Tiger, Crab]  Black: [Monkey, Crane] Side: Mantis
+  - White plays a move using the Tiger card.
+  - White: [Mantis, Crab]  Black: [Monkey, Crane] Side: Tiger
+  - Black plays a move using the Crane card.
+  - White: [Mantis, Crab]  Black: [Monkey, Tiger] Side: Crane
+  """
   defstruct board: nil,
             white_cards: [],
             black_cards: [],
@@ -9,7 +28,7 @@ defmodule DemonSpiritGame.Game do
   alias DemonSpiritGame.{Game, Card}
 
   @doc """
-  Create a new game with random cards.
+  new/0: Create a new game with random cards.
 
   Input: None
   Output: %Game{}
@@ -27,7 +46,7 @@ defmodule DemonSpiritGame.Game do
   end
 
   @doc """
-  Create a new game with cards specified.  Provide a list of
+  new/1: Create a new game with cards specified.  Provide a list of
   5 cards.  They will be assigned in this order:
   [WHITE, WHITE, BLACK, BLACK, SIDE].
 

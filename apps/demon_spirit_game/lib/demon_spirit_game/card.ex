@@ -1,7 +1,23 @@
 defmodule DemonSpiritGame.Card do
+  @moduledoc """
+  Provides a structure to hold a card containing moves that
+  a player may use.  Also contains a hardcoded list of all cards.
+
+  id: Hardcoded integer.
+  name: String, name of card.
+  moves: List of {int, int} tuples, representing moves.  
+    {1, 1} is the ability to move the piece up and right one.
+  color: Atom, color of the card. Not used in gameplay.
+    Blue is left-oriented, red is right-oriented, green is balanced.
+  """
   alias DemonSpiritGame.{Card}
   defstruct id: nil, name: nil, moves: [], color: nil
 
+  @doc """
+  cards/0:  Provides all 16 cards that may be used in the game.
+  A random set of 5 should be chosen when actually playing the game.
+  """
+  @spec cards() :: nonempty_list(%Card{})
   def cards do
     [
       %Card{
