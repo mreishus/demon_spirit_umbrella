@@ -14,6 +14,19 @@ defmodule DemonSpiritGame.Card do
   defstruct id: nil, name: nil, moves: [], color: nil
 
   @doc """
+  by_name/1: Retrieve a card by name.
+  """
+  @spec by_name(String.t()) :: {:ok, %Card{}} | {:error, nil}
+  def by_name(name) do
+    card = cards() |> Enum.filter(fn c -> c.name == name end)
+
+    case length(card) do
+      1 -> {:ok, Enum.at(card, 0)}
+      0 -> {:error, nil}
+    end
+  end
+
+  @doc """
   cards/0:  Provides all 16 cards that may be used in the game.
   A random set of 5 should be chosen when actually playing the game.
   """

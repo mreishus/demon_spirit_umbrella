@@ -96,7 +96,7 @@ defmodule DemonSpiritGame.Game do
   end
 
   @doc """
-  valid_move?/3:  Given a game state and a move specified by coordinates, is that move valid?
+  valid_move?/2:  Given a game state and a move specified by coordinates, is that move valid?
 
   NOTEST
 
@@ -114,7 +114,7 @@ defmodule DemonSpiritGame.Game do
 
   @spec card_provides_move?(%Move{}) :: boolean()
   def card_provides_move?(move = %Move{from: from, to: to, card: card}) do
-    to in possible_moves(from, card)
+    to in (possible_moves(from, card) |> Enum.map(fn m -> m.to end))
   end
 
   @doc """
@@ -153,9 +153,12 @@ defmodule DemonSpiritGame.Game do
     |> Enum.filter(fn %Move{to: to} -> to not in active_piece_coords end)
   end
 
-  defp valid_coord?(%Move{from: from, to: to}), do: valid_coord?(from) && valid_coord?(to)
-  defp valid_coord?({x, y}) when x >= 0 and x <= 4 and y >= 0 and y <= 4, do: true
-  defp valid_coord?(_), do: false
+  @doc """
+  valid_coord/1
+  """
+  def valid_coord?(%Move{from: from, to: to}), do: valid_coord?(from) && valid_coord?(to)
+  def valid_coord?({x, y}) when x >= 0 and x <= 4 and y >= 0 and y <= 4, do: true
+  def valid_coord?(_), do: false
 
   @doc """
   active_piece_coords/1: What are all of the coordinates of the pieces of the active player?
@@ -170,7 +173,7 @@ defmodule DemonSpiritGame.Game do
     iex> DemonSpiritGame.Game.new |> active_piece_coords
     [{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}]
   """
-  @spec all_valid_moves(%Game{}) :: list({integer(), integer()})
+  @spec active_piece_coords(%Game{}) :: list({integer(), integer()})
   def active_piece_coords(game) do
     game.board
     |> Map.to_list()
@@ -179,6 +182,7 @@ defmodule DemonSpiritGame.Game do
   end
 
   @doc """
+  possible_moves/2
   Given a starting coordinate and a card, generate a list of possible moves
   for that piece.
 
