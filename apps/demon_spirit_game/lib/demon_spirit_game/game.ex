@@ -87,8 +87,9 @@ defmodule DemonSpiritGame.Game do
   Output (error)
     {:error, _}
   """
-  def move(game, from, to) do
-    case valid_move?(game, from, to) do
+  @spec move(%Game{}, %Move{}) :: {:ok, %Game{}} | {:error, any}
+  def move(game, move = %Move{}) do
+    case valid_move?(game, move) do
       true -> {:ok, game}
       false -> {:error, :invalid_move}
     end
@@ -97,7 +98,6 @@ defmodule DemonSpiritGame.Game do
   @doc """
   valid_move?/3:  Given a game state and a move specified by coordinates, is that move valid?
 
-  DOESNTWORK
   NOTEST
 
   Input:
@@ -106,9 +106,15 @@ defmodule DemonSpiritGame.Game do
     to: {x, y} tuple of destination, example: {3, 2} to move it right one square
   Output: Boolean, is this move valid?
   """
-  @spec valid_move?(%Game{}, {integer(), integer()}, {integer(), integer()}) :: boolean()
-  def valid_move?(game, from, to) do
-    active_piece?(game, from)
+  @spec valid_move?(%Game{}, %Move{}) :: boolean()
+  def valid_move?(game, move = %Move{from: from, to: to, card: card}) do
+    active_piece?(game, from) && valid_coord?(to) && to not in active_piece_coords(game) &&
+      card_provides_move?(move)
+  end
+
+  @spec card_provides_move?(%Move{}) :: boolean()
+  def card_provides_move?(move = %Move{from: from, to: to, card: card}) do
+    to in possible_moves(from, card)
   end
 
   @doc """
@@ -185,6 +191,8 @@ defmodule DemonSpiritGame.Game do
     out later.
   """
   @spec possible_moves({integer(), integer()}, %Card{}) :: list(%Move{})
+  def possible_moves(_coord, nil), do: []
+
   def possible_moves({x, y}, card = %Card{}) do
     card.moves
     |> Enum.map(fn {dx, dy} ->
