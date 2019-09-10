@@ -5,7 +5,7 @@ defmodule DemonSpiritGame.Card do
 
   id: Hardcoded integer.
   name: String, name of card.
-  moves: List of {int, int} tuples, representing moves.  
+  moves: List of {int, int} tuples, representing moves.
     {1, 1} is the ability to move the piece up and right one.
   color: Atom, color of the card. Not used in gameplay.
     Blue is left-oriented, red is right-oriented, green is balanced.

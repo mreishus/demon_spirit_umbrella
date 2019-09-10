@@ -8,7 +8,8 @@ defmodule GameTest do
     # Static list of cards, use when creating a new game to remove RNG from tests
     cards = Card.cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
     game = Game.new(cards)
-    %{cards: cards, game: game}
+    game_black = %{game | turn: :black}
+    %{cards: cards, game: game, game_black: game_black}
   end
 
   describe "new/0" do
@@ -75,7 +76,8 @@ defmodule GameTest do
     setup do
       {:ok, boar} = Card.by_name("Boar")
       {:ok, cobra} = Card.by_name("Cobra")
-      %{boar: boar, cobra: cobra}
+      {:ok, crab} = Card.by_name("Crab")
+      %{boar: boar, cobra: cobra, crab: crab}
     end
 
     # White's cards are:                   #
@@ -86,7 +88,13 @@ defmodule GameTest do
     # Crab:  [{0, 1}, {-2, 0}, {2, 0}]    # x #   #
     # Crane: [{0, 1}, {-1, -1}, {1, -1}]          x
     #                                            # #
-    test "some valid moves", %{game: game, boar: boar, cobra: cobra} do
+    test "some valid moves", %{
+      game: game,
+      game_black: game_black,
+      boar: boar,
+      cobra: cobra,
+      crab: crab
+    } do
       ## White
       assert Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 1}, card: boar})
       assert Game.valid_move?(game, %Move{from: {0, 0}, to: {1, 1}, card: cobra})
@@ -94,6 +102,7 @@ defmodule GameTest do
       assert Game.valid_move?(game, %Move{from: {2, 0}, to: {3, 1}, card: cobra})
 
       ## Black
+      assert Game.valid_move?(game_black, %Move{from: {0, 4}, to: {0, 3}, card: crab})
     end
 
     test "correct move with wrong card disallowed", %{game: game, boar: boar, cobra: cobra} do
@@ -122,8 +131,18 @@ defmodule GameTest do
       ## Black
     end
 
-    test "unactive player moving disallowed", %{game: game} do
+    test "unactive player moving disallowed", %{
+      game: game,
+      game_black: game_black,
+      boar: boar,
+      cobra: cobra
+    } do
       ## White
+      assert Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 1}, card: boar})
+      assert Game.valid_move?(game, %Move{from: {0, 0}, to: {1, 1}, card: cobra})
+      assert Game.valid_move?(game, %Move{from: {2, 0}, to: {2, 1}, card: boar})
+      assert Game.valid_move?(game, %Move{from: {2, 0}, to: {3, 1}, card: cobra})
+
       ## Black
     end
 
