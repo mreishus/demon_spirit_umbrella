@@ -88,14 +88,14 @@ defmodule DemonSpiritGame.Game do
     {:error, _}
   """
   def move(game, from, to) do
-    case valid_move(game, from, to) do
+    case valid_move?(game, from, to) do
       true -> {:ok, game}
       false -> {:error, :invalid_move}
     end
   end
 
   @doc """
-  valid_move/3:  Given a game state and a move specified by coordinates, is that move valid?
+  valid_move?/3:  Given a game state and a move specified by coordinates, is that move valid?
 
   DOESNTWORK
   NOTEST
@@ -106,14 +106,14 @@ defmodule DemonSpiritGame.Game do
     to: {x, y} tuple of destination, example: {3, 2} to move it right one square
   Output: Boolean, is this move valid?
   """
-  @spec valid_move(%Game{}, {integer(), integer()}, {integer(), integer()}) :: boolean()
-  def valid_move(game, from, to) do
-    valid_move_piece_exists(game, from)
+  @spec valid_move?(%Game{}, {integer(), integer()}, {integer(), integer()}) :: boolean()
+  def valid_move?(game, from, to) do
+    active_piece?(game, from)
   end
 
   @doc """
-  valid_move_piece_exists/2:  Given a game state and a piece to move, does that piece exist and belong
-  to the currently playing player?
+  active_piece?/2:  Given a game state and a coordinate, does a piece exist there
+  and belong to the currently playing player?
 
   Input:
     game: %Game{}
@@ -121,8 +121,8 @@ defmodule DemonSpiritGame.Game do
   Output:
     Boolean: Does the from piece exist, and if so, does it belong to the player whose turn it currently is?
   """
-  @spec valid_move_piece_exists(%Game{}, {integer(), integer()}) :: boolean()
-  def valid_move_piece_exists(game, from) do
+  @spec active_piece?(%Game{}, {integer(), integer()}) :: boolean()
+  def active_piece?(game, from) do
     piece = Map.get(game.board, from)
     piece != nil && piece.color == game.turn
   end
@@ -151,6 +151,20 @@ defmodule DemonSpiritGame.Game do
   defp valid_coord?({x, y}) when x >= 0 and x <= 4 and y >= 0 and y <= 4, do: true
   defp valid_coord?(_), do: false
 
+  @doc """
+  active_piece_coords/1: What are all of the coordinates of the pieces of the active player?
+  All valid moves must begin with one of these as the 'from' piece.
+
+  Input:
+    game: %Game{}
+  Output:
+    list of {x, y} tuples containing integers: All coordinates of peices belonging to the player
+    whose turn it currently is.
+
+    iex> DemonSpiritGame.Game.new |> active_piece_coords
+    [{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}]
+  """
+  @spec all_valid_moves(%Game{}) :: list({integer(), integer()})
   def active_piece_coords(game) do
     game.board
     |> Map.to_list()
@@ -158,12 +172,25 @@ defmodule DemonSpiritGame.Game do
     |> Enum.map(fn {coord, _} -> coord end)
   end
 
-  # Rough WIP
-  defp possible_moves({x, y}, card = %Card{}) do
+  @doc """
+  Given a starting coordinate and a card, generate a list of possible moves
+  for that piece.
+
+  Input:
+    {x, y}: Tuple of two integers representing a starting coordinate
+    %Card{}: A Card to use to generate moves
+  Output:
+    List of %Move{}s.  Possible moves.  Note, some of these may be invalid
+    and land on other pieces owned by the player.  That needs to be filtered
+    out later.
+  """
+  @spec possible_moves({integer(), integer()}, %Card{}) :: list(%Move{})
+  def possible_moves({x, y}, card = %Card{}) do
     card.moves
     |> Enum.map(fn {dx, dy} ->
       %Move{from: {x, y}, to: {x + dx, y + dy}, card: card}
     end)
+    |> Enum.filter(&valid_coord?/1)
   end
 
   @doc """

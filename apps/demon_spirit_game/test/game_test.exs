@@ -1,7 +1,7 @@
 defmodule GameTest do
   use ExUnit.Case, async: true
 
-  doctest DemonSpiritGame.Game
+  doctest DemonSpiritGame.Game, import: true
   alias DemonSpiritGame.{Game, Card}
 
   setup do
@@ -68,17 +68,17 @@ defmodule GameTest do
     end
   end
 
-  describe "valid_move_piece_exists/2" do
+  describe "active_piece?/2" do
     test "valid pieces return true", %{game: game} do
-      assert game |> Game.valid_move_piece_exists({0, 0})
+      assert game |> Game.active_piece?({0, 0})
     end
 
     test "pieces not on board return false", %{game: game} do
-      refute game |> Game.valid_move_piece_exists({2, 2})
+      refute game |> Game.active_piece?({2, 2})
     end
 
     test "pieces belonging to other player return false", %{game: game} do
-      refute game |> Game.valid_move_piece_exists({4, 4})
+      refute game |> Game.active_piece?({4, 4})
     end
   end
 
