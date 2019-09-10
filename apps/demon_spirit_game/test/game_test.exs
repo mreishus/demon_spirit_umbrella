@@ -26,14 +26,14 @@ defmodule GameTest do
       refute game.winner
 
       # Correct number of cards in each list field
-      assert length(game.white_cards) == 2
-      assert length(game.black_cards) == 2
-      assert game.side_card
+      assert length(game.cards.white) == 2
+      assert length(game.cards.black) == 2
+      assert game.cards.side
 
       # Verify none of the cards overlap
-      assert game.white_cards -- game.black_cards == game.white_cards
-      assert game.white_cards -- [game.side_card] == game.white_cards
-      assert game.black_cards -- [game.side_card] == game.black_cards
+      assert game.cards.white -- game.cards.black == game.cards.white
+      assert game.cards.white -- [game.cards.side] == game.cards.white
+      assert game.cards.black -- [game.cards.side] == game.cards.black
     end
   end
 
@@ -52,19 +52,19 @@ defmodule GameTest do
       refute game.winner
 
       # Correct number of cards in each list field
-      assert length(game.white_cards) == 2
-      assert length(game.black_cards) == 2
-      assert game.side_card
+      assert length(game.cards.white) == 2
+      assert length(game.cards.black) == 2
+      assert game.cards.side
 
       # Verify it used the cards we passed in
-      assert game.white_cards -- cards == []
-      assert game.black_cards -- cards == []
-      assert [game.side_card] -- cards == []
+      assert game.cards.white -- cards == []
+      assert game.cards.black -- cards == []
+      assert [game.cards.side] -- cards == []
 
       # Verify none of the cards overlap
-      assert game.white_cards -- game.black_cards == game.white_cards
-      assert game.white_cards -- [game.side_card] == game.white_cards
-      assert game.black_cards -- [game.side_card] == game.black_cards
+      assert game.cards.white -- game.cards.black == game.cards.white
+      assert game.cards.white -- [game.cards.side] == game.cards.white
+      assert game.cards.black -- [game.cards.side] == game.cards.black
     end
   end
 

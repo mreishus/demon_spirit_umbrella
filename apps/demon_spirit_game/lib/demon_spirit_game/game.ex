@@ -5,9 +5,11 @@ defmodule DemonSpiritGame.Game do
 
   board: Map.  Keys are {x, y} tuples of integers.
      Values are maps representing pieces.
-  white_cards: List of 2 %Cards{}.  Moves that white may use.
-  black_cards: List of 2 %Cards{}.  Moves that black may use.
-  side_card: One %Card{} that currently belongs to neither player.
+  cards.  Map with the following keys (indented) %Map{
+    white: List of 2 %Cards{}.  Moves that white may use.
+    black: List of 2 %Cards{}.  Moves that black may use.
+    side: One %Card{} that currently belongs to neither player.  Not a list.. should it be?
+  }
   turn: Atom, :white or :black, whose turn is it?
   winner: nil, or atom :white or :black.  Who has won?
 
@@ -19,9 +21,11 @@ defmodule DemonSpiritGame.Game do
   - White: [Mantis, Crab]  Black: [Monkey, Tiger] Side: Crane
   """
   defstruct board: nil,
-            white_cards: [],
-            black_cards: [],
-            side_card: nil,
+            cards: %{
+              white: [],
+              black: [],
+              side: nil
+            },
             turn: :white,
             winner: nil
 
@@ -39,9 +43,11 @@ defmodule DemonSpiritGame.Game do
 
     %Game{
       board: initial_board(),
-      white_cards: cards |> Enum.slice(0, 2),
-      black_cards: cards |> Enum.slice(2, 2),
-      side_card: cards |> Enum.at(4)
+      cards: %{
+        white: cards |> Enum.slice(0, 2),
+        black: cards |> Enum.slice(2, 2),
+        side: cards |> Enum.at(4)
+      }
     }
   end
 
@@ -58,9 +64,11 @@ defmodule DemonSpiritGame.Game do
   def new(cards) when is_list(cards) and length(cards) == 5 do
     %Game{
       board: initial_board(),
-      white_cards: cards |> Enum.slice(0, 2),
-      black_cards: cards |> Enum.slice(2, 2),
-      side_card: cards |> Enum.at(4)
+      cards: %{
+        white: cards |> Enum.slice(0, 2),
+        black: cards |> Enum.slice(2, 2),
+        side: cards |> Enum.at(4)
+      }
     }
   end
 
@@ -111,6 +119,31 @@ defmodule DemonSpiritGame.Game do
   def valid_move_piece_exists(game, from) do
     piece = Map.get(game.board, from)
     piece != nil && piece.color == game.turn
+  end
+
+  @doc """
+  all_valid_moves/1: What are all of the valid moves that a player may currently take?
+  """
+  @spec all_valid_moves(%Game{}) :: list({{integer(), integer()}, {integer(), integer()}})
+  def all_valid_moves(game = %{winner: winner}) when not is_nil(winner), do: []
+
+  # Rough WIP
+  def all_valid_moves(game) do
+    active_pieces =
+      game.board
+      |> Map.to_list()
+      |> Enum.filter(fn {coord, %{color: color}} -> color == game.turn end)
+      |> IO.inspect()
+
+    z = possible_moves(active_pieces |> Enum.at(0), game.cards.black |> Enum.at(0))
+    "asdf3"
+  end
+
+  # Rough WIP
+  defp possible_moves(piece, card = %Card{}) do
+    %{piece: piece, card: card} |> IO.inspect()
+    "asdf4" |> IO.inspect()
+    "zz"
   end
 
   @doc """
