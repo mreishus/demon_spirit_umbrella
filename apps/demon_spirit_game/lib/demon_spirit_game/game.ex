@@ -29,7 +29,7 @@ defmodule DemonSpiritGame.Game do
             turn: :white,
             winner: nil
 
-  alias DemonSpiritGame.{Game, Card}
+  alias DemonSpiritGame.{Game, Card, Move}
 
   @doc """
   new/0: Create a new game with random cards.
@@ -75,6 +75,9 @@ defmodule DemonSpiritGame.Game do
   @doc """
   move/3: Move a piece in the game, if possible.
 
+  **DOESNTWORK
+  **NOTEST
+
   Input:
     game: %Game{}
     from: {x, y} tuple of piece to pick up and move, example: {2, 2} for the center square
@@ -92,7 +95,10 @@ defmodule DemonSpiritGame.Game do
   end
 
   @doc """
-  valid_mode/3:  Given a game state and a move specified by coordinates, is that move valid?
+  valid_move/3:  Given a game state and a move specified by coordinates, is that move valid?
+
+  DOESNTWORK
+  NOTEST
 
   Input:
     game: %Game{}
@@ -124,26 +130,40 @@ defmodule DemonSpiritGame.Game do
   @doc """
   all_valid_moves/1: What are all of the valid moves that a player may currently take?
   """
-  @spec all_valid_moves(%Game{}) :: list({{integer(), integer()}, {integer(), integer()}})
+  @spec all_valid_moves(%Game{}) :: list(%Move{})
   def all_valid_moves(game = %{winner: winner}) when not is_nil(winner), do: []
 
-  # Rough WIP
   def all_valid_moves(game) do
-    active_pieces =
-      game.board
-      |> Map.to_list()
-      |> Enum.filter(fn {coord, %{color: color}} -> color == game.turn end)
-      |> IO.inspect()
+    active_piece_coords = active_piece_coords(game)
 
-    z = possible_moves(active_pieces |> Enum.at(0), game.cards.black |> Enum.at(0))
-    "asdf3"
+    active_piece_coords
+    |> Enum.flat_map(fn {x, y} ->
+      game.cards.black
+      |> Enum.flat_map(fn card ->
+        possible_moves({x, y}, card)
+      end)
+    end)
+    |> Enum.filter(&valid_coord?/1)
+    |> Enum.filter(fn %Move{to: to} -> to not in active_piece_coords end)
+  end
+
+  defp valid_coord?(%Move{from: from, to: to}), do: valid_coord?(from) && valid_coord?(to)
+  defp valid_coord?({x, y}) when x >= 0 and x <= 4 and y >= 0 and y <= 4, do: true
+  defp valid_coord?(_), do: false
+
+  def active_piece_coords(game) do
+    game.board
+    |> Map.to_list()
+    |> Enum.filter(fn {coord, %{color: color}} -> color == game.turn end)
+    |> Enum.map(fn {coord, _} -> coord end)
   end
 
   # Rough WIP
-  defp possible_moves(piece, card = %Card{}) do
-    %{piece: piece, card: card} |> IO.inspect()
-    "asdf4" |> IO.inspect()
-    "zz"
+  defp possible_moves({x, y}, card = %Card{}) do
+    card.moves
+    |> Enum.map(fn {dx, dy} ->
+      %Move{from: {x, y}, to: {x + dx, y + dy}, card: card}
+    end)
   end
 
   @doc """
