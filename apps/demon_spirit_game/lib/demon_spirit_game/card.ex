@@ -15,6 +15,9 @@ defmodule DemonSpiritGame.Card do
 
   @doc """
   by_name/1: Retrieve a card by name.
+
+  Input: A String of the name to search for.
+  Output: Either {:ok, card} or {:error, nil}
   """
   @spec by_name(String.t()) :: {:ok, %Card{}} | {:error, nil}
   def by_name(name) do
@@ -24,6 +27,22 @@ defmodule DemonSpiritGame.Card do
       1 -> {:ok, Enum.at(card, 0)}
       0 -> {:error, nil}
     end
+  end
+
+  @doc """
+  flip/1: Return a card with all of the moves flipped.
+  That is, a {2, 1} will become a {-2, -1}.
+
+  This is needed when black is playing, since by default, all
+  moves specified are from white's perspective.
+
+  Input: %Card
+  Output: %Card with moves flipped.
+  """
+  @spec flip(%Card{}) :: %Card{}
+  def flip(card) do
+    flipped_moves = card.moves |> Enum.map(fn {x, y} -> {-x, -y} end)
+    %{card | moves: flipped_moves}
   end
 
   @doc """

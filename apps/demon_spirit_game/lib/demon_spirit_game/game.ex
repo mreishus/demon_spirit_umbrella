@@ -107,14 +107,14 @@ defmodule DemonSpiritGame.Game do
   Output: Boolean, is this move valid?
   """
   @spec valid_move?(%Game{}, %Move{}) :: boolean()
-  def valid_move?(game, move = %Move{from: from, to: to, card: card}) do
+  def valid_move?(game = %Game{turn: turn}, move = %Move{from: from, to: to, card: card}) do
     active_piece?(game, from) && valid_coord?(to) && to not in active_piece_coords(game) &&
-      card_provides_move?(move)
+      card_provides_move?(move, turn)
   end
 
-  @spec card_provides_move?(%Move{}) :: boolean()
-  def card_provides_move?(move = %Move{from: from, to: to, card: card}) do
-    to in (possible_moves(from, card) |> Enum.map(fn m -> m.to end))
+  @spec card_provides_move?(%Move{}, :white | :black) :: boolean()
+  def card_provides_move?(move = %Move{from: from, to: to, card: card}, turn) do
+    to in (possible_moves(from, card, turn) |> Enum.map(fn m -> m.to end))
   end
 
   @doc """
@@ -137,16 +137,16 @@ defmodule DemonSpiritGame.Game do
   all_valid_moves/1: What are all of the valid moves that a player may currently take?
   """
   @spec all_valid_moves(%Game{}) :: list(%Move{})
-  def all_valid_moves(game = %{winner: winner}) when not is_nil(winner), do: []
+  def all_valid_moves(game = %Game{winner: winner}) when not is_nil(winner), do: []
 
-  def all_valid_moves(game) do
+  def all_valid_moves(game = %Game{turn: turn}) do
     active_piece_coords = active_piece_coords(game)
 
     active_piece_coords
     |> Enum.flat_map(fn {x, y} ->
       game.cards.black
       |> Enum.flat_map(fn card ->
-        possible_moves({x, y}, card)
+        possible_moves({x, y}, card, turn)
       end)
     end)
     |> Enum.filter(&valid_coord?/1)
@@ -182,22 +182,31 @@ defmodule DemonSpiritGame.Game do
   end
 
   @doc """
-  possible_moves/2
+  possible_moves/3
   Given a starting coordinate and a card, generate a list of possible moves
   for that piece.
 
   Input:
     {x, y}: Tuple of two integers representing a starting coordinate
     %Card{}: A Card to use to generate moves
+    turn: :white or :black, whose turn is it?
+      Card moves are flipped vertically if it's black's turn.
+      If a card provides a {0, 1} move, white can move "up", but black can move "down".
   Output:
     List of %Move{}s.  Possible moves.  Note, some of these may be invalid
     and land on other pieces owned by the player.  That needs to be filtered
     out later.
   """
-  @spec possible_moves({integer(), integer()}, %Card{}) :: list(%Move{})
-  def possible_moves(_coord, nil), do: []
+  @spec possible_moves({integer(), integer()}, %Card{}, :white | :black) :: list(%Move{})
+  def possible_moves(_coord, nil, _turn), do: []
 
-  def possible_moves({x, y}, card = %Card{}) do
+  def possible_moves({x, y}, card = %Card{}, turn) do
+    card =
+      case turn do
+        :black -> Card.flip(card)
+        _ -> card
+      end
+
     card.moves
     |> Enum.map(fn {dx, dy} ->
       %Move{from: {x, y}, to: {x + dx, y + dy}, card: card}
