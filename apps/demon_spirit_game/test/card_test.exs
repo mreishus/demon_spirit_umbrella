@@ -2,7 +2,7 @@ defmodule CardTest do
   use ExUnit.Case, async: true
 
   doctest DemonSpiritGame.Card, import: true
-  alias DemonSpiritGame.{Game, Card, Move}
+  alias DemonSpiritGame.{Card}
 
   setup do
     dragon = %Card{
@@ -31,7 +31,6 @@ defmodule CardTest do
 
   describe "by_name/1" do
     test "finds a card by name", %{dragon: dragon, mantis: mantis} do
-      cards = [dragon, mantis]
       assert Card.by_name("Mantis") == {:ok, mantis}
       assert Card.by_name("Dragon") == {:ok, dragon}
     end

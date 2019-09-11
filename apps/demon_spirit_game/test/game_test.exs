@@ -77,7 +77,8 @@ defmodule GameTest do
       {:ok, boar} = Card.by_name("Boar")
       {:ok, cobra} = Card.by_name("Cobra")
       {:ok, crab} = Card.by_name("Crab")
-      %{boar: boar, cobra: cobra, crab: crab}
+      {:ok, crane} = Card.by_name("Crane")
+      %{boar: boar, cobra: cobra, crab: crab, crane: crane}
     end
 
     # White's cards are:                   #
@@ -93,7 +94,8 @@ defmodule GameTest do
       game_black: game_black,
       boar: boar,
       cobra: cobra,
-      crab: crab
+      crab: crab,
+      crane: crane
     } do
       ## White
       assert Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 1}, card: boar})
@@ -103,6 +105,9 @@ defmodule GameTest do
 
       ## Black
       assert Game.valid_move?(game_black, %Move{from: {0, 4}, to: {0, 3}, card: crab})
+      assert Game.valid_move?(game_black, %Move{from: {0, 4}, to: {0, 3}, card: crane})
+      assert Game.valid_move?(game_black, %Move{from: {2, 4}, to: {2, 3}, card: crab})
+      assert Game.valid_move?(game_black, %Move{from: {2, 4}, to: {2, 3}, card: crane})
     end
 
     test "correct move with wrong card disallowed", %{game: game, boar: boar, cobra: cobra} do
@@ -111,9 +116,16 @@ defmodule GameTest do
       refute Game.valid_move?(game, %Move{from: {0, 0}, to: {1, 1}, card: boar})
 
       ## Black
+      # No valid tests with Crab/Crane
     end
 
-    test "moving off the board disallowed", %{game: game, boar: boar, cobra: cobra} do
+    test "moving off the board disallowed", %{
+      game: game,
+      game_black: game_black,
+      boar: boar,
+      cobra: cobra,
+      crab: crab
+    } do
       ## White
       refute Game.valid_move?(game, %Move{from: {0, 0}, to: {-1, 0}, card: cobra})
       refute Game.valid_move?(game, %Move{from: {0, 0}, to: {-1, 0}, card: boar})
@@ -121,36 +133,57 @@ defmodule GameTest do
       refute Game.valid_move?(game, %Move{from: {0, 0}, to: {1, -1}, card: cobra})
 
       ## Black
+      refute Game.valid_move?(game_black, %Move{from: {0, 4}, to: {-2, 4}, card: crab})
+      refute Game.valid_move?(game_black, %Move{from: {4, 4}, to: {6, 4}, card: crab})
     end
 
-    test "moving to allied piece disallowed", %{game: game, boar: boar} do
+    test "moving to allied piece disallowed", %{
+      game: game,
+      game_black: game_black,
+      boar: boar,
+      crab: crab
+    } do
       ## White
       refute Game.valid_move?(game, %Move{from: {0, 0}, to: {1, 0}, card: boar})
       refute Game.valid_move?(game, %Move{from: {1, 0}, to: {0, 0}, card: boar})
       refute Game.valid_move?(game, %Move{from: {1, 0}, to: {2, 0}, card: boar})
       ## Black
+      refute Game.valid_move?(game_black, %Move{from: {0, 4}, to: {2, 4}, card: crab})
+      refute Game.valid_move?(game_black, %Move{from: {4, 4}, to: {2, 4}, card: crab})
     end
 
     test "unactive player moving disallowed", %{
       game: game,
       game_black: game_black,
       boar: boar,
-      cobra: cobra
+      cobra: cobra,
+      crab: crab,
+      crane: crane
     } do
       ## White
-      assert Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 1}, card: boar})
-      assert Game.valid_move?(game, %Move{from: {0, 0}, to: {1, 1}, card: cobra})
-      assert Game.valid_move?(game, %Move{from: {2, 0}, to: {2, 1}, card: boar})
-      assert Game.valid_move?(game, %Move{from: {2, 0}, to: {3, 1}, card: cobra})
+      refute Game.valid_move?(game_black, %Move{from: {0, 0}, to: {0, 1}, card: boar})
+      refute Game.valid_move?(game_black, %Move{from: {0, 0}, to: {1, 1}, card: cobra})
+      refute Game.valid_move?(game_black, %Move{from: {2, 0}, to: {2, 1}, card: boar})
+      refute Game.valid_move?(game_black, %Move{from: {2, 0}, to: {3, 1}, card: cobra})
 
       ## Black
+      refute Game.valid_move?(game, %Move{from: {0, 4}, to: {0, 3}, card: crab})
+      refute Game.valid_move?(game, %Move{from: {0, 4}, to: {0, 3}, card: crane})
+      refute Game.valid_move?(game, %Move{from: {2, 4}, to: {2, 3}, card: crab})
+      refute Game.valid_move?(game, %Move{from: {2, 4}, to: {2, 3}, card: crane})
     end
 
-    test "moving a blank square disallowed", %{game: game, boar: boar} do
+    test "moving a blank square disallowed", %{
+      game: game,
+      game_black: game_black,
+      boar: boar,
+      crab: crab
+    } do
       ## White
       refute Game.valid_move?(game, %Move{from: {0, 1}, to: {0, 2}, card: boar})
       refute Game.valid_move?(game, %Move{from: {0, 2}, to: {0, 3}, card: boar})
       ## Black
+      refute Game.valid_move?(game_black, %Move{from: {2, 2}, to: {4, 2}, card: crab})
     end
   end
 
