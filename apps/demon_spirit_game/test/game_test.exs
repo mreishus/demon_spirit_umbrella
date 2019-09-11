@@ -100,6 +100,13 @@ defmodule GameTest do
       refute game.board |> Map.has_key?({0, 0})
       assert game.board |> Map.has_key?({1, 1})
     end
+
+    test "an invalid move", %{game: game, boar: boar} do
+      move = %Move{from: {0, 0}, to: {2, 2}, card: boar}
+      {status, new_game} = Game.move(game, move)
+      assert status == :error
+      assert new_game == game
+    end
   end
 
   describe "valid_move?/2" do
@@ -216,7 +223,34 @@ defmodule GameTest do
     end
   end
 
-  describe "card_provides_move?/1" do
+  describe "card_provides_move?/2" do
+    test "positive case, white", %{dragon: dragon} do
+      move = %Move{from: {2, 2}, to: {4, 3}, card: dragon}
+      assert Game.card_provides_move?(move, :white)
+      refute Game.card_provides_move?(move, :black)
+    end
+
+    test "positive case, black", %{dragon: dragon} do
+      move = %Move{from: {2, 2}, to: {4, 1}, card: dragon}
+      assert Game.card_provides_move?(move, :black)
+      refute Game.card_provides_move?(move, :white)
+    end
+
+    test "negative case", %{dragon: dragon} do
+      move = %Move{from: {2, 2}, to: {2, 3}, card: dragon}
+      refute Game.card_provides_move?(move, :black)
+      refute Game.card_provides_move?(move, :white)
+    end
+  end
+
+  describe "active_player_has_card?/2" do
+    test "positive case", %{game: game, boar: boar} do
+      assert Game.active_player_has_card?(game, boar)
+    end
+
+    test "negative case", %{game: game, crab: crab} do
+      refute Game.active_player_has_card?(game, crab)
+    end
   end
 
   describe "active_piece?/2" do
@@ -234,15 +268,82 @@ defmodule GameTest do
   end
 
   describe "all_valid_moves/1" do
+    test "5 boar moves, 4 cobra moves", %{game: game, boar: boar, cobra: cobra} do
+      count_boar = Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == boar end) |> length
+
+      count_cobra =
+        Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == cobra end) |> length
+
+      assert count_boar == 5
+      assert count_cobra == 4
+    end
+
+    test "no crab or crane moves", %{game: game, crab: crab, crane: crane} do
+      # These are the other player's cards, they shouldn't count
+      count_crab = Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == crab end) |> length
+
+      count_crane =
+        Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == crane end) |> length
+
+      assert count_crab == 0
+      assert count_crane == 0
+    end
   end
 
-  describe "valid_coord/1" do
+  describe "valid_coord?/1" do
+    test "positive case, tuple" do
+      assert Game.valid_coord?({0, 0})
+      assert Game.valid_coord?({2, 2})
+      assert Game.valid_coord?({4, 4})
+      assert Game.valid_coord?({4, 0})
+      assert Game.valid_coord?({0, 4})
+    end
+
+    test "negative case, tuple" do
+      refute Game.valid_coord?({0, 5})
+      refute Game.valid_coord?({5, 0})
+      refute Game.valid_coord?({5, 5})
+      refute Game.valid_coord?({-1, 2})
+      refute Game.valid_coord?({2, -1})
+    end
+
+    test "positive case, move" do
+      assert Game.valid_coord?(%Move{from: {0, 0}, to: {4, 4}, card: nil})
+      assert Game.valid_coord?(%Move{from: {0, 4}, to: {4, 0}, card: nil})
+    end
+
+    test "negative case, move" do
+      refute Game.valid_coord?(%Move{from: {0, 0}, to: {5, 5}, card: nil})
+      refute Game.valid_coord?(%Move{from: {0, 5}, to: {5, 0}, card: nil})
+      refute Game.valid_coord?(%Move{from: {2, 2}, to: {-1, 2}, card: nil})
+    end
   end
 
   describe "active_piece_coords/1" do
+    test "basic case", %{game: game} do
+      assert game |> Game.active_piece_coords() == [{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}]
+    end
   end
 
-  describe "possible_moves/2" do
+  describe "possible_moves/3" do
+    test "white dragon case", %{dragon: dragon} do
+      moves = Game.possible_moves({2, 2}, dragon, :white)
+      assert %Move{from: {2, 2}, to: {0, 3}, card: dragon} in moves
+      assert %Move{from: {2, 2}, to: {4, 3}, card: dragon} in moves
+      assert %Move{from: {2, 2}, to: {3, 1}, card: dragon} in moves
+      assert %Move{from: {2, 2}, to: {1, 1}, card: dragon} in moves
+      assert length(moves) == 4
+    end
+
+    test "black dragon case", %{dragon: dragon} do
+      moves = Game.possible_moves({2, 2}, dragon, :black)
+
+      assert %Move{from: {2, 2}, to: {0, 1}, card: dragon} in moves
+      assert %Move{from: {2, 2}, to: {4, 1}, card: dragon} in moves
+      assert %Move{from: {2, 2}, to: {3, 3}, card: dragon} in moves
+      assert %Move{from: {2, 2}, to: {1, 3}, card: dragon} in moves
+      assert length(moves) == 4
+    end
   end
 
   describe "change_player/1" do

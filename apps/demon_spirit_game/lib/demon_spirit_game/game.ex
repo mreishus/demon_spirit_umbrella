@@ -56,8 +56,7 @@ defmodule DemonSpiritGame.Game do
   5 cards.  They will be assigned in this order:
   [WHITE, WHITE, BLACK, BLACK, SIDE].
 
-  Input:
-    cards: [%Cards{}].  List should be length 5
+  Input: cards: [%Cards{}].  List should be length 5
   Output: %Game{}
   """
   @spec new(nonempty_list(%Card{})) :: %Game{}
@@ -75,13 +74,9 @@ defmodule DemonSpiritGame.Game do
   @doc """
   move/3: Move a piece in the game, if possible.
 
-  **DOESNTWORK
-  **NOTEST
-
   Input:
     game: %Game{}
-    from: {x, y} tuple of piece to pick up and move, example: {2, 2} for the center square
-    to: {x, y} tuple of destination, example: {3, 2} to move it right one square
+    move: %Move{}
   Output:
     {:ok, %Game{}}
   Output (error)
@@ -108,7 +103,7 @@ defmodule DemonSpiritGame.Game do
   """
 
   @spec _move(%Game{}, %Move{}) :: {:ok, %Game{}} | {:error, any}
-  defp _move(game, %Move{from: from, to: to, card: card}) do
+  defp _move(game, %Move{from: from, to: to}) do
     {piece, board} = game.board |> Map.pop(from)
     board = board |> Map.put(to, piece)
     %Game{game | board: board}
@@ -127,6 +122,7 @@ defmodule DemonSpiritGame.Game do
     old_side_card = game.cards.side
 
     # Player cards: Remove played card, add old side card
+    # TODO: Could insert at the correct position instead of 0.
     player_cards =
       game.cards[game.turn]
       |> List.delete(card)
@@ -167,7 +163,7 @@ defmodule DemonSpiritGame.Game do
   Output: Boolean
   """
   @spec card_provides_move?(%Move{}, :white | :black) :: boolean()
-  def card_provides_move?(move = %Move{from: from, to: to, card: card}, turn) do
+  def card_provides_move?(%Move{from: from, to: to, card: card}, turn) do
     to in (possible_moves(from, card, turn) |> Enum.map(fn m -> m.to end))
   end
 
@@ -203,16 +199,18 @@ defmodule DemonSpiritGame.Game do
 
   @doc """
   all_valid_moves/1: What are all of the valid moves that a player may currently take?
+  Input: %Game{}
+  Output: [ %Move{}, ... ]
   """
   @spec all_valid_moves(%Game{}) :: list(%Move{})
-  def all_valid_moves(game = %Game{winner: winner}) when not is_nil(winner), do: []
+  def all_valid_moves(%Game{winner: winner}) when not is_nil(winner), do: []
 
   def all_valid_moves(game = %Game{turn: turn}) do
     active_piece_coords = active_piece_coords(game)
 
     active_piece_coords
     |> Enum.flat_map(fn {x, y} ->
-      game.cards.black
+      game.cards[game.turn]
       |> Enum.flat_map(fn card ->
         possible_moves({x, y}, card, turn)
       end)
@@ -222,7 +220,9 @@ defmodule DemonSpiritGame.Game do
   end
 
   @doc """
-  valid_coord/1
+  valid_coord/1: Is the coordinate given in bounds of the board?
+  Input: {x, y} tuple of ints or %Move{}
+  Output: Boolean
   """
   def valid_coord?(%Move{from: from, to: to}), do: valid_coord?(from) && valid_coord?(to)
   def valid_coord?({x, y}) when x >= 0 and x <= 4 and y >= 0 and y <= 4, do: true
@@ -232,8 +232,7 @@ defmodule DemonSpiritGame.Game do
   active_piece_coords/1: What are all of the coordinates of the pieces of the active player?
   All valid moves must begin with one of these as the 'from' piece.
 
-  Input:
-    game: %Game{}
+  Input: game: %Game{}
   Output:
     list of {x, y} tuples containing integers: All coordinates of peices belonging to the player
     whose turn it currently is.
@@ -245,7 +244,7 @@ defmodule DemonSpiritGame.Game do
   def active_piece_coords(game) do
     game.board
     |> Map.to_list()
-    |> Enum.filter(fn {coord, %{color: color}} -> color == game.turn end)
+    |> Enum.filter(fn {_coord, %{color: color}} -> color == game.turn end)
     |> Enum.map(fn {coord, _} -> coord end)
   end
 
@@ -269,13 +268,16 @@ defmodule DemonSpiritGame.Game do
   def possible_moves(_coord, nil, _turn), do: []
 
   def possible_moves({x, y}, card = %Card{}, turn) do
-    card =
+    card_ =
       case turn do
         :black -> Card.flip(card)
         _ -> card
       end
 
-    card.moves
+    # Generate the moves off card_, which might be flipped.
+    # But Enum.map to card, which is always the original card.
+    # We don't want to show the caller the flipped version of the cards, ever.
+    card_.moves
     |> Enum.map(fn {dx, dy} ->
       %Move{from: {x, y}, to: {x + dx, y + dy}, card: card}
     end)
