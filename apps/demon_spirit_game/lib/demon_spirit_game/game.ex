@@ -90,23 +90,54 @@ defmodule DemonSpiritGame.Game do
   @spec move(%Game{}, %Move{}) :: {:ok, %Game{}} | {:error, any}
   def move(game, move = %Move{}) do
     case valid_move?(game, move) do
-      true -> {:ok, process_move(game, move)}
-      false -> {:error, game}
+      true ->
+        game = game |> _move(move) |> _rotate_card(move) |> change_player()
+        {:ok, game}
+
+      false ->
+        {:error, game}
     end
   end
 
   _ = """
-  process_move/2 (private):  Move a piece in the game.
+  _move/2 (private):  Move a piece in the game.
   If we've called this, then we've already certain the move is valid.
+
   Input: %Game{}, %Move{}
   Output: %Game{}
   """
 
-  @spec process_move(%Game{}, %Move{}) :: {:ok, %Game{}} | {:error, any}
-  def process_move(game, %Move{from: from, to: to, card: card}) do
+  @spec _move(%Game{}, %Move{}) :: {:ok, %Game{}} | {:error, any}
+  defp _move(game, %Move{from: from, to: to, card: card}) do
     {piece, board} = game.board |> Map.pop(from)
     board = board |> Map.put(to, piece)
     %Game{game | board: board}
+  end
+
+  _ = """
+  _rotate_card/2 (private): Rotate the cards.
+  If we've called this, then we've already certain the move is valid.
+  The card used to play the move swaps with the side card.
+
+  Input: %Game{}, %Move{}
+  Output: %Game{}
+  """
+
+  defp _rotate_card(game, %Move{card: card}) do
+    old_side_card = game.cards.side
+
+    # Player cards: Remove played card, add old side card
+    player_cards =
+      game.cards[game.turn]
+      |> List.delete(card)
+      |> List.insert_at(0, old_side_card)
+
+    cards =
+      game.cards
+      |> Map.put(:side, card)
+      |> Map.put(game.turn, player_cards)
+
+    %Game{game | cards: cards}
   end
 
   @doc """

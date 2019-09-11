@@ -9,7 +9,24 @@ defmodule GameTest do
     cards = Card.cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
     game = Game.new(cards)
     game_black = %{game | turn: :black}
-    %{cards: cards, game: game, game_black: game_black}
+    {:ok, boar} = Card.by_name("Boar")
+    {:ok, cobra} = Card.by_name("Cobra")
+    {:ok, crab} = Card.by_name("Crab")
+    {:ok, crane} = Card.by_name("Crane")
+    {:ok, dragon} = Card.by_name("Dragon")
+    {:ok, tiger} = Card.by_name("Tiger")
+
+    %{
+      cards: cards,
+      game: game,
+      game_black: game_black,
+      boar: boar,
+      cobra: cobra,
+      crab: crab,
+      crane: crane,
+      dragon: dragon,
+      tiger: tiger
+    }
   end
 
   describe "new/0" do
@@ -70,18 +87,22 @@ defmodule GameTest do
   end
 
   describe "move/3" do
+    test "one valid move", %{game: game, boar: boar, cobra: cobra, dragon: dragon} do
+      move = %Move{from: {0, 0}, to: {1, 1}, card: cobra}
+      {:ok, game} = Game.move(game, move)
+      # Player flipped
+      assert game.turn == :black
+      # Card rotated
+      assert game.cards.side == cobra
+      assert boar in game.cards.white
+      assert dragon in game.cards.white
+      # Piece Moved
+      refute game.board |> Map.has_key?({0, 0})
+      assert game.board |> Map.has_key?({1, 1})
+    end
   end
 
   describe "valid_move?/2" do
-    setup do
-      {:ok, boar} = Card.by_name("Boar")
-      {:ok, cobra} = Card.by_name("Cobra")
-      {:ok, crab} = Card.by_name("Crab")
-      {:ok, crane} = Card.by_name("Crane")
-      {:ok, tiger} = Card.by_name("Tiger")
-      %{boar: boar, cobra: cobra, crab: crab, crane: crane, tiger: tiger}
-    end
-
     # White's cards are:                   #
     # Boar:  [{0, 1}, {-1, 0}, {1, 0}]    #x#    #
     # Cobra: [{1, 1}, {1, -1}, {-1, 0}]        #x
