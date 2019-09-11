@@ -12,6 +12,7 @@ defmodule DemonSpiritGame.Game do
   }
   turn: Atom, :white or :black, whose turn is it?
   winner: nil, or atom :white or :black.  Who has won?
+    (Winner is :error in the impossible case that two sides win at once)
 
   Example of cards rotating.
   - White: [Tiger, Crab]  Black: [Monkey, Crane] Side: Mantis
@@ -29,7 +30,7 @@ defmodule DemonSpiritGame.Game do
             turn: :white,
             winner: nil
 
-  alias DemonSpiritGame.{Game, Card, Move}
+  alias DemonSpiritGame.{Game, Card, Move, GameWinCheck}
 
   @doc """
   new/0: Create a new game with random cards.
@@ -82,7 +83,9 @@ defmodule DemonSpiritGame.Game do
   def move(game, move = %Move{}) do
     case valid_move?(game, move) do
       true ->
-        game = game |> _move(move) |> _rotate_card(move) |> change_player()
+        game =
+          game |> _move(move) |> _rotate_card(move) |> change_player() |> GameWinCheck.check()
+
         {:ok, game}
 
       false ->

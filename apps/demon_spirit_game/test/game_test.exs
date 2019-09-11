@@ -363,3 +363,10 @@ defmodule GameTest do
     end
   end
 end
+
+# To test in IEX:
+# alias DemonSpiritGame.{Game, Card, Move}
+# {:ok, cobra} = Card.by_name("Cobra")
+# move = %Move{from: {0, 0}, to: {1, 1}, card: cobra}
+# cards = Card.cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
+# game = Game.new(cards)
