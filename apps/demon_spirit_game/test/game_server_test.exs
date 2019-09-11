@@ -93,6 +93,17 @@ defmodule GameServerTest do
     end
   end
 
+  describe "all_valid_moves/1" do
+    test "a" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameServer.start_link(game_name, :hardcoded_cards)
+      moves = GameServer.all_valid_moves(game_name)
+      assert length(moves) == 9
+      count = moves |> Enum.filter(fn m -> m.from == {4, 0} && m.to == {4, 1} end) |> Enum.count()
+      assert count == 1
+    end
+  end
+
   defp generate_game_name do
     "game-#{:rand.uniform(1_000_000)}"
   end

@@ -30,11 +30,14 @@ defmodule DemonSpiritGame.GameServer do
     GenServer.start_link(__MODULE__, {game_name, :hardcoded_cards}, name: via_tuple(game_name))
   end
 
+  @doc """
+  via_tuple/1: Given a game name string, generate a via tuple for addressing the game.
+  """
   def via_tuple(game_name), do: {:via, Registry, {DemonSpiritGame.GameRegistry, game_name}}
 
   @doc """
-  Returns the `pid` of the game server process registered under the 
-  given `game_name`, or `nil` if no process is registered.
+  game_pid/1: Returns the `pid` of the game server process registered
+  under the given `game_name`, or `nil` if no process is registered.
   """
   def game_pid(game_name) do
     game_name
@@ -54,8 +57,15 @@ defmodule DemonSpiritGame.GameServer do
   move/2: Applies the given move to a game and returns the new game state.
   """
   # @spec move(t.String, %Move{}) :: {:ok, %Game{}} | {:error, :invalid_move}
-  def(move(game_name, move = %Move{})) do
+  def move(game_name, move = %Move{}) do
     GenServer.call(via_tuple(game_name), {:move, move})
+  end
+
+  @doc """
+  all_valid_moves/1: Return all valid moves for a game, given its name.
+  """
+  def all_valid_moves(game_name) do
+    GenServer.call(via_tuple(game_name), :all_valid_moves)
   end
 
   #####################################
@@ -99,6 +109,10 @@ defmodule DemonSpiritGame.GameServer do
         # ???
         {:reply, {:error, :invalid_move}, game, @timeout}
     end
+  end
+
+  def handle_call(:all_valid_moves, _from, game) do
+    {:reply, Game.all_valid_moves(game), game, @timeout}
   end
 
   def handle_info(:timeout, game) do
