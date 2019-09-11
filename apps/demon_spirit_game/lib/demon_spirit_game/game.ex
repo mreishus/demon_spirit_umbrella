@@ -55,6 +55,16 @@ defmodule DemonSpiritGame.Game do
   @spec new(nonempty_list(%Card{})) :: %Game{}
   def new(cards) when is_list(cards) and length(cards) == 5, do: _new(cards)
 
+  @doc """
+  new/1 new(:hardcoded_cards): Create a new game with a set of cards that will
+  always be the same.  Useful for removing the RNG when building a test case.
+  """
+  @spec new(:harcoded_cards) :: %Game{}
+  def new(:hardcoded_cards) do
+    cards = Card.cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
+    _new(cards)
+  end
+
   _ = """
   _new/1 (private): Create a new game with cards specified.
   Used to deduplicate the repeated logic between new/0, new/1.

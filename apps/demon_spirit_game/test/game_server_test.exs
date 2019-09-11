@@ -19,6 +19,21 @@ defmodule GameServerTest do
     end
   end
 
+  describe "start_link/2" do
+    test "spawns a process" do
+      game_name = generate_game_name()
+
+      assert {:ok, _pid} = GameServer.start_link(game_name, :hardcoded_cards)
+    end
+
+    test "each name can only have one process" do
+      game_name = generate_game_name()
+
+      assert {:ok, _pid} = GameServer.start_link(game_name, :hardcoded_cards)
+      assert {:error, _reason} = GameServer.start_link(game_name, :hardcoded_cards)
+    end
+  end
+
   describe "state/1" do
     test "get game state" do
       game_name = generate_game_name()
@@ -26,6 +41,15 @@ defmodule GameServerTest do
       state = GameServer.state(game_name)
       assert %Game{} = state
       assert state.board |> Map.keys() |> length == 10
+    end
+
+    test "get game state (hardcoded cards)" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameServer.start_link(game_name, :hardcoded_cards)
+      state = GameServer.state(game_name)
+      assert %Game{} = state
+      assert state.board |> Map.keys() |> length == 10
+      assert state.cards.side.name == "Dragon"
     end
   end
 

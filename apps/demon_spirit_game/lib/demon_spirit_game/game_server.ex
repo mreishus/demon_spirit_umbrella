@@ -20,6 +20,16 @@ defmodule DemonSpiritGame.GameServer do
     GenServer.start_link(__MODULE__, {game_name}, name: via_tuple(game_name))
   end
 
+  @doc """
+  start_link/2: Generates a new game server under a provided name.
+  Providing :hardcoded_cards removes the RNG of initial card selection
+  and simply picks the first 5 cards in alphabetical order.
+  This should only be used for testing.
+  """
+  def start_link(game_name, :hardcoded_cards) do
+    GenServer.start_link(__MODULE__, {game_name, :hardcoded_cards}, name: via_tuple(game_name))
+  end
+
   def via_tuple(game_name), do: {:via, Registry, {DemonSpiritGame.GameRegistry, game_name}}
 
   @doc """
@@ -42,11 +52,19 @@ defmodule DemonSpiritGame.GameServer do
   ########### IMPLEMENTATION ##########
   #####################################
 
+  def init({game_name, :hardcoded_cards}) do
+    _init(game_name, Game.new(:hardcoded_cards))
+  end
+
   def init({game_name}) do
+    _init(game_name, Game.new())
+  end
+
+  defp _init(game_name, new_game) do
     game =
       case :ets.lookup(:games, game_name) do
         [] ->
-          game = Game.new()
+          game = new_game
           :ets.insert(:games, {game_name, game})
           game
 
