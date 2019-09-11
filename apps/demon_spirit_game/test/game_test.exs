@@ -78,7 +78,8 @@ defmodule GameTest do
       {:ok, cobra} = Card.by_name("Cobra")
       {:ok, crab} = Card.by_name("Crab")
       {:ok, crane} = Card.by_name("Crane")
-      %{boar: boar, cobra: cobra, crab: crab, crane: crane}
+      {:ok, tiger} = Card.by_name("Tiger")
+      %{boar: boar, cobra: cobra, crab: crab, crane: crane, tiger: tiger}
     end
 
     # White's cards are:                   #
@@ -184,6 +185,13 @@ defmodule GameTest do
       refute Game.valid_move?(game, %Move{from: {0, 2}, to: {0, 3}, card: boar})
       ## Black
       refute Game.valid_move?(game_black, %Move{from: {2, 2}, to: {4, 2}, card: crab})
+    end
+
+    test "correct move with correct card, but card is not in player's possession disallowed", %{
+      game: game,
+      tiger: tiger
+    } do
+      refute Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 2}, card: tiger})
     end
   end
 

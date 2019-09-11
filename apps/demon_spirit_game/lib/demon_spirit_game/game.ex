@@ -85,14 +85,28 @@ defmodule DemonSpiritGame.Game do
   Output:
     {:ok, %Game{}}
   Output (error)
-    {:error, _}
+    {:error, %Game{}}  (Game status unchanged)
   """
   @spec move(%Game{}, %Move{}) :: {:ok, %Game{}} | {:error, any}
   def move(game, move = %Move{}) do
     case valid_move?(game, move) do
-      true -> {:ok, game}
-      false -> {:error, :invalid_move}
+      true -> {:ok, process_move(game, move)}
+      false -> {:error, game}
     end
+  end
+
+  _ = """
+  process_move/2 (private):  Move a piece in the game.
+  If we've called this, then we've already certain the move is valid.
+  Input: %Game{}, %Move{}
+  Output: %Game{}
+  """
+
+  @spec process_move(%Game{}, %Move{}) :: {:ok, %Game{}} | {:error, any}
+  def process_move(game, %Move{from: from, to: to, card: card}) do
+    {piece, board} = game.board |> Map.pop(from)
+    board = board |> Map.put(to, piece)
+    %Game{game | board: board}
   end
 
   @doc """
@@ -109,12 +123,35 @@ defmodule DemonSpiritGame.Game do
   @spec valid_move?(%Game{}, %Move{}) :: boolean()
   def valid_move?(game = %Game{turn: turn}, move = %Move{from: from, to: to, card: card}) do
     active_piece?(game, from) && valid_coord?(to) && to not in active_piece_coords(game) &&
-      card_provides_move?(move, turn)
+      card_provides_move?(move, turn) && active_player_has_card?(game, card)
   end
 
+  @doc """
+  card_provides_move?/2: Is the move provided valid?  That is, is moving a piece
+    from `from` to `to` actually one of the moves on the `card`?
+  Input:
+    move: %Move{}
+    turn: :white | :black, whose turn is it?
+      - Needed because black player uses the flipped version of cards.
+  Output: Boolean
+  """
   @spec card_provides_move?(%Move{}, :white | :black) :: boolean()
   def card_provides_move?(move = %Move{from: from, to: to, card: card}, turn) do
     to in (possible_moves(from, card, turn) |> Enum.map(fn m -> m.to end))
+  end
+
+  @doc """
+  active_player_has_card?/2: Does the active player have the card specified?
+
+  Input:
+    game: %Game{}
+    card: %Card{}
+  Output: Boolean
+  """
+  @spec active_player_has_card?(%Game{}, %Card{}) :: boolean()
+  def active_player_has_card?(game = %Game{}, card = %Card{}) do
+    count = game.cards[game.turn] |> Enum.filter(fn c -> c == card end) |> length
+    if count >= 1, do: true, else: false
   end
 
   @doc """
