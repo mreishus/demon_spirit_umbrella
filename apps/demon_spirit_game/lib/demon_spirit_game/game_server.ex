@@ -33,6 +33,16 @@ defmodule DemonSpiritGame.GameServer do
   def via_tuple(game_name), do: {:via, Registry, {DemonSpiritGame.GameRegistry, game_name}}
 
   @doc """
+  Returns the `pid` of the game server process registered under the 
+  given `game_name`, or `nil` if no process is registered.
+  """
+  def game_pid(game_name) do
+    game_name
+    |> via_tuple()
+    |> GenServer.whereis()
+  end
+
+  @doc """
   state/1:  Retrieves the game state for the game under a provided name.
   """
   # @spec state(t.String) :: %Game{}
