@@ -74,13 +74,9 @@ defmodule DemonSpiritGame.Game do
   @doc """
   move/3: Move a piece in the game, if possible.
 
-  Input:
-    game: %Game{}
-    move: %Move{}
-  Output:
-    {:ok, %Game{}}
-  Output (error)
-    {:error, %Game{}}  (Game status unchanged)
+  Input: %Game{}, %Move{}
+  Output: {:ok, %Game{}}
+  Output (error): {:error, %Game{}}  (Game status unchanged)
   """
   @spec move(%Game{}, %Move{}) :: {:ok, %Game{}} | {:error, any}
   def move(game, move = %Move{}) do
@@ -139,12 +135,7 @@ defmodule DemonSpiritGame.Game do
   @doc """
   valid_move?/2:  Given a game state and a move specified by coordinates, is that move valid?
 
-  NOTEST
-
-  Input:
-    game: %Game{}
-    from: {x, y} tuple of piece to pick up and move, example: {2, 2} for the center square
-    to: {x, y} tuple of destination, example: {3, 2} to move it right one square
+  Input: %Game{}, %Move{}
   Output: Boolean, is this move valid?
   """
   @spec valid_move?(%Game{}, %Move{}) :: boolean()
@@ -170,9 +161,7 @@ defmodule DemonSpiritGame.Game do
   @doc """
   active_player_has_card?/2: Does the active player have the card specified?
 
-  Input:
-    game: %Game{}
-    card: %Card{}
+  Input: %Game{}, %Card{}
   Output: Boolean
   """
   @spec active_player_has_card?(%Game{}, %Card{}) :: boolean()
