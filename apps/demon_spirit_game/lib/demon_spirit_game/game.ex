@@ -41,15 +41,7 @@ defmodule DemonSpiritGame.Game do
   @spec new() :: %Game{}
   def new do
     cards = Card.cards() |> Enum.take_random(5)
-
-    %Game{
-      board: initial_board(),
-      cards: %{
-        white: cards |> Enum.slice(0, 2),
-        black: cards |> Enum.slice(2, 2),
-        side: cards |> Enum.at(4)
-      }
-    }
+    _new(cards)
   end
 
   @doc """
@@ -61,7 +53,14 @@ defmodule DemonSpiritGame.Game do
   Output: %Game{}
   """
   @spec new(nonempty_list(%Card{})) :: %Game{}
-  def new(cards) when is_list(cards) and length(cards) == 5 do
+  def new(cards) when is_list(cards) and length(cards) == 5, do: _new(cards)
+
+  _ = """
+  _new/1 (private): Create a new game with cards specified.
+  Used to deduplicate the repeated logic between new/0, new/1.
+  """
+
+  defp _new(cards) when is_list(cards) and length(cards) == 5 do
     %Game{
       board: initial_board(),
       cards: %{
