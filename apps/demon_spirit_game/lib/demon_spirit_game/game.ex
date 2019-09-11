@@ -73,7 +73,7 @@ defmodule DemonSpiritGame.Game do
   end
 
   @doc """
-  move/3: Move a piece in the game, if possible.
+  move/2: Move a piece in the game, if possible.
 
   Input: %Game{}, %Move{}
   Output: {:ok, %Game{}}
