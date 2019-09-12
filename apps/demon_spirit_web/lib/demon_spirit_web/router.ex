@@ -20,6 +20,7 @@ defmodule DemonSpiritWeb.Router do
 
     get("/", PageController, :index)
 
+    get("/game/live_test", GameController, :live_test)
     resources("/game", GameController, only: [:new, :create, :show, :index])
     resources("/session", SessionController, only: [:new, :create, :delete], singleton: true)
   end

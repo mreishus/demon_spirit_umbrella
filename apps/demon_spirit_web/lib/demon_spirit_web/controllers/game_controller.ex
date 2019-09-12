@@ -1,6 +1,7 @@
 defmodule DemonSpiritWeb.GameController do
   use DemonSpiritWeb, :controller
   alias DemonSpiritGame.{GameSupervisor, GameServer}
+  alias Phoenix.LiveView
 
   plug(:require_logged_in)
 
@@ -20,6 +21,10 @@ defmodule DemonSpiritWeb.GameController do
         |> put_flash(:error, "Unable to start game.")
         |> redirect(to: Routes.game_path(conn, :new))
     end
+  end
+
+  def live_test(conn, _) do
+    LiveView.Controller.live_render(conn, DemonSpiritWeb.GithubDeployView, session: %{})
   end
 
   def show(conn, %{"id" => game_name}) do

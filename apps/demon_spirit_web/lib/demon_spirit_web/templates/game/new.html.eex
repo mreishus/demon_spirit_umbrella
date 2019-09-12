@@ -1,5 +1,5 @@
 New HTML
 
-<%= form_for @conn, Routes.game_path(@conn, :create), [as: :game], fn f ->  %>
+<%= form_for @conn, Routes.game_path(@conn, :create), [as: :game], fn _f ->  %>
   <%= submit "Start Game", class: "btn btn-primary" %>
 <% end %>
