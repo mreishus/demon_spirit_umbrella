@@ -22,7 +22,10 @@ config :demon_spirit_web, DemonSpiritWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "V2POCUrmSoTzr8ri1xDPLNlDU0cWruIl6kZFJCnssRbPxe471biGMvn70pfmcmpn",
   render_errors: [view: DemonSpiritWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: DemonSpiritWeb.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: DemonSpiritWeb.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [
+    signing_salt: "l5JjWQ6UpCgG+H5FItedIQEjMdxX3QW7"
+  ]
 
 # Configures Elixir's Logger
 config :logger, :console,

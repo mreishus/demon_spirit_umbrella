@@ -61,7 +61,8 @@ config :demon_spirit_web, DemonSpiritWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/demon_spirit_web/{live,views}/.*(ex)$",
-      ~r"lib/demon_spirit_web/templates/.*(eex)$"
+      ~r"lib/demon_spirit_web/templates/.*(eex)$",
+      ~r{lib/demon_spirit_web/live/.*(ex)$}
     ]
   ]
 
