@@ -17,7 +17,7 @@
               <li>
                 <%= link "Log Out", to: Routes.session_path(@conn, :delete), method: :delete  %>
               </li>
-            <%= else %>
+            <% else %>
               <li>
                 <%= link "Log In", to: Routes.session_path(@conn, :new)  %>
               </li>

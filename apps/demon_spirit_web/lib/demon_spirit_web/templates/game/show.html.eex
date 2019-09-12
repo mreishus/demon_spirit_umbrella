@@ -1,0 +1,8 @@
+Show HTML
+<br /><br />
+
+<%= for {{x, y}, piece} <- @state.board do %>
+  <div>
+    <%= piece.color %> <%= piece.type %> at <%= x %>, <%= y %>
+  </div>
+<% end %>

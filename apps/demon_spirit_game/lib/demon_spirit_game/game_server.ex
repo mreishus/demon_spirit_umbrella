@@ -50,7 +50,10 @@ defmodule DemonSpiritGame.GameServer do
   """
   # @spec state(t.String) :: %Game{}
   def state(game_name) do
-    GenServer.call(via_tuple(game_name), :state)
+    case game_pid(game_name) do
+      nil -> nil
+      _ -> GenServer.call(via_tuple(game_name), :state)
+    end
   end
 
   @doc """
