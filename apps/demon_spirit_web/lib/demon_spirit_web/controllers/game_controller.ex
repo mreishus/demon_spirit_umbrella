@@ -1,5 +1,6 @@
 defmodule DemonSpiritWeb.GameController do
   use DemonSpiritWeb, :controller
+  alias DemonSpiritWeb.{LiveGameShow}
   alias DemonSpiritGame.{GameSupervisor, GameServer}
   alias Phoenix.LiveView
 
@@ -37,7 +38,8 @@ defmodule DemonSpiritWeb.GameController do
         |> redirect(to: Routes.game_path(conn, :new))
 
       _ ->
-        render(conn, "show.html", state: state)
+        # render(conn, "show.html", state: state)
+        LiveView.Controller.live_render(conn, LiveGameShow, session: %{game_name: game_name})
     end
   end
 

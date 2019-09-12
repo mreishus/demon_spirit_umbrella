@@ -23,4 +23,8 @@
 
 `DemonSpiritWeb` - Added Guest login (no automated tests).  Need to build lobby, game creation and selection mechanism: Want games with a specific url that spawns a GenServer running `DemonSpiritGame`.  Need to build UI reflecting game state.  Need to allow users to move pieces.  
 
+Live View is installed.  Starting work on UI.  Current view:
+
+![Early Screenshot](/screenshot.png?raw=true "Early Screenshot")
+
 Current task:  Building out `DemonSpiritWeb` module.

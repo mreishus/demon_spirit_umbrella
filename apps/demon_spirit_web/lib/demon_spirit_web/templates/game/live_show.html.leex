@@ -1,0 +1,111 @@
+live_show.html.leex
+
+<style>
+
+* {
+  abox-sizing: border-box;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
+}
+
+.box {
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 150%;
+}
+
+/* Force Square */
+.box-force-square::before {
+  content: "";
+  padding-bottom: 100%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.box-header {
+  grid-column: 1 / 4;
+}
+.box-a {
+  grid-column: 1 / 3;
+}
+.box-b {
+  grid-column: 3 / 4;
+}
+.box-footer {
+  grid-column: 1 / 4;
+}
+.pos-rel {
+  position: relative;
+}
+.chessboard {
+  width: 100%;
+  height: 100%;
+  background: url(/images/bg-blue3.svg);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.piece {
+  width: 20%;
+  height: 20%;
+}
+.piece.white.pawn {
+  background: url(/images/white_pawn.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.piece.black.pawn {
+  background: url(/images/black_pawn.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.piece.white.king {
+  background: url(/images/white_king.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.piece.black.king {
+  background: url(/images/black_king.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+</style>
+
+<div class="grid">
+  <div class="box box-header">
+    <%= for card <- @state.cards.black do %>
+      <%= render "card.html", card: card %>
+    <% end %>
+  </div>
+  <div class="box box-force-square box-a" style="position: relative;">
+    <div class="chessboard">
+      <%= for {{x, y}, piece} <- @state.board do %>
+        <div class="piece <%= piece.type %> <%= piece.color %>" style="
+        position: absolute;
+        transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
+        "><!--
+          <%= piece.color %> <%= piece.type %> at <%= x %>, <%= y %>
+        --></div>
+      <% end %>
+    </div>
+  </div>
+  <div class="box box-b">
+    <%= render "card.html", card: @state.cards.side %>
+  </div>
+  <div class="box box-footer">
+    <%= for card <- @state.cards.white do %>
+      <%= render "card.html", card: card %>
+    <% end %>
+  </div>
+</div>
+
+
+<pre>
+  <%= inspect(@state, pretty: true) %>
+</pre>
