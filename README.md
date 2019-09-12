@@ -17,4 +17,10 @@
 
 # Status
 
-*Heavy WIP*.  Current task:  Building out `DemonSpiritGame` module.
+*Heavy WIP*. 
+
+`DemonSpiritGame` - ~90% done. Mostly built out and tested, with GenServers, a dynamic supervisor and a process registry.  Will probably need some sort of "What cards can this move, (specified by a pair of coordinates) use?" function that's used by the UI.
+
+`DemonSpiritWeb` - Added Guest login (no automated tests).  Need to build lobby, game creation and selection mechanism: Want games with a specific url that spawns a GenServer running `DemonSpiritGame`.  Need to build UI reflecting game state.  Need to allow users to move pieces.  
+
+Current task:  Building out `DemonSpiritWeb` module.
