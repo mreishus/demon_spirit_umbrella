@@ -77,6 +77,8 @@ live_show.html.leex
 }
 </style>
 
+<input type="text" name="user[phone_number]" phx-hook="PhoneNumber"/>
+
 <div class="grid">
   <div class="box box-header">
     <%= for card <- @state.cards.black do %>
@@ -86,7 +88,9 @@ live_show.html.leex
   <div class="box box-force-square box-a" style="position: relative;">
     <div class="chessboard">
       <%= for {{x, y}, piece} <- @state.board do %>
-        <div class="piece <%= piece.type %> <%= piece.color %>" style="
+        <div 
+        draggable='true' phx-hook="Draggable"
+        class="piece <%= piece.type %> <%= piece.color %>" style="
         position: absolute;
         transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
         "><!--

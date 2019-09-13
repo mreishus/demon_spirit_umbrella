@@ -19,5 +19,13 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import LiveSocket from "phoenix_live_view"
 
-let liveSocket = new LiveSocket("/live", Socket)
-liveSocket.connect()
+let Hooks = {};
+
+import PhoneNumber from "./hooks/phone_number";
+Hooks.PhoneNumber = PhoneNumber;
+
+import Draggable from "./hooks/draggable";
+Hooks.Draggable = Draggable;
+
+let liveSocket = new LiveSocket("/live", {hooks: Hooks});
+liveSocket.connect();
