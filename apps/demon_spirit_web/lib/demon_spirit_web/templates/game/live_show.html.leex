@@ -89,6 +89,7 @@ live_show.html.leex
     <div class="chessboard">
       <%= for {{x, y}, piece} <- @state.board do %>
         <div 
+          phx-click="click-piece-<%= x %>-<%= y %>"
         draggable='true' phx-hook="Draggable"
         class="piece <%= piece.type %> <%= piece.color %>" style="
         position: absolute;
