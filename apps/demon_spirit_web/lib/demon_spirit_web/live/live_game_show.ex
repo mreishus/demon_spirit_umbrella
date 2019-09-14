@@ -7,8 +7,15 @@ defmodule DemonSpiritWeb.LiveGameShow do
   end
 
   def mount(%{game_name: game_name}, socket) do
-    state = GameServer.state(game_name)
-    {:ok, assign(socket, deploy_step: "Ready!", game_name: game_name, state: state)}
+    game_summary = GameServer.game_summary(game_name)
+
+    {:ok,
+     assign(socket,
+       deploy_step: "Ready!",
+       game_name: game_name,
+       all_valid_moves: game_summary.all_valid_moves,
+       game: game_summary.game
+     )}
   end
 
   def handle_event("click-piece-" <> coords_str, _value, socket) do

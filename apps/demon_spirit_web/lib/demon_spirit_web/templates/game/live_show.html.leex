@@ -81,13 +81,13 @@ live_show.html.leex
 
 <div class="grid">
   <div class="box box-header">
-    <%= for card <- @state.cards.black do %>
+    <%= for card <- @game.cards.black do %>
       <%= render "card.html", card: card %>
     <% end %>
   </div>
   <div class="box box-force-square box-a" style="position: relative;">
     <div class="chessboard">
-      <%= for {{x, y}, piece} <- @state.board do %>
+      <%= for {{x, y}, piece} <- @game.board do %>
         <div 
           phx-click="click-piece-<%= x %>-<%= y %>"
         draggable='true' phx-hook="Draggable"
@@ -101,10 +101,10 @@ live_show.html.leex
     </div>
   </div>
   <div class="box box-b">
-    <%= render "card.html", card: @state.cards.side %>
+    <%= render "card.html", card: @game.cards.side %>
   </div>
   <div class="box box-footer">
-    <%= for card <- @state.cards.white do %>
+    <%= for card <- @game.cards.white do %>
       <%= render "card.html", card: card %>
     <% end %>
   </div>
@@ -112,5 +112,5 @@ live_show.html.leex
 
 
 <pre>
-  <%= inspect(@state, pretty: true) %>
+  <%= inspect(@game, pretty: true) %>
 </pre>

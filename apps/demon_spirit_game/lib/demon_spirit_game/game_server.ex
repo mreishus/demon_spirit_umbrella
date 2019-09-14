@@ -71,6 +71,17 @@ defmodule DemonSpiritGame.GameServer do
     GenServer.call(via_tuple(game_name), :all_valid_moves)
   end
 
+  @doc """
+  game_summary/1: Return both the game state and "all valid moves."
+  %{
+    game: %Game{},
+    all_valid_moves: [ %Move{}, ... ]
+  }
+  """
+  def game_summary(game_name) do
+    GenServer.call(via_tuple(game_name), :game_summary)
+  end
+
   #####################################
   ########### IMPLEMENTATION ##########
   #####################################
@@ -116,6 +127,15 @@ defmodule DemonSpiritGame.GameServer do
 
   def handle_call(:all_valid_moves, _from, game) do
     {:reply, Game.all_valid_moves(game), game, @timeout}
+  end
+
+  def handle_call(:game_summary, _from, game) do
+    reply = %{
+      all_valid_moves: Game.all_valid_moves(game),
+      game: game
+    }
+
+    {:reply, reply, game, @timeout}
   end
 
   def handle_info(:timeout, game) do
