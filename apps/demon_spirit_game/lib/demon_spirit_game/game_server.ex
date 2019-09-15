@@ -33,7 +33,8 @@ defmodule DemonSpiritGame.GameServer do
   @doc """
   via_tuple/1: Given a game name string, generate a via tuple for addressing the game.
   """
-  def via_tuple(game_name), do: {:via, Registry, {DemonSpiritGame.GameRegistry, game_name}}
+  def via_tuple(game_name),
+    do: {:via, Registry, {DemonSpiritGame.GameRegistry, {__MODULE__, game_name}}}
 
   @doc """
   game_pid/1: Returns the `pid` of the game server process registered
@@ -152,6 +153,7 @@ defmodule DemonSpiritGame.GameServer do
   end
 
   defp my_game_name do
-    Registry.keys(DemonSpiritGame.GameRegistry, self()) |> List.first()
+    {_module, game_name} = Registry.keys(DemonSpiritGame.GameRegistry, self()) |> List.first()
+    game_name
   end
 end
