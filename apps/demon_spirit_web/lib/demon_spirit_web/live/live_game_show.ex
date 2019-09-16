@@ -21,7 +21,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:ok, socket}
   end
 
-  def handle_event("click-piece-" <> coords_str, _value, socket = %{assigns: assigns}) do
+  def handle_event("click-square-" <> coords_str, _value, socket = %{assigns: assigns}) do
     [{x, ""}, {y, ""}] = coords_str |> String.split("-") |> Enum.map(&Integer.parse/1)
 
     "Clicked on piece: #{x} #{y}" |> IO.inspect(label: "handle_event")

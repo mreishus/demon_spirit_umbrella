@@ -89,8 +89,6 @@ live_show.html.leex
 }
 </style>
 
-<input type="text" name="user[phone_number]" phx-hook="PhoneNumber"/>
-
 <div class="grid">
   <div class="box box-header">
     <%= for card <- @game.cards.black do %>
@@ -102,7 +100,7 @@ live_show.html.leex
       <%# Render Pieces %>
       <%= for {{x, y}, piece} <- @game.board do %>
         <div 
-          phx-click="click-piece-<%= x %>-<%= y %>"
+          phx-click="click-square-<%= x %>-<%= y %>"
         draggable='true' phx-hook="Draggable"
         class="piece <%= piece.type %> <%= piece.color %>" style="
         position: absolute;
@@ -116,7 +114,7 @@ live_show.html.leex
       <%= for x <- [0, 1, 2, 3, 4] do %>
         <%= for y <- [0, 1, 2, 3, 4] do %>
           <div
-            phx-click="click-piece-<%= x %>-<%= y %>"
+            phx-click="click-square-<%= x %>-<%= y %>"
             class="square
             <%= if {x, y} == @state.selected do %>
               selected
@@ -151,3 +149,8 @@ live_show.html.leex
 <pre>
   <%= inspect(@state, pretty: true) %>
 </pre>
+
+PHX Hook Example
+<br />Type 10 numbers
+<input type="text" name="user[phone_number]" phx-hook="PhoneNumber"/>
+
