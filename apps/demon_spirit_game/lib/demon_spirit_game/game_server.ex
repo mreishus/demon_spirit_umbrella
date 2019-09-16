@@ -73,6 +73,14 @@ defmodule DemonSpiritGame.GameServer do
   end
 
   @doc """
+  active_piece?/2:  Given a coordinate, does a piece exist there
+  and belong to the currently playing player?
+  """
+  def active_piece?(game_name, coords = {x, y}) when is_integer(x) and is_integer(y) do
+    GenServer.call(via_tuple(game_name), {:active_piece?, coords})
+  end
+
+  @doc """
   game_summary/1: Return both the game state and "all valid moves."
   %{
     game: %Game{},
@@ -128,6 +136,12 @@ defmodule DemonSpiritGame.GameServer do
 
   def handle_call(:all_valid_moves, _from, game) do
     {:reply, Game.all_valid_moves(game), game, @timeout}
+  end
+
+  def handle_call({:active_piece?, coords = {x, y}}, _from, game)
+      when is_integer(x) and is_integer(y) do
+    response = Game.active_piece?(game, coords)
+    {:reply, response, game, @timeout}
   end
 
   def handle_call(:game_summary, _from, game) do

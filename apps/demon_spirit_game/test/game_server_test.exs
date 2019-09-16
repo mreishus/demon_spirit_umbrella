@@ -104,6 +104,16 @@ defmodule GameServerTest do
     end
   end
 
+  describe "active_piece?/2" do
+    test "a" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameServer.start_link(game_name, :hardcoded_cards)
+      assert GameServer.active_piece?(game_name, {0, 0})
+      refute GameServer.active_piece?(game_name, {2, 2})
+      refute GameServer.active_piece?(game_name, {4, 4})
+    end
+  end
+
   describe "game_summary/1" do
     test "a" do
       game_name = generate_game_name()
