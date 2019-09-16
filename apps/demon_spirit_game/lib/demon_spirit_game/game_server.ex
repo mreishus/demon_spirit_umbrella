@@ -17,6 +17,7 @@ defmodule DemonSpiritGame.GameServer do
   # Using type specs in genserver causes my app to not compile..??
   # @spec start_link(t.String) :: {:ok, pid} | {:error, any}
   def start_link(game_name) do
+    IO.puts("GameServer: Starting a server for game named [#{game_name}].")
     GenServer.start_link(__MODULE__, {game_name}, name: via_tuple(game_name))
   end
 
@@ -27,6 +28,7 @@ defmodule DemonSpiritGame.GameServer do
   This should only be used for testing.
   """
   def start_link(game_name, :hardcoded_cards) do
+    IO.puts("GameServer: Starting a server for game named [#{game_name}] (hardcoded cards).")
     GenServer.start_link(__MODULE__, {game_name, :hardcoded_cards}, name: via_tuple(game_name))
   end
 
