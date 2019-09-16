@@ -1,29 +1,41 @@
 defmodule DemonSpiritWeb.LiveGameShow do
   use Phoenix.LiveView
-  alias DemonSpiritGame.{GameServer}
+  alias DemonSpiritWeb.GameUIServer
+  alias DemonSpiritWeb.GameUIServer.State
 
   def render(assigns) do
     DemonSpiritWeb.GameView.render("live_show.html", assigns)
   end
 
   def mount(%{game_name: game_name}, socket) do
-    game_summary = GameServer.game_summary(game_name)
+    state = GameUIServer.state(game_name)
 
-    {:ok,
-     assign(socket,
-       deploy_step: "Ready!",
-       game_name: game_name,
-       all_valid_moves: game_summary.all_valid_moves,
-       game: game_summary.game
-     )}
+    socket =
+      socket
+      |> assign(game_name: game_name)
+      |> state_assign(state)
+
+    {:ok, socket}
   end
 
   def handle_event("click-piece-" <> coords_str, _value, socket = %{assigns: assigns}) do
     [{x, ""}, {y, ""}] = coords_str |> String.split("-") |> Enum.map(&Integer.parse/1)
 
     "Clicked on piece: #{x} #{y}" |> IO.inspect(label: "handle_event")
-    assigns |> IO.inspect(label: "assigns")
-    {:noreply, assign(socket, deploy_step: "Starting deploy...")}
+    state = GameUIServer.click(assigns.game_name, {x, y})
+    # assigns |> IO.inspect(label: "assigns")
+    # {:noreply, assign(socket, deploy_step: "Starting deploy...")}
+    {:noreply, state_assign(socket, state)}
+  end
+
+  defp state_assign(socket, state = %State{}) do
+    assign(socket, state: state, game: state.game)
+  end
+
+  defp state_assign(socket, something) do
+    IO.puts("LiveGameShow: State_assign: Didn't understand what was passed to me.")
+    something |> IO.inspect()
+    socket
   end
 end
 

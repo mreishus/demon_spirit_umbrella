@@ -1,7 +1,6 @@
 defmodule DemonSpiritWeb.GameController do
   use DemonSpiritWeb, :controller
-  alias DemonSpiritWeb.{LiveGameShow}
-  alias DemonSpiritGame.{GameSupervisor, GameServer}
+  alias DemonSpiritWeb.{LiveGameShow, GameUISupervisor, GameUIServer}
   alias Phoenix.LiveView
 
   plug(:require_logged_in)
@@ -13,7 +12,7 @@ defmodule DemonSpiritWeb.GameController do
   def create(conn, _params) do
     game_name = "game-#{:rand.uniform(1000)}"
 
-    case GameSupervisor.start_game(game_name) do
+    case GameUISupervisor.start_game(game_name) do
       {:ok, _pid} ->
         redirect(conn, to: Routes.game_path(conn, :show, game_name))
 
@@ -29,7 +28,7 @@ defmodule DemonSpiritWeb.GameController do
   end
 
   def show(conn, %{"id" => game_name}) do
-    state = GameServer.state(game_name)
+    state = GameUIServer.state(game_name)
 
     case state do
       nil ->

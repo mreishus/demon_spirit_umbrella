@@ -51,6 +51,10 @@ live_show.html.leex
   left: 0;
 }
 
+.square {
+  width: 20%;
+  height: 20%;
+}
 .piece {
   width: 20%;
   height: 20%;
@@ -87,6 +91,7 @@ live_show.html.leex
   </div>
   <div class="box box-force-square box-a" style="position: relative;">
     <div class="chessboard">
+      <%# Render Pieces %>
       <%= for {{x, y}, piece} <- @game.board do %>
         <div 
           phx-click="click-piece-<%= x %>-<%= y %>"
@@ -97,6 +102,20 @@ live_show.html.leex
         "><!--
           <%= piece.color %> <%= piece.type %> at <%= x %>, <%= y %>
         --></div>
+      <% end %>
+
+      <%# Render Square Targets %>
+      <%= for x <- [0, 1, 2, 3, 4] do %>
+        <%= for y <- [0, 1, 2, 3, 4] do %>
+          <div
+            phx-click="click-piece-<%= x %>-<%= y %>"
+          class="square" style="
+          position: absolute;
+          transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
+          "><!--
+          Blank Square
+          --></div>
+        <% end %>
       <% end %>
     </div>
   </div>
