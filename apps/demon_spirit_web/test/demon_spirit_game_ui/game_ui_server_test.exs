@@ -65,6 +65,7 @@ defmodule GameUiServerTest do
       initial_state = GameUIServer.state(game_name)
       new_state = GameUIServer.click(game_name, {2, 2})
       assert new_state == initial_state
+      assert new_state.move_dest == []
     end
 
     test "Click on opponents piece does nothing" do
@@ -73,6 +74,7 @@ defmodule GameUiServerTest do
       initial_state = GameUIServer.state(game_name)
       new_state = GameUIServer.click(game_name, {4, 4})
       assert new_state == initial_state
+      assert new_state.move_dest == []
     end
 
     test "Click on my piece selects it" do
@@ -80,6 +82,7 @@ defmodule GameUiServerTest do
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       new_state = GameUIServer.click(game_name, {0, 0})
       assert new_state.selected == {0, 0}
+      assert new_state.move_dest == [{0, 1}, {1, 1}]
     end
 
     test "Click on my piece, then click on invalid move clears selection" do
@@ -89,6 +92,7 @@ defmodule GameUiServerTest do
       _new_state = GameUIServer.click(game_name, {0, 0})
       new_state = GameUIServer.click(game_name, {2, 3})
       assert new_state.selected == nil
+      assert new_state.move_dest == []
       assert new_state == initial_state
     end
 
@@ -101,6 +105,7 @@ defmodule GameUiServerTest do
       assert new_state != initial_state
       assert new_state.game.board[{1, 1}] != nil
       assert new_state.game.board[{2, 2}] == nil
+      assert new_state.move_dest == []
     end
   end
 

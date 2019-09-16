@@ -55,6 +55,14 @@ live_show.html.leex
   width: 20%;
   height: 20%;
 }
+.move_dest {
+  background-color: green;
+  opacity: 0.3;
+}
+.selected {
+  background-color: green;
+  opacity: 0.3;
+}
 .piece {
   width: 20%;
   height: 20%;
@@ -109,7 +117,14 @@ live_show.html.leex
         <%= for y <- [0, 1, 2, 3, 4] do %>
           <div
             phx-click="click-piece-<%= x %>-<%= y %>"
-          class="square" style="
+            class="square
+            <%= if {x, y} == @state.selected do %>
+              selected
+            <% end %>
+            <%= if {x, y} in @state.move_dest do %>
+              move_dest
+            <% end %>
+            " style="
           position: absolute;
           transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
           "><!--
@@ -131,5 +146,8 @@ live_show.html.leex
 
 
 <pre>
-  <%= inspect(@game, pretty: true) %>
+  <%#= inspect(@game, pretty: true) %>
+</pre>
+<pre>
+  <%= inspect(@state, pretty: true) %>
 </pre>

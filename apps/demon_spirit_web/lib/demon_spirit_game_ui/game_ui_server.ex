@@ -144,7 +144,7 @@ defmodule DemonSpiritWeb.GameUIServer do
 
     case length(candidates) do
       0 ->
-        %{state | selected: nil}
+        %{state | selected: nil, move_dest: []}
 
       _ ->
         # TODO: There could be multiple moves!
@@ -156,10 +156,17 @@ defmodule DemonSpiritWeb.GameUIServer do
         case response do
           {:ok, new_game} ->
             all_valid_moves = GameServer.all_valid_moves(state.game_name)
-            %{state | game: new_game, all_valid_moves: all_valid_moves, selected: nil}
+
+            %{
+              state
+              | game: new_game,
+                all_valid_moves: all_valid_moves,
+                selected: nil,
+                move_dest: []
+            }
 
           {:error, _} ->
-            %{state | selected: nil}
+            %{state | selected: nil, move_dest: []}
         end
     end
   end
@@ -170,13 +177,23 @@ defmodule DemonSpiritWeb.GameUIServer do
   defp click_unselected(coords = {x, y}, state) when is_integer(x) and is_integer(y) do
     case GameServer.active_piece?(state.game_name, coords) do
       true ->
-        %{state | selected: coords}
+        %{state | selected: coords, move_dest: move_dest(coords, state)}
 
       false ->
         state
     end
   end
 
+  # Given one set of coordinates, "from", find all valid destinationss
+  # for that piece.  Returns [{x, y}] or []
+  defp move_dest(coords = {x, y}, state) when is_integer(x) and is_integer(y) do
+    state.all_valid_moves
+    |> Enum.filter(fn %Move{from: from_} -> from_ == coords end)
+    |> Enum.map(fn m = %Move{} -> m.to end)
+  end
+
+  # Given two sets of coordinates, "from" and "to", find all valid
+  # moves between those points. Returns [%Move{}] or [].
   defp coords_to_moves(state, from = {x1, y1}, to = {x2, y2})
        when is_integer(x1) and is_integer(y1) and is_integer(x2) and is_integer(y2) do
     state.all_valid_moves
