@@ -3,7 +3,7 @@ defmodule GameUiServerTest do
   doctest DemonSpiritWeb.GameUIServer
   alias DemonSpiritWeb.{GameUIServer}
   alias DemonSpiritWeb.GameUIServer.State
-  alias DemonSpiritGame.Game
+  alias DemonSpiritGame.{Game, Move}
 
   describe "start_link/1" do
     test "spawns a process" do
@@ -66,6 +66,7 @@ defmodule GameUiServerTest do
       new_state = GameUIServer.click(game_name, {2, 2})
       assert new_state == initial_state
       assert new_state.move_dest == []
+      assert new_state.last_move == nil
     end
 
     test "Click on opponents piece does nothing" do
@@ -75,6 +76,7 @@ defmodule GameUiServerTest do
       new_state = GameUIServer.click(game_name, {4, 4})
       assert new_state == initial_state
       assert new_state.move_dest == []
+      assert new_state.last_move == nil
     end
 
     test "Click on my piece selects it" do
@@ -83,6 +85,7 @@ defmodule GameUiServerTest do
       new_state = GameUIServer.click(game_name, {0, 0})
       assert new_state.selected == {0, 0}
       assert new_state.move_dest == [{0, 1}, {1, 1}]
+      assert new_state.last_move == nil
     end
 
     test "Click on my piece, then click on invalid move clears selection" do
@@ -94,6 +97,7 @@ defmodule GameUiServerTest do
       assert new_state.selected == nil
       assert new_state.move_dest == []
       assert new_state == initial_state
+      assert new_state.last_move == nil
     end
 
     test "Click on my piece, then click on valid move, moves it" do
@@ -106,6 +110,9 @@ defmodule GameUiServerTest do
       assert new_state.game.board[{1, 1}] != nil
       assert new_state.game.board[{2, 2}] == nil
       assert new_state.move_dest == []
+      assert %Move{} = new_state.last_move
+      assert new_state.last_move.from == {0, 0}
+      assert new_state.last_move.to == {1, 1}
     end
   end
 

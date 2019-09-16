@@ -64,6 +64,10 @@
   background-color: green;
   opacity: 0.3;
 }
+.last_move {
+  background-color: rgb(179, 0, 0);
+  opacity: 0.33;
+}
 .piece {
   width: 20%;
   height: 20%;
@@ -123,6 +127,9 @@
             <% end %>
             <%= if {x, y} in @state.move_dest do %>
               move_dest
+            <% end %>
+            <%= if @state.last_move != nil and (@state.last_move.from == {x, y} or @state.last_move.to == {x, y}) do %>
+              last_move
             <% end %>
             " style="
           position: absolute;

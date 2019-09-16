@@ -29,6 +29,7 @@ defmodule DemonSpiritWeb.GameUIServer do
     state: :waiting | :selected (?) ( Might not be needed if we have "selected" )
     selected: nil, or, The coordinate of the piece that is currently selected.
     move_dest: If a piece is selected, the coordinates of where that piece may move to.
+    last_move: nil, or the %Move{} describing the last move taken.
     """
     defstruct game: nil,
               game_name: nil,
@@ -37,7 +38,8 @@ defmodule DemonSpiritWeb.GameUIServer do
               white: nil,
               black: nil,
               selected: nil,
-              move_dest: []
+              move_dest: [],
+              last_move: nil
   end
 
   use GenServer
@@ -162,7 +164,8 @@ defmodule DemonSpiritWeb.GameUIServer do
               | game: new_game,
                 all_valid_moves: all_valid_moves,
                 selected: nil,
-                move_dest: []
+                move_dest: [],
+                last_move: move
             }
 
           {:error, _} ->
