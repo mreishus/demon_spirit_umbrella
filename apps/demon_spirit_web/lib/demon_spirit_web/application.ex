@@ -9,9 +9,11 @@ defmodule DemonSpiritWeb.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      DemonSpiritWeb.Endpoint
+      DemonSpiritWeb.Endpoint,
       # Starts a worker by calling: DemonSpiritWeb.Worker.start_link(arg)
       # {DemonSpiritWeb.Worker, arg},
+      {Registry, keys: :unique, name: DemonSpiritWeb.GameUIRegistry},
+      DemonSpiritWeb.GameUISupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
