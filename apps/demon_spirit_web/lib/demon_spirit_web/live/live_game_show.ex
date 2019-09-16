@@ -48,20 +48,19 @@ defmodule DemonSpiritWeb.LiveGameShow do
     "game-topic:" <> game_name
   end
 
-  def handle_info(broadcast = %{topic: "game-topic:" <> topic_game_name}, socket) do
-    game_name = socket.assigns.game_name
+  def handle_info(
+        broadcast = %{topic: "game-topic:" <> topic_game_name},
+        socket = %{assigns: %{game_name: game_name}}
+      )
+      when game_name == topic_game_name do
+    case broadcast.event do
+      "state_update" ->
+        "Got message, updating state for #{game_name}" |> IO.inspect()
+        state = GameUIServer.state(game_name)
+        {:noreply, state_assign(socket, state)}
 
-    if topic_game_name == game_name do
-      case broadcast.event do
-        "state_update" ->
-          state = GameUIServer.state(game_name)
-          {:noreply, state_assign(socket, state)}
-
-        _ ->
-          {:noreply, socket}
-      end
-    else
-      {:noreply, socket}
+      _ ->
+        {:noreply, socket}
     end
   end
 end
