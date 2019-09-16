@@ -9,12 +9,13 @@ defmodule DemonSpiritWeb.LiveGameShow do
   end
 
   def mount(%{game_name: game_name}, socket) do
-    if connected?(socket), do: Endpoint.subscribe(topic_for(game_name))
+    topic = topic_for(game_name)
+    if connected?(socket), do: Endpoint.subscribe(topic)
     state = GameUIServer.state(game_name)
 
     socket =
       socket
-      |> assign(game_name: game_name, topic: topic_for(game_name))
+      |> assign(game_name: game_name, topic: topic)
       |> state_assign(state)
 
     {:ok, socket}
@@ -27,7 +28,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
     state = GameUIServer.click(assigns.game_name, {x, y})
 
     # Tell others
-    Endpoint.broadcast_from(self(), topic_for(assigns.game_name), "state_update", %{})
+    Endpoint.broadcast_from(self(), assigns.topic, "state_update", %{})
 
     # assigns |> IO.inspect(label: "assigns")
     # {:noreply, assign(socket, deploy_step: "Starting deploy...")}
@@ -49,10 +50,10 @@ defmodule DemonSpiritWeb.LiveGameShow do
   end
 
   def handle_info(
-        broadcast = %{topic: "game-topic:" <> topic_game_name},
-        socket = %{assigns: %{game_name: game_name}}
+        broadcast = %{topic: broadcast_topic},
+        socket = %{assigns: %{game_name: game_name, topic: topic}}
       )
-      when game_name == topic_game_name do
+      when broadcast_topic == topic do
     case broadcast.event do
       "state_update" ->
         "Got message, updating state for #{game_name}" |> IO.inspect()
