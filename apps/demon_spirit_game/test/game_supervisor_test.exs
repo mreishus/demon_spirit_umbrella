@@ -3,7 +3,7 @@ defmodule GameSupervisorTest do
 
   alias DemonSpiritGame.{GameSupervisor, GameServer}
 
-  describe "start_game" do
+  describe "start_game/1" do
     test "spawns a game server process" do
       game_name = "game-#{:rand.uniform(1000)}"
       assert {:ok, _pid} = GameSupervisor.start_game(game_name)
@@ -17,6 +17,25 @@ defmodule GameSupervisorTest do
 
       assert {:ok, pid} = GameSupervisor.start_game(game_name)
       assert {:error, {:already_started, ^pid}} = GameSupervisor.start_game(game_name)
+    end
+  end
+
+  describe "start_game/2" do
+    test "spawns a game server process" do
+      game_name = "game-#{:rand.uniform(1000)}"
+      assert {:ok, _pid} = GameSupervisor.start_game(game_name, :hardcoded_cards)
+
+      via = GameServer.via_tuple(game_name)
+      assert GenServer.whereis(via) |> Process.alive?()
+    end
+
+    test "returns an error if game is already started" do
+      game_name = "game-#{:rand.uniform(1000)}"
+
+      assert {:ok, pid} = GameSupervisor.start_game(game_name, :hardcoded_cards)
+
+      assert {:error, {:already_started, ^pid}} =
+               GameSupervisor.start_game(game_name, :hardcoded_cards)
     end
   end
 
