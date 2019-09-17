@@ -15,6 +15,9 @@ defmodule DemonSpiritWeb.LiveGameIndex do
     {:ok, assign(socket, games: games)}
   end
 
+  # Interestingly, the message format I get here is different
+  # than in live_game_show. Has something to do with Endpoint.broadcast
+  # vs PubSub.broadcast.. not sure of the diffs here, need to research.
   def handle_info({:state_update, _map}, socket) do
     games = GameRegistry.list()
     {:noreply, assign(socket, games: games)}
