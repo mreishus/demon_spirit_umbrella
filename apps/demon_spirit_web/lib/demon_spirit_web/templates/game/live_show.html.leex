@@ -3,6 +3,16 @@
 * {
   abox-sizing: border-box;
 }
+
+.vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -106,6 +116,9 @@
   width: 90px;
   border-radius: 5px;
 }
+.card .title {
+  transition: all 0.5s ease-in-out;
+}
 .card.flip {
   transform: rotate(180deg);
 }
@@ -117,12 +130,19 @@ td.card_cell {
   border: 1px solid black;
   padding: 0px;
   width: 20%;
+  transition: all 0.5s ease-in-out;
 }
 td.card_cell.center {
   background-color: #333;
 }
-td.card_cell.move {
+.card.green td.card_cell.move {
   background-color: green;
+}
+.card.blue td.card_cell.move {
+  background-color: #0a6783;
+}
+.card.red td.card_cell.move {
+  background-color: #830a0a;
 }
 
 td:after {
@@ -146,7 +166,7 @@ td .content {
       <%= render "card.html", card: card, flip: true %>
     <% end %>
   </div>
-  <div class="box box-force-square box-a" style="position: relative;">
+  <div class="box box-force-square box-a pos-rel">
     <div class="chessboard">
       <%# Render Pieces %>
       <%= for {{x, y}, piece} <- @game.board do %>
@@ -189,8 +209,10 @@ td .content {
       <% end %>
     </div>
   </div>
-  <div class="box box-b">
+  <div class="box box-b pos-rel">
+    <div class="vertical-center">
     <%= render "card.html", card: @game.cards.side, flip: false %>
+    </div>
   </div>
   <div class="box box-footer">
     <%= for card <- @game.cards.white do %>

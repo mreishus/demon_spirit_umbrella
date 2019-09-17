@@ -2,9 +2,12 @@
      <%= if @flip do %>
        flip
      <% end %>
+     <%= @card.color %>
   "
   style="">
-  <%= @card.name %>
+  <span class="title">
+    <%= @card.name %>
+  </span>
 
   <table class="table_card">
     <tbody>
