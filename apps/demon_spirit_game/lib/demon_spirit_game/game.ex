@@ -13,6 +13,7 @@ defmodule DemonSpiritGame.Game do
   turn: Atom, :white or :black, whose turn is it?
   winner: nil, or atom :white or :black.  Who has won?
     (Winner is :error in the impossible case that two sides win at once)
+  game_name: String, what is the name of the game.
 
   Example of cards rotating.
   - White: [Tiger, Crab]  Black: [Monkey, Crane] Side: Mantis
@@ -28,7 +29,8 @@ defmodule DemonSpiritGame.Game do
               side: nil
             },
             turn: :white,
-            winner: nil
+            winner: nil,
+            game_name: nil
 
   alias DemonSpiritGame.{Game, Card, Move, GameWinCheck}
 

@@ -3,6 +3,7 @@ defmodule DemonSpiritGame.GameServer do
   Genserver to hold a %Game{}'s state within a process.
   """
   use GenServer
+  require Logger
   @timeout :timer.hours(2)
 
   alias DemonSpiritGame.{Game, Move}
@@ -96,13 +97,15 @@ defmodule DemonSpiritGame.GameServer do
   #####################################
 
   def init({game_name, :hardcoded_cards}) do
-    # IO.puts("GameServer: Starting a server for game named [#{game_name}] (hardcoded cards).")
-    _init(game_name, Game.new(:hardcoded_cards))
+    Logger.info("GameServer: Starting a server for game named [#{game_name}] (hardcoded cards).")
+    # TODO: Consider changing Game.new to take a name.
+    _init(game_name, Game.new(:hardcoded_cards) |> Map.put(:game_name, game_name))
   end
 
   def init({game_name}) do
-    # IO.puts("GameServer: Starting a server for game named [#{game_name}].")
-    _init(game_name, Game.new())
+    Logger.info("GameServer: Starting a server for game named [#{game_name}].")
+    # TODO: Consider changing Game.new to take a name.
+    _init(game_name, Game.new() |> Map.put(:game_name, game_name))
   end
 
   defp _init(game_name, new_game) do
@@ -127,7 +130,7 @@ defmodule DemonSpiritGame.GameServer do
   def handle_call({:move, move = %Move{}}, _from, game) do
     case Game.move(game, move) do
       {:ok, new_game} ->
-        :ets.insert(:games, {my_game_name(), new_game})
+        :ets.insert(:games, {game.game_name, new_game})
         {:reply, {:ok, new_game}, new_game, @timeout}
 
       {:error, _} ->
@@ -155,23 +158,19 @@ defmodule DemonSpiritGame.GameServer do
     {:reply, reply, game, @timeout}
   end
 
+  # When timing out, the order is handle_info(:timeout, _) -> terminate({:shutdown, :timeout}, _)
   def handle_info(:timeout, game) do
     {:stop, {:shutdown, :timeout}, game}
   end
 
-  def terminate({:shutdown, :timeout}, _game) do
-    IO.puts("GameServer: Shutdown/timeout for [#{my_game_name()}].")
-    :ets.delete(:games, my_game_name())
+  def terminate({:shutdown, :timeout}, game) do
+    Logger.info("GameServer: Terminate (Timeout) running for #{game.game_name}")
+    :ets.delete(:games, game.game_name)
     :ok
   end
 
-  def terminate(_reason, _game) do
-    IO.puts("GameServer: Strange termination for [#{my_game_name()}].")
+  def terminate(_reason, game) do
+    Logger.info("GameServer: Strange termination for [#{game.game_name}].")
     :ok
-  end
-
-  defp my_game_name do
-    {_module, game_name} = Registry.keys(DemonSpiritGame.GameRegistry, self()) |> List.first()
-    game_name
   end
 end
