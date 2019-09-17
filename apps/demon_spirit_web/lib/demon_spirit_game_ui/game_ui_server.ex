@@ -43,8 +43,8 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   use GenServer
-  # Make timeout shorter after game is won?
-  @timeout :timer.hours(1)
+  @timeout :timer.hours(2)
+  @timeout_game_won :timer.minutes(5)
 
   require Logger
   alias DemonSpiritGame.{GameServer, GameSupervisor, Move}
@@ -140,7 +140,7 @@ defmodule DemonSpiritWeb.GameUIServer do
     }
 
     GameRegistry.add(game_name)
-    {:ok, state, @timeout}
+    {:ok, state, timeout(state)}
   end
 
   # Clicking while something is selected.
@@ -216,11 +216,18 @@ defmodule DemonSpiritWeb.GameUIServer do
         _ -> click_selected(coords, state)
       end
 
-    {:reply, new_state, new_state, @timeout}
+    {:reply, new_state, new_state, timeout(new_state)}
   end
 
   def handle_call(:state, _from, state) do
-    {:reply, state, state, @timeout}
+    {:reply, state, state, timeout(state)}
+  end
+
+  defp timeout(state) do
+    case state.game.winner do
+      nil -> @timeout
+      _ -> @timeout_game_won
+    end
   end
 
   # When timing out, the order is handle_info(:timeout, _) -> terminate({:shutdown, :timeout}, _)
