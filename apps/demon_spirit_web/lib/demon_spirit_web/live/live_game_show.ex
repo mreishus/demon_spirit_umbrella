@@ -1,12 +1,11 @@
 defmodule DemonSpiritWeb.LiveGameShow do
   use Phoenix.LiveView
   require Logger
-  alias DemonSpiritWeb.Endpoint
-  alias DemonSpiritWeb.GameUIServer
+  alias DemonSpiritWeb.{Endpoint, GameUIServer, GameView}
   alias DemonSpiritWeb.GameUIServer.State
 
   def render(assigns) do
-    DemonSpiritWeb.GameView.render("live_show.html", assigns)
+    GameView.render("live_show.html", assigns)
   end
 
   def mount(%{game_name: game_name}, socket) do

@@ -104,6 +104,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   ####### IMPLEMENTATION #######
+
   def init({game_name}) do
     game_starter = fn game_name -> GameSupervisor.start_game(game_name) end
     _init(game_name, game_starter)

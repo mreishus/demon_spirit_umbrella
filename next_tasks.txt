@@ -1,0 +1,7 @@
+TODO
+- GameRegistry tests
+- Render cards better (show the moves that can be done, flip for black)
+- Seating system (Need to plan this out)
+
+DONE
+- game controller / list: Looks at GameRegistry and lists games using liveview

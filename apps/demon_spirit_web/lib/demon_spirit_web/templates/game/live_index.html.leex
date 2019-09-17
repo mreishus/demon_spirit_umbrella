@@ -1,0 +1,21 @@
+<h3>
+<%= link "Create a new game", to: Routes.game_path(@socket, :new), class: "btn btn-default" %>
+</h3>
+
+<h3>Current Games</h3>
+
+<%= if length(@games) > 0 do %>
+  <table>
+    <%= for game <- @games do %>
+      <tr>
+        <td><%= link game.name, to: Routes.game_path(@socket, :show, game.name) %></td>
+        <td><%= game.created_at %></td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>  
+  <div class="alert alert-info">
+    No games currently running.
+  </div>
+<% end %>
+

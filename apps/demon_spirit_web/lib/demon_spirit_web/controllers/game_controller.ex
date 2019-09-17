@@ -1,9 +1,13 @@
 defmodule DemonSpiritWeb.GameController do
   use DemonSpiritWeb, :controller
-  alias DemonSpiritWeb.{LiveGameShow, GameUISupervisor, GameUIServer}
+  alias DemonSpiritWeb.{GameUISupervisor, GameUIServer, LiveGameShow, LiveGameIndex}
   alias Phoenix.LiveView
 
   plug(:require_logged_in)
+
+  def index(conn, _params) do
+    LiveView.Controller.live_render(conn, LiveGameIndex, session: %{})
+  end
 
   def new(conn, _params) do
     render(conn, "new.html")
