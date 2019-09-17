@@ -1,6 +1,14 @@
 defmodule DemonSpiritWeb.GameController do
   use DemonSpiritWeb, :controller
-  alias DemonSpiritWeb.{GameUISupervisor, GameUIServer, LiveGameShow, LiveGameIndex}
+
+  alias DemonSpiritWeb.{
+    GameUISupervisor,
+    GameUIServer,
+    LiveGameShow,
+    LiveGameIndex,
+    NameGenerator
+  }
+
   alias Phoenix.LiveView
 
   plug(:require_logged_in)
@@ -14,7 +22,7 @@ defmodule DemonSpiritWeb.GameController do
   end
 
   def create(conn, _params) do
-    game_name = "game-#{:rand.uniform(1000)}"
+    game_name = NameGenerator.generate()
 
     case GameUISupervisor.start_game(game_name) do
       {:ok, _pid} ->
