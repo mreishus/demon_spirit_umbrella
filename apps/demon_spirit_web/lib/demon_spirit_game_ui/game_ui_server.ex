@@ -43,9 +43,11 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   use GenServer
+  # Make timeout shorter after game is won?
   @timeout :timer.hours(2)
 
   alias DemonSpiritGame.{GameServer, GameSupervisor, Move}
+  alias DemonSpiritWeb.GameRegistry
 
   @doc """
   start_link/1: Generates a new game server under a provided name.
@@ -135,6 +137,7 @@ defmodule DemonSpiritWeb.GameUIServer do
       move_dest: []
     }
 
+    GameRegistry.add(game_name)
     {:ok, state, @timeout}
   end
 
@@ -218,22 +221,23 @@ defmodule DemonSpiritWeb.GameUIServer do
     {:reply, state, state, @timeout}
   end
 
+  # When timing out, the order is handle_info(:timeout, _) -> terminate({:shutdown, :timeout}, _)
   def handle_info(:timeout, state) do
     {:stop, {:shutdown, :timeout}, state}
   end
 
-  def terminate({:shutdown, :timeout}, _game) do
-    GameSupervisor.stop_game(my_game_name())
-    # :ets.delete(:games, my_game_name())
+  def terminate({:shutdown, :timeout}, state) do
+    IO.puts("Terminate (Timeout) running for #{state.game_name}")
+    GameSupervisor.stop_game(state.game_name)
+    GameRegistry.remove(state.game_name)
+    # TODO: Double check that GameSupervisor is killing the ETS table
     :ok
   end
 
-  def terminate(_reason, _game) do
+  # Do I need to trap exits here?
+  def terminate(_reason, state) do
+    IO.puts("Terminate (Non Timeout) running for #{state.game_name}")
+    GameRegistry.remove(state.game_name)
     :ok
-  end
-
-  defp my_game_name do
-    {_module, game_name} = Registry.keys(DemonSpiritGame.GameRegistry, self()) |> List.first()
-    game_name
   end
 end
