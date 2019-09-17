@@ -33,7 +33,7 @@ defmodule DemonSpiritWeb.GameRegistry do
   def list() do
     :ets.match(__MODULE__, :"$1")
     |> Enum.map(fn [{_k, v}] -> v end)
-    |> Enum.sort_by(fn gi -> Date.to_iso8601(gi.created_at) end, &>=/2)
+    |> Enum.sort_by(fn gi -> DateTime.to_iso8601(gi.created_at) end, &>=/2)
   end
 
   ###### Private Implementation Helpers
