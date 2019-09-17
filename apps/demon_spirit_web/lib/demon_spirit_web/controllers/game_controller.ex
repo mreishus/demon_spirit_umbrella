@@ -58,8 +58,8 @@ defmodule DemonSpiritWeb.GameController do
 
   defp require_logged_in(conn, _opts) do
     conn
-    |> put_flash(:error, "Must be logged in")
-    |> redirect(to: "/")
+    # |> put_flash(:info, "Please log in first.")
+    |> redirect(to: Routes.session_path(conn, :new))
     |> halt()
   end
 end
