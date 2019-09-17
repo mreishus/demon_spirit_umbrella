@@ -3,6 +3,7 @@
   <li>Public or unlisted</li>
   <li>VS Human or VS AI</li>
   <li>Time Controls</li>
+  <li>Choose Expansions / Sets of Cards</li>
 </ul>
 <%= form_for @conn, Routes.game_path(@conn, :create), [as: :game], fn _f ->  %>
   <%= submit "Start Game", class: "btn btn-primary" %>

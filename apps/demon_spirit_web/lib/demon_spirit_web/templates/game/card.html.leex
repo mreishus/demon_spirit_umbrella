@@ -1,3 +1,32 @@
-<div style="background-color: #AAA; padding: 5px; display: inline-block;">
-<%= @card.name %>
+<div class="card
+     <%= if @flip do %>
+       flip
+     <% end %>
+  "
+  style="">
+  <%= @card.name %>
+
+  <table class="table_card">
+    <tbody>
+      <%= for i <- 0..4 do %>
+        <tr class="card_row">
+          <%= for j <- 0..4 do %>
+              <%
+                x = j - 2
+                y = (i * -1) + 2
+              %>
+              <td class="card_cell
+                <%= if {x, y} in @card.moves do %>
+                    move
+                <% end %>
+                <%= if {x, y} == {0, 0} do %>
+                    center
+                <% end %>
+              ">
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>

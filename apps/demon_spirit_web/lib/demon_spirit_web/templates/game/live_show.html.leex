@@ -10,11 +10,11 @@
 }
 
 .box {
-  background-color: #444;
-  color: #fff;
+  background-color: #fff;
+  color: #444;
   border-radius: 5px;
-  padding: 20px;
-  font-size: 150%;
+  padding: 10px;
+  font-size: 100%;
 }
 
 /* Force Square */
@@ -97,12 +97,53 @@
   background-repeat: no-repeat;
   background-size: contain;
 }
+
+/* Cards */
+.card {
+  background-color: #EEE;
+  padding: 5px;
+  display: inline-block;
+  width: 90px;
+  border-radius: 5px;
+}
+.card.flip {
+  transform: rotate(180deg);
+}
+table.table_card {
+  border-collapse: collapse;
+  margin-bottom: 0px;
+}
+td.card_cell {
+  border: 1px solid black;
+  padding: 0px;
+  width: 20%;
+}
+td.card_cell.center {
+  background-color: #333;
+}
+td.card_cell.move {
+  background-color: green;
+}
+
+td:after {
+  content: '';
+  display: block;
+  margin-top: 100%;
+}
+
+td .content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+} 
 </style>
 
 <div class="grid">
   <div class="box box-header">
     <%= for card <- @game.cards.black do %>
-      <%= render "card.html", card: card %>
+      <%= render "card.html", card: card, flip: true %>
     <% end %>
   </div>
   <div class="box box-force-square box-a" style="position: relative;">
@@ -149,11 +190,11 @@
     </div>
   </div>
   <div class="box box-b">
-    <%= render "card.html", card: @game.cards.side %>
+    <%= render "card.html", card: @game.cards.side, flip: false %>
   </div>
   <div class="box box-footer">
     <%= for card <- @game.cards.white do %>
-      <%= render "card.html", card: card %>
+      <%= render "card.html", card: card, flip: false %>
     <% end %>
   </div>
 </div>
