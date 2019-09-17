@@ -46,6 +46,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   # Make timeout shorter after game is won?
   @timeout :timer.hours(2)
 
+  require Logger
   alias DemonSpiritGame.{GameServer, GameSupervisor, Move}
   alias DemonSpiritWeb.GameRegistry
 
@@ -227,7 +228,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   def terminate({:shutdown, :timeout}, state) do
-    IO.puts("Terminate (Timeout) running for #{state.game_name}")
+    Logger.info("Terminate (Timeout) running for #{state.game_name}")
     GameSupervisor.stop_game(state.game_name)
     GameRegistry.remove(state.game_name)
     # TODO: Double check that GameSupervisor is killing the ETS table
@@ -236,7 +237,7 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   # Do I need to trap exits here?
   def terminate(_reason, state) do
-    IO.puts("Terminate (Non Timeout) running for #{state.game_name}")
+    Logger.info("Terminate (Non Timeout) running for #{state.game_name}")
     GameRegistry.remove(state.game_name)
     :ok
   end

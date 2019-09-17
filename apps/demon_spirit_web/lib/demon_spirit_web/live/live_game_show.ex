@@ -1,5 +1,6 @@
 defmodule DemonSpiritWeb.LiveGameShow do
   use Phoenix.LiveView
+  require Logger
   alias DemonSpiritWeb.Endpoint
   alias DemonSpiritWeb.GameUIServer
   alias DemonSpiritWeb.GameUIServer.State
@@ -24,13 +25,12 @@ defmodule DemonSpiritWeb.LiveGameShow do
   def handle_event("click-square-" <> coords_str, _value, socket = %{assigns: assigns}) do
     [{x, ""}, {y, ""}] = coords_str |> String.split("-") |> Enum.map(&Integer.parse/1)
 
-    "Clicked on piece: #{x} #{y}" |> IO.inspect(label: "handle_event")
+    Logger.info("Game #{assigns.game_name}: Clicked on piece: #{x} #{y}")
     state = GameUIServer.click(assigns.game_name, {x, y})
 
     # Tell others
     Endpoint.broadcast_from(self(), assigns.topic, "state_update", %{})
 
-    # assigns |> IO.inspect(label: "assigns")
     # {:noreply, assign(socket, deploy_step: "Starting deploy...")}
     {:noreply, state_assign(socket, state)}
   end
@@ -40,8 +40,8 @@ defmodule DemonSpiritWeb.LiveGameShow do
   end
 
   defp state_assign(socket, something) do
-    IO.puts("LiveGameShow: State_assign: Didn't understand what was passed to me.")
-    something |> IO.inspect()
+    Logger.warn("LiveGameShow: State_assign: Didn't understand what was passed to me.")
+    Logger.debug(fn -> "Payload received: #{inspect(something)}" end)
     socket
   end
 
