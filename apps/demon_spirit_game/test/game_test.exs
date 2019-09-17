@@ -6,7 +6,7 @@ defmodule GameTest do
 
   setup do
     # Static list of cards, use when creating a new game to remove RNG from tests
-    cards = Card.cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
+    cards = Card.base_cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
     game = Game.new(cards)
     game_black = %{game | turn: :black}
     {:ok, boar} = Card.by_name("Boar")

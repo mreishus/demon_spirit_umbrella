@@ -45,12 +45,17 @@ defmodule DemonSpiritGame.Card do
     %{card | moves: flipped_moves}
   end
 
+  @spec cards() :: nonempty_list(%Card{})
+  def cards do
+    base_cards() ++ sensei_cards()
+  end
+
   @doc """
   cards/0:  Provides all 16 cards that may be used in the game.
   A random set of 5 should be chosen when actually playing the game.
   """
-  @spec cards() :: nonempty_list(%Card{})
-  def cards do
+  @spec base_cards() :: nonempty_list(%Card{})
+  def base_cards do
     [
       %Card{
         id: 1,
@@ -147,6 +152,108 @@ defmodule DemonSpiritGame.Card do
         name: "Cobra",
         moves: [{1, 1}, {1, -1}, {-1, 0}],
         color: :red
+      }
+    ]
+  end
+
+  @spec sensei_cards() :: nonempty_list(%Card{})
+  def sensei_cards do
+    [
+      %Card{
+        id: 17,
+        name: "Giraffe",
+        moves: [{0, -1}, {-2, 1}, {2, 1}],
+        color: :green
+      },
+      %Card{
+        id: 18,
+        name: "Kirin",
+        moves: [{1, 2}, {-1, 2}, {0, -2}],
+        color: :green
+      },
+      %Card{
+        id: 19,
+        name: "Phoenix",
+        moves: [{-2, 0}, {2, 0}, {-1, 1}, {1, 1}],
+        color: :green
+      },
+      %Card{
+        id: 20,
+        name: "Turtle",
+        moves: [{-2, 0}, {2, 0}, {-1, -1}, {1, -1}],
+        color: :green
+      },
+      %Card{
+        id: 21,
+        name: "Fox",
+        moves: [{1, 1}, {1, 0}, {1, -1}],
+        color: :red
+      },
+      %Card{
+        id: 22,
+        name: "Panda",
+        moves: [{0, 1}, {1, 1}, {-1, -1}],
+        color: :red
+      },
+      %Card{
+        id: 23,
+        name: "Sea Snake",
+        moves: [{0, 1}, {2, 0}, {-1, -1}],
+        color: :red
+      },
+      %Card{
+        id: 24,
+        name: "Mouse",
+        moves: [{1, 0}, {0, 1}, {-1, -1}],
+        color: :red
+      },
+      %Card{
+        id: 25,
+        name: "Tanuki",
+        moves: [{0, 1}, {2, 1}, {-1, -1}],
+        color: :red
+      },
+      %Card{
+        id: 26,
+        name: "Sable",
+        moves: [{1, 1}, {-2, 0}, {-1, -1}],
+        color: :red
+      },
+      %Card{
+        id: 27,
+        name: "Dog",
+        moves: [{-1, 0}, {-1, 1}, {-1, -1}],
+        color: :blue
+      },
+      %Card{
+        id: 28,
+        name: "Bear",
+        moves: [{0, 1}, {-1, 1}, {1, -1}],
+        color: :blue
+      },
+      %Card{
+        id: 29,
+        name: "Viper",
+        moves: [{-2, 0}, {0, 1}, {1, -1}],
+        color: :blue
+      },
+      %Card{
+        id: 30,
+        name: "Rat",
+        moves: [{-1, 0}, {0, 1}, {1, -1}],
+        color: :blue
+      },
+      %Card{
+        id: 31,
+        name: "Iguana",
+        moves: [{0, 1}, {-2, 1}, {1, -1}],
+        color: :blue
+      },
+      %Card{
+        id: 32,
+        name: "Otter",
+        moves: [{-1, 1}, {1, -1}, {2, 0}],
+        color: :blue
       }
     ]
   end

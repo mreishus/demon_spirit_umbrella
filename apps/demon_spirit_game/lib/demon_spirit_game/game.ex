@@ -61,7 +61,7 @@ defmodule DemonSpiritGame.Game do
   """
   @spec new(:harcoded_cards) :: %Game{}
   def new(:hardcoded_cards) do
-    cards = Card.cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
+    cards = Card.base_cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
     _new(cards)
   end
 
