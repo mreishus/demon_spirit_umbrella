@@ -236,7 +236,7 @@ td .content {
   </div>
   <div class="box box-b pos-rel">
     <div class="vertical-center">
-      <%= render "card.html", card: @game.cards.side, flip: false %>
+      <%= render "card.html", card: @game.cards.side, flip: @game.turn == :black %>
       <%= if @game.winner == nil do %>
         <p style="margin-top: 10px; font-size: 24px">
           <%= @game.turn %>'s turn
