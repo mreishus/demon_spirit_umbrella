@@ -13,7 +13,8 @@ defmodule DemonSpiritWeb.Application do
       # Starts a worker by calling: DemonSpiritWeb.Worker.start_link(arg)
       # {DemonSpiritWeb.Worker, arg},
       {Registry, keys: :unique, name: DemonSpiritWeb.GameUIRegistry},
-      DemonSpiritWeb.GameUISupervisor
+      DemonSpiritWeb.GameUISupervisor,
+      DemonSpiritWeb.GameRegistry
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -56,7 +56,6 @@ defmodule DemonSpiritWeb.LiveGameShow do
       when broadcast_topic == topic do
     case broadcast.event do
       "state_update" ->
-        "Got message, updating state for #{game_name}" |> IO.inspect()
         state = GameUIServer.state(game_name)
         {:noreply, state_assign(socket, state)}
 

@@ -44,7 +44,7 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   use GenServer
   # Make timeout shorter after game is won?
-  @timeout :timer.hours(2)
+  @timeout :timer.hours(1)
 
   require Logger
   alias DemonSpiritGame.{GameServer, GameSupervisor, Move}
