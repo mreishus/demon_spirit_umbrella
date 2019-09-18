@@ -238,7 +238,7 @@ td .content {
   </div>
   <div class="box box-b pos-rel flex-column-container">
     <div>
-      Top
+      <%= render "player.html", player: @state.black %>
     </div>
     <div class="flex-grow" style="display: flex; align-items: center;">
       <div>
@@ -251,7 +251,7 @@ td .content {
       </div>
     </div>
     <div>
-      Bottom
+      <%= render "player.html", player: @state.white %>
     </div>
   </div>
   <div class="box box-footer">

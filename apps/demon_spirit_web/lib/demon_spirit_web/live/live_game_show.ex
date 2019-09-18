@@ -11,21 +11,37 @@ defmodule DemonSpiritWeb.LiveGameShow do
     topic = topic_for(game_name)
     if connected?(socket), do: Endpoint.subscribe(topic)
     state = GameUIServer.sit_down_if_possible(game_name, guest)
+    notify(topic)
 
-    socket = assign(socket, game_name: game_name, topic: topic, state: state)
+    socket = assign(socket, game_name: game_name, topic: topic, state: state, guest: guest)
     {:ok, socket}
   end
 
-  def handle_event("click-square-" <> coords_str, _value, socket = %{assigns: assigns}) do
+  def handle_event(
+        "click-square-" <> coords_str,
+        _value,
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    if GameUIServer.current_turn?(game_name, guest) do
+      {x, y} = extract_coords(coords_str)
+
+      Logger.info("Game #{game_name}: Clicked on piece: #{x} #{y}")
+      state = GameUIServer.click(game_name, {x, y})
+      notify(topic)
+
+      {:noreply, assign(socket, state: state)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  defp extract_coords(coords_str) do
     [{x, ""}, {y, ""}] = coords_str |> String.split("-") |> Enum.map(&Integer.parse/1)
+    {x, y}
+  end
 
-    Logger.info("Game #{assigns.game_name}: Clicked on piece: #{x} #{y}")
-    state = GameUIServer.click(assigns.game_name, {x, y})
-
-    # Tell others
-    Endpoint.broadcast_from(self(), assigns.topic, "state_update", %{})
-
-    {:noreply, assign(socket, state: state)}
+  defp notify(topic) do
+    Endpoint.broadcast_from(self(), topic, "state_update", %{})
   end
 
   defp topic_for(game_name) do

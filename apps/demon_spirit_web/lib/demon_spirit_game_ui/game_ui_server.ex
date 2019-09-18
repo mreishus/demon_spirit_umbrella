@@ -12,7 +12,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   It will spin up a GameServer and communicate with it to handle the actual
   moves and board state, but it holds its own state on top.
 
-  I'm a little wary about the extra complexity, but it seemed like a waste to 
+  I'm a little wary about the extra complexity, but it seemed like a waste to
   add "click" and "selected" logic to %Game{} when it already handled everything
   else well in a small package.  It just seemed wasteful/bloated.  For example, an AI
   engine could use %Game{} in its current state without caring about any of the
@@ -105,6 +105,10 @@ defmodule DemonSpiritWeb.GameUIServer do
   # @spec sit_down_if_possible(any) :: %Game{}
   def sit_down_if_possible(game_name, person) do
     GenServer.call(via_tuple(game_name), {:sit_down_if_possible, person})
+  end
+
+  def current_turn?(game_name, person) do
+    GenServer.call(via_tuple(game_name), {:current_turn?, person})
   end
 
   @doc """
@@ -248,6 +252,11 @@ defmodule DemonSpiritWeb.GameUIServer do
       end
 
     {:reply, state, state, timeout(state)}
+  end
+
+  def handle_call({:current_turn?, person}, _from, state) do
+    r = state |> Map.get(state.game.turn) == person
+    {:reply, r, state, timeout(state)}
   end
 
   defp timeout(state) do
