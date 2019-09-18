@@ -116,16 +116,43 @@ defmodule GameUiServerTest do
     end
   end
 
-  ## Test Selection
-  # new_state = GameUIServer.click("asdf", {0, 0})
-  # new_state.selected should be {0, 0}
+  describe "sit_down_if_possible/2" do
+    test "First sit goes to white" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      state = GameUIServer.sit_down_if_possible(game_name, :p1)
+      assert state.white == :p1
+    end
 
-  ## Test Invalid Move Clears Selection
-  # newest_state = GameUIServer.click("asdf", {4, 4})
-  # new_state.selected should be nil, and state should be same as original (deselected, no moves)
+    test "Second sit goes to black" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      state = GameUIServer.sit_down_if_possible(game_name, :p2)
+      assert state.white == :p1
+      assert state.black == :p2
+    end
 
-  ## Test Valid Move works
-  #
+    test "Third sit goes to neither" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      GameUIServer.sit_down_if_possible(game_name, :p2)
+      state = GameUIServer.sit_down_if_possible(game_name, :p3)
+      assert state.white == :p1
+      assert state.black == :p2
+    end
+
+    test "Can't sit in white and black at same time" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      state = GameUIServer.sit_down_if_possible(game_name, :p1)
+      assert state.white == :p1
+      assert state.black == nil
+    end
+  end
 
   defp generate_game_name do
     "game-#{:rand.uniform(1_000_000)}"

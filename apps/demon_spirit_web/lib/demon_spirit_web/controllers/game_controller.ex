@@ -37,6 +37,7 @@ defmodule DemonSpiritWeb.GameController do
 
   def show(conn, %{"id" => game_name}) do
     state = GameUIServer.state(game_name)
+    guest = conn.assigns.current_guest
 
     case state do
       nil ->
@@ -45,8 +46,9 @@ defmodule DemonSpiritWeb.GameController do
         |> redirect(to: Routes.game_path(conn, :new))
 
       _ ->
-        # render(conn, "show.html", state: state)
-        LiveView.Controller.live_render(conn, LiveGameShow, session: %{game_name: game_name})
+        LiveView.Controller.live_render(conn, LiveGameShow,
+          session: %{game_name: game_name, guest: guest}
+        )
     end
   end
 

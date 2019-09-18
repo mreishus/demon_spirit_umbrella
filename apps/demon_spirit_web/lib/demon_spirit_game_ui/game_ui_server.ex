@@ -97,6 +97,17 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   @doc """
+  sit_down_if_possible/2: A game has two seats, White and Black.
+  Takes a person object (can be anything) and assigns it to white if white is empty,
+  otherwise assigns to black if black is empty, otherwise does nothing.
+  Returns state.
+  """
+  # @spec sit_down_if_possible(any) :: %Game{}
+  def sit_down_if_possible(game_name, person) do
+    GenServer.call(via_tuple(game_name), {:sit_down_if_possible, person})
+  end
+
+  @doc """
   click/2: ...
   """
   def click(game_name, coords = {x, y}) when is_integer(x) and is_integer(y) do
@@ -220,6 +231,22 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   def handle_call(:state, _from, state) do
+    {:reply, state, state, timeout(state)}
+  end
+
+  def handle_call({:sit_down_if_possible, person}, _from, state) do
+    state =
+      cond do
+        state.white == nil && state.black != person ->
+          %{state | white: person}
+
+        state.black == nil && state.white != person ->
+          %{state | black: person}
+
+        true ->
+          state
+      end
+
     {:reply, state, state, timeout(state)}
   end
 
