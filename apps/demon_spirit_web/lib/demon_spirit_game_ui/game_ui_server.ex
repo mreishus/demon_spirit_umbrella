@@ -113,7 +113,12 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   @doc """
-  click/3: ...
+  click/3: A person has clicked on square {x, y}.
+  Inputs:
+     game_name (String)
+     coords (Tuple of two integers, like {0, 0} or {4, 4}) - Which square is clicked
+     person (Any). Who clicked it.  Compared to what was sent to "sit_down_if_possible" earlier
+  Output: State
   """
   def click(game_name, coords = {x, y}, person) when is_integer(x) and is_integer(y) do
     GenServer.call(via_tuple(game_name), {:click, coords, person})
@@ -267,10 +272,21 @@ defmodule DemonSpiritWeb.GameUIServer do
     {:reply, state, state, timeout(state)}
   end
 
+  # allowed_to_click?/2
+  # Given the current state of the game, is person allowed to click?
+  # Returns boolean.
+  # Backdoor: If person is :test, then the answer is always yes.
   defp allowed_to_click?(state, person) do
-    Map.get(state, state.game.turn) == person
+    cond do
+      person == :test -> true
+      Map.get(state, state.game.turn) == person -> true
+      true -> false
+    end
   end
 
+  # timeout/1
+  # Given the current state of the game, what should the
+  # GenServer timeout be? (Games with winners expire quickly)
   defp timeout(state) do
     case state.game.winner do
       nil -> @timeout

@@ -58,12 +58,12 @@ defmodule GameUiServerTest do
     end
   end
 
-  describe "click/2" do
+  describe "click/3" do
     test "Click on empty square does nothing" do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       initial_state = GameUIServer.state(game_name)
-      new_state = GameUIServer.click(game_name, {2, 2})
+      new_state = GameUIServer.click(game_name, {2, 2}, :test)
       assert new_state == initial_state
       assert new_state.move_dest == []
       assert new_state.last_move == nil
@@ -73,7 +73,7 @@ defmodule GameUiServerTest do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       initial_state = GameUIServer.state(game_name)
-      new_state = GameUIServer.click(game_name, {4, 4})
+      new_state = GameUIServer.click(game_name, {4, 4}, :test)
       assert new_state == initial_state
       assert new_state.move_dest == []
       assert new_state.last_move == nil
@@ -82,7 +82,7 @@ defmodule GameUiServerTest do
     test "Click on my piece selects it" do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
-      new_state = GameUIServer.click(game_name, {0, 0})
+      new_state = GameUIServer.click(game_name, {0, 0}, :test)
       assert new_state.selected == {0, 0}
       assert new_state.move_dest == [{0, 1}, {1, 1}]
       assert new_state.last_move == nil
@@ -92,8 +92,8 @@ defmodule GameUiServerTest do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       initial_state = GameUIServer.state(game_name)
-      _new_state = GameUIServer.click(game_name, {0, 0})
-      new_state = GameUIServer.click(game_name, {2, 3})
+      _new_state = GameUIServer.click(game_name, {0, 0}, :test)
+      new_state = GameUIServer.click(game_name, {2, 3}, :test)
       assert new_state.selected == nil
       assert new_state.move_dest == []
       assert new_state == initial_state
@@ -104,8 +104,8 @@ defmodule GameUiServerTest do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       initial_state = GameUIServer.state(game_name)
-      _new_state = GameUIServer.click(game_name, {0, 0})
-      new_state = GameUIServer.click(game_name, {1, 1})
+      _new_state = GameUIServer.click(game_name, {0, 0}, :test)
+      new_state = GameUIServer.click(game_name, {1, 1}, :test)
       assert new_state != initial_state
       assert new_state.game.board[{1, 1}] != nil
       assert new_state.game.board[{2, 2}] == nil
