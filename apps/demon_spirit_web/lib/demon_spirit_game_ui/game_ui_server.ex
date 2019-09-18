@@ -26,7 +26,6 @@ defmodule DemonSpiritWeb.GameUIServer do
     game: %Game{} holding the actual game.  This is duplicated, since the GameServer holds it too.
     game_name: t.String() holding the game name.
     all_valid_moves: [ %Move{}, ... ]
-    state: :waiting | :selected (?) ( Might not be needed if we have "selected" )
     selected: nil, or, The coordinate of the piece that is currently selected.
     move_dest: If a piece is selected, the coordinates of where that piece may move to.
     last_move: nil, or the %Move{} describing the last move taken.
@@ -147,7 +146,6 @@ defmodule DemonSpiritWeb.GameUIServer do
       game: game,
       game_name: game_name,
       all_valid_moves: all_valid_moves,
-      state: :waiting,
       white: nil,
       black: nil,
       selected: nil,

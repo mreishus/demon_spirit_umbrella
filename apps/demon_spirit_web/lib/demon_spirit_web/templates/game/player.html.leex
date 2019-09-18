@@ -1,8 +1,8 @@
 <%= case @player do %>
   <%= nil -> %>
     <em>(empty)</em>
-  <%= %DemonSpirit.Guest{} -> %>
+  <% %DemonSpirit.Guest{} -> %>
     <%= @player.name %> <em>(Guest)</em>
-  <%= _ -> %>
+  <% _ -> %>
     Unknown
 <% end %>
