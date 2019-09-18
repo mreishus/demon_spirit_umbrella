@@ -9,11 +9,24 @@
     <%= for game <- @games do %>
       <tr>
         <td><%= link game.name, to: Routes.game_path(@socket, :show, game.name) %></td>
+        <td>
+          <%= if game.white != nil do %>
+           <%= game.white.name %>
+          <% else %>
+            (empty)
+          <% end %>
+          vs.
+          <%= if game.black != nil do %>
+           <%= game.black.name %>
+          <% else %>
+            (empty)
+          <% end %>
+        </td>
         <td><%= game.created_at %></td>
       </tr>
     <% end %>
   </table>
-<% else %>  
+<% else %>
   <div class="alert alert-info">
     No games currently running.
   </div>

@@ -29,6 +29,7 @@ defmodule DemonSpiritWeb.GameUIServer do
     selected: nil, or, The coordinate of the piece that is currently selected.
     move_dest: If a piece is selected, the coordinates of where that piece may move to.
     last_move: nil, or the %Move{} describing the last move taken.
+    created_at: DateTime
     """
     defstruct game: nil,
               game_name: nil,
@@ -38,7 +39,12 @@ defmodule DemonSpiritWeb.GameUIServer do
               black: nil,
               selected: nil,
               move_dest: [],
-              last_move: nil
+              last_move: nil,
+              created_at: nil
+  end
+
+  defmodule GameInfo do
+    defstruct name: nil, created_at: nil, white: nil, black: nil, winner: nil
   end
 
   use GenServer
@@ -149,11 +155,22 @@ defmodule DemonSpiritWeb.GameUIServer do
       white: nil,
       black: nil,
       selected: nil,
-      move_dest: []
+      move_dest: [],
+      created_at: DateTime.utc_now()
     }
 
-    GameRegistry.add(game_name)
+    GameRegistry.add(game_name, game_info(state))
     {:ok, state, timeout(state)}
+  end
+
+  defp game_info(state) do
+    %GameInfo{
+      name: state.game_name,
+      created_at: state.created_at,
+      white: state.white,
+      black: state.black,
+      winner: state.game.winner
+    }
   end
 
   # Clicking while something is selected.
@@ -249,6 +266,7 @@ defmodule DemonSpiritWeb.GameUIServer do
           state
       end
 
+    GameRegistry.update(state.game_name, game_info(state))
     {:reply, state, state, timeout(state)}
   end
 
