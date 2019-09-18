@@ -1,14 +1,16 @@
 <% game = @state.game %>
 
 <style>
-.vertical-center {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+
+.flex-column-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
+.flex-grow {
+  flex-grow: 1;
+}
 
 .grid {
   display: grid;
@@ -181,10 +183,13 @@ td .content {
 
     <%= if game.winner != nil do %>
       <div class="winner_overlay">
-        <div class="vertical-center" style="width: 100%;">
-          <center>
+        <div style="height: 100%; width: 100%; display: flex; align-items: center">
+          <div style="width: 100%;">
+            <center>
             <%= game.winner %> wins!
-          </center>
+            </center>
+          </div>
+          </span>
         </div>
       </div>
     <% end %>
@@ -231,14 +236,22 @@ td .content {
       <% end %>
     </div>
   </div>
-  <div class="box box-b pos-rel">
-    <div class="vertical-center">
-      <%= render "card.html", card: game.cards.side, flip: game.turn == :black %>
-      <%= if game.winner == nil do %>
-        <p style="margin-top: 10px; font-size: 24px">
-          <%= game.turn %>'s turn
-        </p>
-      <% end %>
+  <div class="box box-b pos-rel flex-column-container">
+    <div>
+      Top
+    </div>
+    <div class="flex-grow" style="display: flex; align-items: center;">
+      <div>
+        <%= render "card.html", card: game.cards.side, flip: game.turn == :black %>
+        <%= if game.winner == nil do %>
+          <p style="margin-top: 10px; font-size: 24px">
+            <%= game.turn %>'s turn
+          </p>
+        <% end %>
+      </div>
+    </div>
+    <div>
+      Bottom
     </div>
   </div>
   <div class="box box-footer">
