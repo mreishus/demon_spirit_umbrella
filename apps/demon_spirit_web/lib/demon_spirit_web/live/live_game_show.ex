@@ -66,8 +66,8 @@ defmodule DemonSpiritWeb.LiveGameShow do
 
   # Handle incoming "state_updates": Game state has changed
   def handle_info(
-        broadcast = %{event: "state_update"},
-        socket = %{assigns: %{game_name: game_name, topic: topic}}
+        %{event: "state_update"},
+        socket = %{assigns: %{game_name: game_name}}
       ) do
     state = GameUIServer.state(game_name)
     {:noreply, assign(socket, state: state)}

@@ -20,29 +20,6 @@ defmodule DemonSpiritWeb.GameUIServer do
   didn't seem like the right place either.
   """
 
-  defmodule State do
-    @moduledoc """
-    Holds the state for DemonSpiritGame.GameUIServer
-    game: %Game{} holding the actual game.  This is duplicated, since the GameServer holds it too.
-    game_name: t.String() holding the game name.
-    all_valid_moves: [ %Move{}, ... ]
-    selected: nil, or, The coordinate of the piece that is currently selected.
-    move_dest: If a piece is selected, the coordinates of where that piece may move to.
-    last_move: nil, or the %Move{} describing the last move taken.
-    created_at: DateTime
-    """
-    defstruct game: nil,
-              game_name: nil,
-              all_valid_moves: [],
-              state: nil,
-              white: nil,
-              black: nil,
-              selected: nil,
-              move_dest: [],
-              last_move: nil,
-              created_at: nil
-  end
-
   defmodule GameInfo do
     defstruct name: nil, created_at: nil, white: nil, black: nil, winner: nil
   end
@@ -52,8 +29,8 @@ defmodule DemonSpiritWeb.GameUIServer do
   @timeout_game_won :timer.minutes(5)
 
   require Logger
-  alias DemonSpiritGame.{GameServer, GameSupervisor, Move}
-  alias DemonSpiritWeb.GameRegistry
+  alias DemonSpiritGame.{GameSupervisor}
+  alias DemonSpiritWeb.{GameRegistry, GameUI}
 
   @doc """
   start_link/1: Generates a new game server under a provided name.
@@ -127,41 +104,18 @@ defmodule DemonSpiritWeb.GameUIServer do
   ####### IMPLEMENTATION #######
 
   def init({game_name}) do
-    game_starter = fn game_name -> GameSupervisor.start_game(game_name) end
-    _init(game_name, game_starter)
+    GameUI.new(game_name)
+    |> _init()
   end
 
   def init({game_name, :hardcoded_cards}) do
-    game_starter = fn game_name -> GameSupervisor.start_game(game_name, :hardcoded_cards) end
-    _init(game_name, game_starter)
+    GameUI.new(game_name, :hardcoded_cards)
+    |> _init()
   end
 
-  defp _init(game_name, game_starter) do
-    game =
-      case GameServer.state(game_name) do
-        nil ->
-          {:ok, _pid} = game_starter.(game_name)
-          GameServer.state(game_name)
-
-        game ->
-          game
-      end
-
-    all_valid_moves = GameServer.all_valid_moves(game_name)
-
-    state = %State{
-      game: game,
-      game_name: game_name,
-      all_valid_moves: all_valid_moves,
-      white: nil,
-      black: nil,
-      selected: nil,
-      move_dest: [],
-      created_at: DateTime.utc_now()
-    }
-
-    GameRegistry.add(game_name, game_info(state))
-    {:ok, state, timeout(state)}
+  defp _init(gameui) do
+    GameRegistry.add(gameui.game_name, game_info(gameui))
+    {:ok, gameui, timeout(gameui)}
   end
 
   defp game_info(state) do
@@ -174,114 +128,20 @@ defmodule DemonSpiritWeb.GameUIServer do
     }
   end
 
-  # Clicking while something is selected.
-  # If (from: selected, to: click) a valid move, send the move, update state
-  # If it isn't, clear selection
-  defp click_selected(coords = {x, y}, state) when is_integer(x) and is_integer(y) do
-    candidates = coords_to_moves(state, state.selected, coords)
-
-    case length(candidates) do
-      0 ->
-        %{state | selected: nil, move_dest: []}
-
-      _ ->
-        # TODO: There could be multiple moves!
-        # Game always chooses the first one available.  We should
-        # ask the user.
-        move = candidates |> Enum.at(0)
-        response = GameServer.move(state.game_name, move)
-
-        case response do
-          {:ok, new_game} ->
-            all_valid_moves = GameServer.all_valid_moves(state.game_name)
-
-            %{
-              state
-              | game: new_game,
-                all_valid_moves: all_valid_moves,
-                selected: nil,
-                move_dest: [],
-                last_move: move
-            }
-
-          {:error, _} ->
-            %{state | selected: nil, move_dest: []}
-        end
-    end
-  end
-
-  # Clicking while nothing is selected.
-  # If there's an active piece there, select it
-  # If there isn't, do nothing
-  defp click_unselected(coords = {x, y}, state) when is_integer(x) and is_integer(y) do
-    case GameServer.active_piece?(state.game_name, coords) do
-      true ->
-        %{state | selected: coords, move_dest: move_dest(coords, state)}
-
-      false ->
-        state
-    end
-  end
-
-  # Given one set of coordinates, "from", find all valid destinationss
-  # for that piece.  Returns [{x, y}] or []
-  defp move_dest(coords = {x, y}, state) when is_integer(x) and is_integer(y) do
-    state.all_valid_moves
-    |> Enum.filter(fn %Move{from: from_} -> from_ == coords end)
-    |> Enum.map(fn m = %Move{} -> m.to end)
-  end
-
-  # Given two sets of coordinates, "from" and "to", find all valid
-  # moves between those points. Returns [%Move{}] or [].
-  defp coords_to_moves(state, from = {x1, y1}, to = {x2, y2})
-       when is_integer(x1) and is_integer(y1) and is_integer(x2) and is_integer(y2) do
-    state.all_valid_moves
-    |> Enum.filter(fn %Move{from: from_, to: to_} -> from_ == from and to_ == to end)
-  end
-
-  def handle_call({:click, coords = {x, y}, person}, _from, state)
+  def handle_call({:click, coords = {x, y}, person}, _from, gameui)
       when is_integer(x) and is_integer(y) do
-    new_state =
-      cond do
-        not allowed_to_click?(state, person) -> state
-        state.selected == nil -> click_unselected(coords, state)
-        true -> click_selected(coords, state)
-      end
-
-    {:reply, new_state, new_state, timeout(new_state)}
+    gameui = GameUI.click(gameui, coords, person)
+    {:reply, gameui, gameui, timeout(gameui)}
   end
 
   def handle_call(:state, _from, state) do
     {:reply, state, state, timeout(state)}
   end
 
-  def handle_call({:sit_down_if_possible, person}, _from, state) do
-    state =
-      cond do
-        state.white == nil && state.black != person ->
-          %{state | white: person}
-
-        state.black == nil && state.white != person ->
-          %{state | black: person}
-
-        true ->
-          state
-      end
-
-    GameRegistry.update(state.game_name, game_info(state))
-    {:reply, state, state, timeout(state)}
-  end
-
-  # allowed_to_click?/2
-  # Given the current state of the game, is person allowed to click?
-  # Returns boolean.
-  # Backdoor: If person is :test, then the answer is always yes.
-  defp allowed_to_click?(state, person) do
-    cond do
-      person == :test -> true
-      Map.get(state, state.game.turn) == person -> true
-      true -> false
-    end
+  def handle_call({:sit_down_if_possible, person}, _from, gameui) do
+    gameui = GameUI.sit_down_if_possible(gameui, person)
+    GameRegistry.update(gameui.game_name, game_info(gameui))
+    {:reply, gameui, gameui, timeout(gameui)}
   end
 
   # timeout/1

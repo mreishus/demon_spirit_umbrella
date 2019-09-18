@@ -1,8 +1,7 @@
 defmodule GameUiServerTest do
   use ExUnit.Case, async: true
   doctest DemonSpiritWeb.GameUIServer
-  alias DemonSpiritWeb.{GameUIServer}
-  alias DemonSpiritWeb.GameUIServer.State
+  alias DemonSpiritWeb.{GameUIServer, GameUI}
   alias DemonSpiritGame.{Game, Move}
 
   describe "start_link/1" do
@@ -40,7 +39,7 @@ defmodule GameUiServerTest do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name)
       state = GameUIServer.state(game_name)
-      assert %State{} = state
+      assert %GameUI{} = state
       assert %Game{} = state.game
       assert state.game.board |> Map.keys() |> length == 10
       assert state.all_valid_moves |> length > 0
@@ -50,7 +49,7 @@ defmodule GameUiServerTest do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       state = GameUIServer.state(game_name)
-      assert %State{} = state
+      assert %GameUI{} = state
       assert %Game{} = state.game
       assert state.game.board |> Map.keys() |> length == 10
       assert state.all_valid_moves |> length > 0
