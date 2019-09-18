@@ -1,9 +1,6 @@
+<% game = @state.game %>
+
 <style>
-
-* {
-  abox-sizing: border-box;
-}
-
 .vertical-center {
   margin: 0;
   position: absolute;
@@ -176,17 +173,17 @@ td .content {
 
 <div class="grid">
   <div class="box box-header">
-    <%= for card <- @game.cards.black do %>
+    <%= for card <- game.cards.black do %>
       <%= render "card.html", card: card, flip: true %>
     <% end %>
   </div>
   <div class="box box-force-square box-a pos-rel">
 
-    <%= if @game.winner != nil do %>
+    <%= if game.winner != nil do %>
       <div class="winner_overlay">
         <div class="vertical-center" style="width: 100%;">
           <center>
-            <%= @game.winner %> wins!
+            <%= game.winner %> wins!
           </center>
         </div>
       </div>
@@ -194,7 +191,7 @@ td .content {
 
     <div class="chessboard">
       <%# Render Pieces %>
-      <%= for {{x, y}, piece} <- @game.board do %>
+      <%= for {{x, y}, piece} <- game.board do %>
         <div 
           phx-click="click-square-<%= x %>-<%= y %>"
         draggable='true' phx-hook="Draggable"
@@ -236,16 +233,16 @@ td .content {
   </div>
   <div class="box box-b pos-rel">
     <div class="vertical-center">
-      <%= render "card.html", card: @game.cards.side, flip: @game.turn == :black %>
-      <%= if @game.winner == nil do %>
+      <%= render "card.html", card: game.cards.side, flip: game.turn == :black %>
+      <%= if game.winner == nil do %>
         <p style="margin-top: 10px; font-size: 24px">
-          <%= @game.turn %>'s turn
+          <%= game.turn %>'s turn
         </p>
       <% end %>
     </div>
   </div>
   <div class="box box-footer">
-    <%= for card <- @game.cards.white do %>
+    <%= for card <- game.cards.white do %>
       <%= render "card.html", card: card, flip: false %>
     <% end %>
   </div>
@@ -253,7 +250,7 @@ td .content {
 
 
 <pre>
-  <%#= inspect(@game, pretty: true) %>
+  <%#= inspect(game, pretty: true) %>
 </pre>
 <pre>
   <%= inspect(@state, pretty: true) %>
