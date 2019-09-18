@@ -35,10 +35,6 @@ defmodule DemonSpiritWeb.GameController do
     end
   end
 
-  def live_test(conn, _) do
-    LiveView.Controller.live_render(conn, DemonSpiritWeb.GithubDeployView, session: %{})
-  end
-
   def show(conn, %{"id" => game_name}) do
     state = GameUIServer.state(game_name)
 
