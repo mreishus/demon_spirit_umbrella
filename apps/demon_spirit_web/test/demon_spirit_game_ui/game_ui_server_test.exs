@@ -154,6 +154,33 @@ defmodule GameUiServerTest do
     end
   end
 
+  describe "only current sitting player allowed to click" do
+    test "correct player clicks, state changes" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      GameUIServer.sit_down_if_possible(game_name, :p2)
+
+      new_state = GameUIServer.click(game_name, {0, 0}, :p1)
+      assert new_state.selected == {0, 0}
+      assert new_state.move_dest == [{0, 1}, {1, 1}]
+      assert new_state.last_move == nil
+    end
+
+    test "incorrect player clicks, state is unchanged" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      GameUIServer.sit_down_if_possible(game_name, :p2)
+      state = GameUIServer.state(game_name)
+
+      new_state = GameUIServer.click(game_name, {0, 0}, :p2)
+      assert state == new_state
+      refute new_state.selected == {0, 0}
+      refute new_state.move_dest == [{0, 1}, {1, 1}]
+    end
+  end
+
   defp generate_game_name do
     "game-#{:rand.uniform(1_000_000)}"
   end
