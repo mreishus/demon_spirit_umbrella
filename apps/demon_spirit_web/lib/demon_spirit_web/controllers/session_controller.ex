@@ -1,6 +1,5 @@
 defmodule DemonSpiritWeb.SessionController do
   use DemonSpiritWeb, :controller
-  alias DemonSpirit.Guest
 
   def new(conn, _params) do
     guest = DemonSpirit.new_guest()
@@ -8,6 +7,9 @@ defmodule DemonSpiritWeb.SessionController do
   end
 
   def create(conn, %{"guest" => params}) do
+    # Guests get a hardcoded random id
+    params = Map.put(params, "id", :rand.uniform(10_000_000))
+
     case DemonSpirit.fake_insert_guest(params) do
       {:ok, guest} ->
         conn
