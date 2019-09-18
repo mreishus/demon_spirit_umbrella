@@ -112,15 +112,11 @@ defmodule DemonSpiritWeb.GameUIServer do
     GenServer.call(via_tuple(game_name), {:sit_down_if_possible, person})
   end
 
-  def current_turn?(game_name, person) do
-    GenServer.call(via_tuple(game_name), {:current_turn?, person})
-  end
-
   @doc """
-  click/2: ...
+  click/3: ...
   """
-  def click(game_name, coords = {x, y}) when is_integer(x) and is_integer(y) do
-    GenServer.call(via_tuple(game_name), {:click, coords})
+  def click(game_name, coords = {x, y}, person) when is_integer(x) and is_integer(y) do
+    GenServer.call(via_tuple(game_name), {:click, coords, person})
   end
 
   ####### IMPLEMENTATION #######
@@ -238,12 +234,13 @@ defmodule DemonSpiritWeb.GameUIServer do
     |> Enum.filter(fn %Move{from: from_, to: to_} -> from_ == from and to_ == to end)
   end
 
-  def handle_call({:click, coords = {x, y}}, _from, state)
+  def handle_call({:click, coords = {x, y}, person}, _from, state)
       when is_integer(x) and is_integer(y) do
     new_state =
-      case state.selected do
-        nil -> click_unselected(coords, state)
-        _ -> click_selected(coords, state)
+      cond do
+        not allowed_to_click?(state, person) -> state
+        state.selected == nil -> click_unselected(coords, state)
+        true -> click_selected(coords, state)
       end
 
     {:reply, new_state, new_state, timeout(new_state)}
@@ -270,9 +267,8 @@ defmodule DemonSpiritWeb.GameUIServer do
     {:reply, state, state, timeout(state)}
   end
 
-  def handle_call({:current_turn?, person}, _from, state) do
-    r = state |> Map.get(state.game.turn) == person
-    {:reply, r, state, timeout(state)}
+  defp allowed_to_click?(state, person) do
+    Map.get(state, state.game.turn) == person
   end
 
   defp timeout(state) do

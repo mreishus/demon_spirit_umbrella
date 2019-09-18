@@ -27,17 +27,13 @@ defmodule DemonSpiritWeb.LiveGameShow do
         _value,
         socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
       ) do
-    if GameUIServer.current_turn?(game_name, guest) do
-      {x, y} = extract_coords(coords_str)
+    {x, y} = extract_coords(coords_str)
 
-      Logger.info("Game #{game_name}: Clicked on piece: #{x} #{y}")
-      state = GameUIServer.click(game_name, {x, y})
-      notify(topic)
+    Logger.info("Game #{game_name}: Clicked on piece: #{x} #{y}")
+    state = GameUIServer.click(game_name, {x, y}, guest)
+    notify(topic)
 
-      {:noreply, assign(socket, state: state)}
-    else
-      {:noreply, socket}
-    end
+    {:noreply, assign(socket, state: state)}
   end
 
   defp extract_coords(coords_str) do
