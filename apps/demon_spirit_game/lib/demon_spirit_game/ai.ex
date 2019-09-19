@@ -1,13 +1,21 @@
 defmodule DemonSpiritGame.AI do
-  # alias DemonSpiritGame.{Game, Card, Move, GameWinCheck}
-  alias DemonSpiritGame.{Game}
+  alias DemonSpiritGame.Game
 
+  # terminal?/1: Is this game in a terminal state? Boolean
+  # (Is there a winner)
   def terminal?(%Game{winner: nil}), do: false
   def terminal?(%Game{}), do: true
 
+  # max_player?/1: Is the current player trying to maximize score? Boolean
+  # White is trying to maximize, black is trying to minimize.
   def max_player?(%Game{turn: :white}), do: true
   def max_player?(%Game{}), do: false
 
+  # eval/1: Return score of current game.  A won game is either + or -
+  # 1 million points, positive if white won, negative if black won.
+  # A non won-game is how many pieces up/down that player is.
+  # If white has 5 pieces and black has 3, score is 2.
+  # If black has 5 pieces and white has 1, score is -4.
   def eval(%Game{winner: :white}), do: 1_000_000
   def eval(%Game{winner: :black}), do: -1_000_000
 
@@ -17,7 +25,14 @@ defmodule DemonSpiritGame.AI do
     |> Enum.reduce(0, fn %{color: color}, acc -> acc + if color == :white, do: 1, else: -1 end)
   end
 
-  def alphabeta(game, depth) do
+  # alphabeta/2: Do minimax w/ alpha-beta pruning AI search for the best
+  # move to play.  Will consider `depth` number of moves.
+  # For a brand new game, on my laptop
+  # 9 - 4 seconds
+  # 10 - 17 seconds
+  # 11 - 1 minute 15 seconds
+  # 12 - 5 minutes
+  def alphabeta(game, depth) when is_integer(depth) do
     alphabeta(game, depth, -1_000_000, 1_000_000)
   end
 
@@ -53,7 +68,7 @@ defmodule DemonSpiritGame.AI do
       # |> IO.inspect()
 
       acc =
-        if new_info.val > acc.val do
+        if new_info.val > acc.val or acc.move == nil do
           %{acc | val: new_info.val, move: move}
         else
           acc
@@ -91,7 +106,7 @@ defmodule DemonSpiritGame.AI do
       # |> IO.inspect()
 
       acc =
-        if new_info.val < acc.val do
+        if new_info.val < acc.val or acc.move == nil do
           %{acc | val: new_info.val, move: move}
         else
           acc
@@ -104,396 +119,6 @@ defmodule DemonSpiritGame.AI do
         {:cont, acc}
       end
     end)
-  end
-
-  # White to win in one move
-  def example do
-    %DemonSpiritGame.Game{
-      board: %{
-        {0, 0} => %{color: :white, type: :pawn},
-        {0, 3} => %{color: :black, type: :pawn},
-        {0, 4} => %{color: :black, type: :pawn},
-        {1, 0} => %{color: :white, type: :pawn},
-        {2, 4} => %{color: :black, type: :king},
-        {3, 0} => %{color: :white, type: :pawn},
-        {3, 3} => %{color: :white, type: :king},
-        {4, 0} => %{color: :white, type: :pawn},
-        {4, 4} => %{color: :black, type: :pawn}
-      },
-      cards: %{
-        black: [
-          %DemonSpiritGame.Card{
-            color: :green,
-            id: 1,
-            moves: [{0, 2}, {0, -1}],
-            name: "Tiger"
-          },
-          %DemonSpiritGame.Card{
-            color: :blue,
-            id: 12,
-            moves: [{-1, 1}, {-1, -1}, {1, 0}],
-            name: "Eel"
-          }
-        ],
-        side: %DemonSpiritGame.Card{
-          color: :red,
-          id: 16,
-          moves: [{1, 1}, {1, -1}, {-1, 0}],
-          name: "Cobra"
-        },
-        white: [
-          %DemonSpiritGame.Card{
-            color: :blue,
-            id: 28,
-            moves: [{0, 1}, {-1, 1}, {1, -1}],
-            name: "Bear"
-          },
-          %DemonSpiritGame.Card{
-            color: :green,
-            id: 5,
-            moves: [{-2, 1}, {2, 1}, {-1, -1}, {1, -1}],
-            name: "Dragon"
-          }
-        ]
-      },
-      game_name: "ephemeral-susquehanna-5655",
-      turn: :white,
-      winner: nil
-    }
-  end
-
-  ## AI Move button ( + 153     ai_info = state.game |> AI.alphabeta(7)
-  ## Was returning move = nil and crashing
-  ## I guess black was about to lose no matter what, so it refused to move
-  def example2 do
-    %DemonSpiritWeb.GameUI{
-      all_valid_moves: [
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 21,
-            moves: [{1, 1}, {1, 0}, {1, -1}],
-            name: "Fox"
-          },
-          from: {1, 4},
-          to: {0, 3}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 21,
-            moves: [{1, 1}, {1, 0}, {1, -1}],
-            name: "Fox"
-          },
-          from: {1, 4},
-          to: {0, 4}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 13,
-            moves: [{2, 0}, {1, 1}, {-1, -1}],
-            name: "Rabbit"
-          },
-          from: {1, 4},
-          to: {0, 3}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 21,
-            moves: [{1, 1}, {1, 0}, {1, -1}],
-            name: "Fox"
-          },
-          from: {2, 3},
-          to: {1, 2}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 21,
-            moves: [{1, 1}, {1, 0}, {1, -1}],
-            name: "Fox"
-          },
-          from: {2, 3},
-          to: {1, 3}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 13,
-            moves: [{2, 0}, {1, 1}, {-1, -1}],
-            name: "Rabbit"
-          },
-          from: {2, 3},
-          to: {0, 3}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 13,
-            moves: [{2, 0}, {1, 1}, {-1, -1}],
-            name: "Rabbit"
-          },
-          from: {2, 3},
-          to: {1, 2}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 21,
-            moves: [{1, 1}, {1, 0}, {1, -1}],
-            name: "Fox"
-          },
-          from: {2, 4},
-          to: {1, 3}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 13,
-            moves: [{2, 0}, {1, 1}, {-1, -1}],
-            name: "Rabbit"
-          },
-          from: {2, 4},
-          to: {0, 4}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 13,
-            moves: [{2, 0}, {1, 1}, {-1, -1}],
-            name: "Rabbit"
-          },
-          from: {2, 4},
-          to: {1, 3}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 21,
-            moves: [{1, 1}, {1, 0}, {1, -1}],
-            name: "Fox"
-          },
-          from: {4, 4},
-          to: {3, 3}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :red,
-            id: 13,
-            moves: [{2, 0}, {1, 1}, {-1, -1}],
-            name: "Rabbit"
-          },
-          from: {4, 4},
-          to: {3, 3}
-        }
-      ],
-      black: nil,
-      created_at: ~U[2019-09-19 16:27:32.341300Z],
-      game: %DemonSpiritGame.Game{
-        board: %{
-          {1, 1} => %{color: :white, type: :pawn},
-          {1, 4} => %{color: :black, type: :pawn},
-          {2, 0} => %{color: :white, type: :king},
-          {2, 2} => %{color: :white, type: :pawn},
-          {2, 3} => %{color: :black, type: :pawn},
-          {2, 4} => %{color: :black, type: :king},
-          {3, 0} => %{color: :white, type: :pawn},
-          {3, 4} => %{color: :black, type: :pawn},
-          {4, 0} => %{color: :white, type: :pawn},
-          {4, 4} => %{color: :black, type: :pawn}
-        },
-        cards: %{
-          black: [
-            %DemonSpiritGame.Card{
-              color: :red,
-              id: 21,
-              moves: [{1, 1}, {1, 0}, {1, -1}],
-              name: "Fox"
-            },
-            %DemonSpiritGame.Card{
-              color: :red,
-              id: 13,
-              moves: [{2, 0}, {1, 1}, {-1, -1}],
-              name: "Rabbit"
-            }
-          ],
-          side: %DemonSpiritGame.Card{
-            color: :blue,
-            id: 31,
-            moves: [{0, 1}, {-2, 1}, {1, -1}],
-            name: "Iguana"
-          },
-          white: [
-            %DemonSpiritGame.Card{
-              color: :green,
-              id: 19,
-              moves: [{-2, 0}, {2, 0}, {-1, 1}, {1, 1}],
-              name: "Phoenix"
-            },
-            %DemonSpiritGame.Card{
-              color: :green,
-              id: 1,
-              moves: [{0, 2}, {0, -1}],
-              name: "Tiger"
-            }
-          ]
-        },
-        game_name: "incipient-imbroglio-4891",
-        turn: :black,
-        winner: nil
-      },
-      game_name: "incipient-imbroglio-4891",
-      last_move: nil,
-      move_dest: [],
-      selected: nil,
-      state: nil,
-      white: nil
-    }
-  end
-
-  ## Another one where black refuses to move
-  def example3 do
-    %DemonSpiritWeb.GameUI{
-      all_valid_moves: [
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :green,
-            id: 3,
-            moves: [{-1, 1}, {1, 1}, {-1, -1}, {1, -1}],
-            name: "Monkey"
-          },
-          from: {3, 2},
-          to: {4, 1}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :green,
-            id: 3,
-            moves: [{-1, 1}, {1, 1}, {-1, -1}, {1, -1}],
-            name: "Monkey"
-          },
-          from: {3, 2},
-          to: {2, 1}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :green,
-            id: 3,
-            moves: [{-1, 1}, {1, 1}, {-1, -1}, {1, -1}],
-            name: "Monkey"
-          },
-          from: {3, 2},
-          to: {2, 3}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :green,
-            id: 17,
-            moves: [{0, -1}, {-2, 1}, {2, 1}],
-            name: "Giraffe"
-          },
-          from: {3, 2},
-          to: {3, 3}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :green,
-            id: 17,
-            moves: [{0, -1}, {-2, 1}, {2, 1}],
-            name: "Giraffe"
-          },
-          from: {3, 2},
-          to: {1, 1}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :green,
-            id: 3,
-            moves: [{-1, 1}, {1, 1}, {-1, -1}, {1, -1}],
-            name: "Monkey"
-          },
-          from: {4, 3},
-          to: {3, 4}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :green,
-            id: 17,
-            moves: [{0, -1}, {-2, 1}, {2, 1}],
-            name: "Giraffe"
-          },
-          from: {4, 3},
-          to: {4, 4}
-        },
-        %DemonSpiritGame.Move{
-          card: %DemonSpiritGame.Card{
-            color: :green,
-            id: 17,
-            moves: [{0, -1}, {-2, 1}, {2, 1}],
-            name: "Giraffe"
-          },
-          from: {4, 3},
-          to: {2, 2}
-        }
-      ],
-      black: nil,
-      created_at: ~U[2019-09-19 16:34:47.329686Z],
-      game: %DemonSpiritGame.Game{
-        board: %{
-          {0, 4} => %{color: :white, type: :king},
-          {3, 2} => %{color: :black, type: :pawn},
-          {4, 1} => %{color: :white, type: :pawn},
-          {4, 3} => %{color: :black, type: :king}
-        },
-        cards: %{
-          black: [
-            %DemonSpiritGame.Card{
-              color: :green,
-              id: 3,
-              moves: [{-1, 1}, {1, 1}, {-1, -1}, {1, -1}],
-              name: "Monkey"
-            },
-            %DemonSpiritGame.Card{
-              color: :green,
-              id: 17,
-              moves: [{0, -1}, {-2, 1}, {2, 1}],
-              name: "Giraffe"
-            }
-          ],
-          side: %DemonSpiritGame.Card{
-            color: :blue,
-            id: 10,
-            moves: [{-1, 1}, {-1, 0}, {1, 0}, {1, -1}],
-            name: "Goose"
-          },
-          white: [
-            %DemonSpiritGame.Card{
-              color: :green,
-              id: 2,
-              moves: [{0, 1}, {-2, 0}, {2, 0}],
-              name: "Crab"
-            },
-            %DemonSpiritGame.Card{
-              color: :blue,
-              id: 28,
-              moves: [{0, 1}, {-1, 1}, {1, -1}],
-              name: "Bear"
-            }
-          ]
-        },
-        game_name: "summery-susquehanna-6049",
-        turn: :black,
-        winner: nil
-      },
-      game_name: "summery-susquehanna-6049",
-      last_move: nil,
-      move_dest: [],
-      selected: nil,
-      state: nil,
-      white: nil
-    }
   end
 end
 
