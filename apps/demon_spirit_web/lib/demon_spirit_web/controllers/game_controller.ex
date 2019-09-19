@@ -2,10 +2,10 @@ defmodule DemonSpiritWeb.GameController do
   use DemonSpiritWeb, :controller
 
   alias DemonSpiritWeb.{
-    GameUISupervisor,
     GameUIServer,
-    LiveGameShow,
+    GameUISupervisor,
     LiveGameIndex,
+    LiveGameShow,
     NameGenerator
   }
 
@@ -21,10 +21,12 @@ defmodule DemonSpiritWeb.GameController do
     render(conn, "new.html")
   end
 
-  def create(conn, _params) do
+  def create(conn, %{"game_opts" => game_opts}) do
     game_name = NameGenerator.generate()
 
-    case GameUISupervisor.start_game(game_name) do
+    {:ok, game_opts} = DemonSpiritWeb.validate_game_ui_options(game_opts)
+
+    case GameUISupervisor.start_game(game_name, game_opts) do
       {:ok, _pid} ->
         redirect(conn, to: Routes.game_path(conn, :show, game_name))
 

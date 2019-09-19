@@ -30,21 +30,12 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   require Logger
   alias DemonSpiritGame.{GameSupervisor}
-  alias DemonSpiritWeb.{GameRegistry, GameUI}
+  alias DemonSpiritWeb.{GameRegistry, GameUI, GameUIOptions}
 
   ## TEMP AI
   alias DemonSpiritGame.{AI}
   ### TEMP AI
   alias DemonSpiritGame.{GameServer}
-
-  @doc """
-  start_link/1: Generates a new game server under a provided name.
-  """
-  # Using type specs in genserver causes my app to not compile..??
-  # @spec start_link(t.String) :: {:ok, pid} | {:error, any}
-  def start_link(game_name) do
-    GenServer.start_link(__MODULE__, {game_name}, name: via_tuple(game_name))
-  end
 
   @doc """
   start_link/2: Generates a new game server under a provided name.
@@ -54,6 +45,15 @@ defmodule DemonSpiritWeb.GameUIServer do
   """
   def start_link(game_name, :hardcoded_cards) do
     GenServer.start_link(__MODULE__, {game_name, :hardcoded_cards}, name: via_tuple(game_name))
+  end
+
+  @doc """
+  start_link/2: Generates a new game server under a provided name.
+  """
+  # Using type specs in genserver causes my app to not compile..??
+  # @spec start_link(t.String, %GameUIOptions{}) :: {:ok, pid} | {:error, any}
+  def start_link(game_name, game_opts = %GameUIOptions{}) do
+    GenServer.start_link(__MODULE__, {game_name, game_opts}, name: via_tuple(game_name))
   end
 
   @doc """
@@ -113,13 +113,13 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   ####### IMPLEMENTATION #######
 
-  def init({game_name}) do
-    GameUI.new(game_name)
+  def init({game_name, :hardcoded_cards}) do
+    GameUI.new(game_name, :hardcoded_cards)
     |> _init()
   end
 
-  def init({game_name, :hardcoded_cards}) do
-    GameUI.new(game_name, :hardcoded_cards)
+  def init({game_name, game_opts = %GameUIOptions{}}) do
+    GameUI.new(game_name)
     |> _init()
   end
 

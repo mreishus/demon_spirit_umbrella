@@ -17,6 +17,8 @@ defmodule DemonSpiritWeb do
   and import those modules here.
   """
 
+  alias DemonSpiritWeb.GameUIOptions
+
   def controller do
     quote do
       use Phoenix.Controller, namespace: DemonSpiritWeb
@@ -69,5 +71,16 @@ defmodule DemonSpiritWeb do
   """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
+  end
+
+  @doc """
+  Use ecto w/o DB to validate incoming game options
+  Input: %{"vs" => "computer", ... other options ... }
+  OUTPUT: {:ok, %GameUIOptions{}}
+  """
+  def validate_game_ui_options(params) do
+    %GameUIOptions{}
+    |> GameUIOptions.changeset(params)
+    |> Ecto.Changeset.apply_action(:insert)
   end
 end

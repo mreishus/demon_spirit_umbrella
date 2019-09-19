@@ -1,10 +1,14 @@
+<!--
 <em>(Game Options Here)</em>
 <ul>
   <li>Public or unlisted</li>
-  <li>VS Human or VS AI</li>
   <li>Time Controls</li>
   <li>Choose Expansions / Sets of Cards</li>
 </ul>
-<%= form_for @conn, Routes.game_path(@conn, :create), [as: :game], fn _f ->  %>
+-->
+<%= form_for @conn, Routes.game_path(@conn, :create), [as: :game_opts], fn f ->  %>
+  <%= label f, "Play against human or computer?" %>
+  <%= select(f, :vs, ["Human": "human", "Computer": "computer"]) %>
+  <br />
   <%= submit "Start Game", class: "btn btn-primary" %>
 <% end %>

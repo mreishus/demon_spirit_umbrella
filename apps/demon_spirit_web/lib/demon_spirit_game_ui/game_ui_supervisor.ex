@@ -5,7 +5,7 @@ defmodule DemonSpiritWeb.GameUISupervisor do
 
   use DynamicSupervisor
 
-  alias DemonSpiritWeb.GameUIServer
+  alias DemonSpiritWeb.{GameUIServer, GameUIOptions}
 
   def start_link(_arg) do
     DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -18,10 +18,10 @@ defmodule DemonSpiritWeb.GameUISupervisor do
   @doc """
   Starts a `GameUIServer` process and supervises it.
   """
-  def start_game(game_name) do
+  def start_game(game_name, game_opts = %GameUIOptions{}) do
     child_spec = %{
       id: GameUIServer,
-      start: {GameUIServer, :start_link, [game_name]},
+      start: {GameUIServer, :start_link, [game_name, game_opts]},
       restart: :transient
     }
 
