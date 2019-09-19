@@ -176,7 +176,7 @@ td .content {
 <div class="grid">
   <div class="box box-header">
     <%= for card <- game.cards.black do %>
-      <%= render "card.html", card: card, flip: true %>
+      <%= render "show/card.html", card: card, flip: true %>
     <% end %>
   </div>
   <div class="box box-force-square box-a pos-rel">
@@ -238,11 +238,11 @@ td .content {
   </div>
   <div class="box box-b pos-rel flex-column-container">
     <div>
-      <%= render "player.html", player: @state.black %>
+      <%= render "show/player.html", player: @state.black %>
     </div>
     <div class="flex-grow" style="display: flex; align-items: center;">
       <div>
-        <%= render "card.html", card: game.cards.side, flip: game.turn == :black %>
+        <%= render "show/card.html", card: game.cards.side, flip: game.turn == :black %>
         <%= if game.winner == nil do %>
           <p style="margin-top: 10px; font-size: 24px">
             <%= game.turn %>'s turn
@@ -251,12 +251,12 @@ td .content {
       </div>
     </div>
     <div>
-      <%= render "player.html", player: @state.white %>
+      <%= render "show/player.html", player: @state.white %>
     </div>
   </div>
   <div class="box box-footer">
     <%= for card <- game.cards.white do %>
-      <%= render "card.html", card: card, flip: false %>
+      <%= render "show/card.html", card: card, flip: false %>
     <% end %>
   </div>
 </div>
