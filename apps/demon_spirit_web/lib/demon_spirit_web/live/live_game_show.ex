@@ -29,6 +29,12 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:ok, socket}
   end
 
+  def handle_event("ai-move", _val, socket = %{assigns: %{game_name: game_name, topic: topic}}) do
+    state = GameUIServer.ai_move(game_name)
+    notify(topic)
+    {:noreply, assign(socket, state: state)}
+  end
+
   def handle_event(
         "click-square-" <> coords_str,
         _value,

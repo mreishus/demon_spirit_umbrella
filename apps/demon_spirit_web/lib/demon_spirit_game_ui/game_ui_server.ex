@@ -32,6 +32,11 @@ defmodule DemonSpiritWeb.GameUIServer do
   alias DemonSpiritGame.{GameSupervisor}
   alias DemonSpiritWeb.{GameRegistry, GameUI}
 
+  ## TEMP AI
+  alias DemonSpiritGame.{AI}
+  ### TEMP AI
+  alias DemonSpiritGame.{GameServer}
+
   @doc """
   start_link/1: Generates a new game server under a provided name.
   """
@@ -101,6 +106,11 @@ defmodule DemonSpiritWeb.GameUIServer do
     GenServer.call(via_tuple(game_name), {:click, coords, person})
   end
 
+  ### TEMP AI ###
+  def ai_move(game_name) do
+    GenServer.call(via_tuple(game_name), :ai_move)
+  end
+
   ####### IMPLEMENTATION #######
 
   def init({game_name}) do
@@ -135,6 +145,25 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   def handle_call(:state, _from, state) do
+    {:reply, state, state, timeout(state)}
+  end
+
+  ### TEMP AI ###
+  def handle_call(:ai_move, _from, state) do
+    ai_info = state.game |> AI.alphabeta(7)
+    move = ai_info.move
+    {:ok, new_game} = GameServer.move(state.game_name, move)
+    all_valid_moves = GameServer.all_valid_moves(state.game_name)
+
+    state = %{
+      state
+      | game: new_game,
+        all_valid_moves: all_valid_moves,
+        selected: nil,
+        move_dest: [],
+        last_move: move
+    }
+
     {:reply, state, state, timeout(state)}
   end
 
