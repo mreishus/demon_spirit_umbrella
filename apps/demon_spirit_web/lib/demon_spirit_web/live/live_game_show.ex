@@ -17,7 +17,14 @@ defmodule DemonSpiritWeb.LiveGameShow do
     notify(topic)
 
     socket =
-      assign(socket, game_name: game_name, topic: topic, state: state, guest: guest, users: [])
+      assign(socket,
+        game_name: game_name,
+        topic: topic,
+        state: state,
+        guest: guest,
+        users: [],
+        flip_per: guest == state.black
+      )
 
     {:ok, socket}
   end
@@ -33,7 +40,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
     state = GameUIServer.click(game_name, {x, y}, guest)
     notify(topic)
 
-    {:noreply, assign(socket, state: state)}
+    {:noreply, assign(socket, state: state, flip_per: guest == state.black)}
   end
 
   defp extract_coords(coords_str) do
