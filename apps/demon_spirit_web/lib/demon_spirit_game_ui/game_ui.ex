@@ -1,6 +1,6 @@
 defmodule DemonSpiritWeb.GameUI do
   alias DemonSpiritGame.{GameServer, GameSupervisor, Move}
-  alias DemonSpiritWeb.GameUI
+  alias DemonSpiritWeb.{GameUI, GameUIOptions}
 
   @moduledoc """
   Holds the state for DemonSpiritGame.GameUIServer
@@ -13,6 +13,7 @@ defmodule DemonSpiritWeb.GameUI do
   selected: nil, or, The coordinate of the piece that is currently selected.
   move_dest: If a piece is selected, the coordinates of where that piece may move to.
   last_move: nil, or the %Move{} describing the last move taken.
+  options: %GameUIOptions{}
   created_at: DateTime
   """
   defstruct game: nil,
@@ -24,22 +25,23 @@ defmodule DemonSpiritWeb.GameUI do
             selected: nil,
             move_dest: [],
             last_move: nil,
+            options: nil,
             created_at: nil
 
   @doc """
-  new/1: Create a new gameui + game with random cards.
+  new/2: Create a new gameui + game with random cards.
 
   Input: game_name (string)
   SideEffects:  GameSupervisor is asked to start a GameServer for game.
   Output: %GameUI{}
   """
-  def new(game_name) do
+  def new(game_name, game_opts = %GameUIOptions{}) do
     game_starter = fn game_name -> GameSupervisor.start_game(game_name) end
-    _new(game_name, game_starter)
+    _new(game_name, game_opts, game_starter)
   end
 
   @doc """
-  new/1: Create a new gameui + game with hardcoded cards, for deterministic testing.
+  new/2: Create a new gameui + game with hardcoded cards, for deterministic testing.
 
   Input: game_name (string), :hardcoded_cards
   SideEffects:  GameSupervisor is asked to start a GameServer for game.
@@ -47,14 +49,16 @@ defmodule DemonSpiritWeb.GameUI do
   """
   def new(game_name, :hardcoded_cards) do
     game_starter = fn game_name -> GameSupervisor.start_game(game_name, :hardcoded_cards) end
-    _new(game_name, game_starter)
+    game_opts = %GameUIOptions{vs: "human"}
+    _new(game_name, game_opts, game_starter)
   end
 
-  # _new/2 (private): Create a new gameUI using game_name and callback.
+  # _new/3 (private): Create a new gameUI using game_name and callback.
   # Input: game_name(string)
-  # Input2: Callback to start up a game server. fn game_name -> {:ok, _pid} end
+  # Input2: %GameUIOptions{}
+  # Input3: Callback to start up a game server. fn game_name -> {:ok, _pid} end
   # Output: %GameUI
-  defp _new(game_name, game_starter) do
+  defp _new(game_name, game_opts = %GameUIOptions{}, game_starter) do
     game =
       case GameServer.state(game_name) do
         nil ->
@@ -75,7 +79,8 @@ defmodule DemonSpiritWeb.GameUI do
       black: nil,
       selected: nil,
       move_dest: [],
-      created_at: DateTime.utc_now()
+      created_at: DateTime.utc_now(),
+      options: game_opts
     }
   end
 

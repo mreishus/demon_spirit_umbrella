@@ -10,22 +10,22 @@ defmodule GameUiServerTest do
     }
   end
 
-  describe "start_link/1" do
+  describe "start_link/2, default" do
     test "spawns a process" do
       game_name = generate_game_name()
 
-      assert {:ok, _pid} = GameUIServer.start_link(game_name, default_options)
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, default_options())
     end
 
     test "each name can only have one process" do
       game_name = generate_game_name()
 
-      assert {:ok, _pid} = GameUIServer.start_link(game_name, default_options)
-      assert {:error, _reason} = GameUIServer.start_link(game_name, default_options)
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, default_options())
+      assert {:error, _reason} = GameUIServer.start_link(game_name, default_options())
     end
   end
 
-  describe "start_link/2" do
+  describe "start_link/2, hardcoded_cards" do
     test "spawns a process" do
       game_name = generate_game_name()
 
@@ -43,7 +43,7 @@ defmodule GameUiServerTest do
   describe "state/1" do
     test "get game state" do
       game_name = generate_game_name()
-      assert {:ok, _pid} = GameUIServer.start_link(game_name, default_options)
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, default_options())
       state = GameUIServer.state(game_name)
       assert %GameUI{} = state
       assert %Game{} = state.game

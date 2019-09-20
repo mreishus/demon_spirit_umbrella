@@ -14,6 +14,6 @@ defmodule DemonSpiritWeb.GameUIOptions do
     base
     |> cast(params, [:vs])
     |> validate_required([:vs])
-    |> validate_length(:vs, min: 3)
+    |> validate_inclusion(:vs, ~w(human computer))
   end
 end

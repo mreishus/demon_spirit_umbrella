@@ -119,7 +119,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   def init({game_name, game_opts = %GameUIOptions{}}) do
-    GameUI.new(game_name)
+    GameUI.new(game_name, game_opts)
     |> _init()
   end
 
