@@ -202,4 +202,13 @@ defmodule DemonSpiritWeb.GameUI do
     state.all_valid_moves
     |> Enum.filter(fn %Move{from: from_, to: to_} -> from_ == from and to_ == to end)
   end
+
+  def did_move?(gameui1, gameui2) do
+    gameui1.last_move != gameui2.last_move
+  end
+
+  def computer_next?(gameui) do
+    ## Add something about turns here TODO
+    gameui.options.vs == "computer"
+  end
 end

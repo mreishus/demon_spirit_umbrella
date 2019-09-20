@@ -14,6 +14,10 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:ok, _} = Presence.track(self(), topic, guest.id, guest)
 
     state = GameUIServer.sit_down_if_possible(game_name, guest)
+
+    if connected?(socket) and state.options.vs == "computer",
+      do: :timer.send_interval(2500, self(), :tick)
+
     notify(topic)
 
     socket =
@@ -27,12 +31,6 @@ defmodule DemonSpiritWeb.LiveGameShow do
       )
 
     {:ok, socket}
-  end
-
-  def handle_event("ai-move", _val, socket = %{assigns: %{game_name: game_name, topic: topic}}) do
-    state = GameUIServer.ai_move(game_name)
-    notify(topic)
-    {:noreply, assign(socket, state: state)}
   end
 
   def handle_event(
@@ -87,9 +85,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
   end
 
   # Handle "presence_diff", someone joined or left
-  def handle_info(e = %{event: "presence_diff"}, socket = %{assigns: %{topic: topic}}) do
-    # e |> IO.inspect()
-
+  def handle_info(%{event: "presence_diff"}, socket = %{assigns: %{topic: topic}}) do
     users =
       Presence.list(topic)
       |> Enum.map(fn {_user_id, data} ->
@@ -98,5 +94,13 @@ defmodule DemonSpiritWeb.LiveGameShow do
       end)
 
     {:noreply, assign(socket, users: users)}
+  end
+
+  def handle_info(
+        :tick,
+        socket = %{assigns: %{game_name: game_name}}
+      ) do
+    state = GameUIServer.state(game_name)
+    {:noreply, assign(socket, state: state)}
   end
 end

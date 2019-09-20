@@ -9,6 +9,8 @@
 <%= form_for @conn, Routes.game_path(@conn, :create), [as: :game_opts], fn f ->  %>
   <%= label f, "Play against human or computer?" %>
   <%= select(f, :vs, ["Human": "human", "Computer": "computer"]) %>
+  <%= select(f, :computer_level, ["Level 1": "1", "Level 2": "2", 
+              "Level 3": "3", "Level 4": "4"]) %>
   <br />
   <%= submit "Start Game", class: "btn btn-primary" %>
 <% end %>

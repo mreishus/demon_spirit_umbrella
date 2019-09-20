@@ -23,7 +23,6 @@ defmodule DemonSpiritWeb.GameController do
 
   def create(conn, %{"game_opts" => game_opts}) do
     game_name = NameGenerator.generate()
-
     {:ok, game_opts} = DemonSpiritWeb.validate_game_ui_options(game_opts)
 
     case GameUISupervisor.start_game(game_name, game_opts) do

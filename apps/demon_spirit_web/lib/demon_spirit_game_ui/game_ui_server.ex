@@ -32,10 +32,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   alias DemonSpiritGame.{GameSupervisor}
   alias DemonSpiritWeb.{GameRegistry, GameUI, GameUIOptions}
 
-  ## TEMP AI
-  alias DemonSpiritGame.{AI}
-  ### TEMP AI
-  alias DemonSpiritGame.{GameServer}
+  alias DemonSpiritGame.{AI, GameServer}
 
   @doc """
   start_link/2: Generates a new game server under a provided name.
@@ -106,11 +103,6 @@ defmodule DemonSpiritWeb.GameUIServer do
     GenServer.call(via_tuple(game_name), {:click, coords, person})
   end
 
-  ### TEMP AI ###
-  def ai_move(game_name) do
-    GenServer.call(via_tuple(game_name), :ai_move)
-  end
-
   ####### IMPLEMENTATION #######
 
   def init({game_name, :hardcoded_cards}) do
@@ -140,18 +132,48 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   def handle_call({:click, coords = {x, y}, person}, _from, gameui)
       when is_integer(x) and is_integer(y) do
-    gameui = GameUI.click(gameui, coords, person)
-    {:reply, gameui, gameui, timeout(gameui)}
+    new_gameui = GameUI.click(gameui, coords, person)
+
+    if GameUI.did_move?(gameui, new_gameui) and GameUI.computer_next?(new_gameui) do
+      pid = self()
+
+      spawn_link(fn ->
+        GenServer.call(pid, :ai_move)
+      end)
+    end
+
+    {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
 
   def handle_call(:state, _from, state) do
     {:reply, state, state, timeout(state)}
   end
 
-  ### TEMP AI ###
   def handle_call(:ai_move, _from, state) do
-    ai_info = state.game |> AI.alphabeta(7)
-    move = ai_info.move
+    depth =
+      case state.options.computer_level do
+        1 -> 2
+        2 -> 3
+        3 -> 5
+        4 -> 9
+      end
+
+    pid = self()
+
+    ## Compute AI move, in the background..
+    ## I don't know how to notify the front-end when this is
+    ## finished, though.
+    spawn_link(fn ->
+      ai_info = state.game |> AI.alphabeta(depth)
+      move = ai_info.move
+      GenServer.call(pid, {:apply_move, move})
+    end)
+
+    {:reply, state, state, timeout(state)}
+  end
+
+  def handle_call({:apply_move, move}, _from, state) do
+    # TODO: Move this into GameUI.
     {:ok, new_game} = GameServer.move(state.game_name, move)
     all_valid_moves = GameServer.all_valid_moves(state.game_name)
 
