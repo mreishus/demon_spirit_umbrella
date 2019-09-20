@@ -150,21 +150,13 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   def handle_call(:ai_move, _from, state) do
-    depth =
-      case state.options.computer_level do
-        1 -> 2
-        2 -> 3
-        3 -> 5
-        4 -> 9
-      end
-
     pid = self()
 
     ## Compute AI move, in the background..
     ## I don't know how to notify the front-end when this is
     ## finished, though.
     spawn_link(fn ->
-      ai_info = state.game |> AI.alphabeta(depth)
+      ai_info = state.game |> AI.alphabeta_skill(state.options.computer_skill)
       move = ai_info.move
       GenServer.call(pid, {:apply_move, move})
     end)
