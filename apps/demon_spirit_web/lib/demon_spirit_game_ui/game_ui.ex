@@ -174,24 +174,29 @@ defmodule DemonSpiritWeb.GameUI do
         # Game always chooses the first one available.  We should
         # ask the user.
         move = candidates |> Enum.at(0)
-        response = GameServer.move(state.game_name, move)
 
-        case response do
-          {:ok, new_game} ->
-            all_valid_moves = GameServer.all_valid_moves(state.game_name)
+        apply_move(state, move)
+    end
+  end
 
-            %{
-              state
-              | game: new_game,
-                all_valid_moves: all_valid_moves,
-                selected: nil,
-                move_dest: [],
-                last_move: move
-            }
+  def apply_move(state, move) do
+    response = GameServer.move(state.game_name, move)
 
-          {:error, _} ->
-            %{state | selected: nil, move_dest: []}
-        end
+    case response do
+      {:ok, new_game} ->
+        all_valid_moves = GameServer.all_valid_moves(state.game_name)
+
+        %{
+          state
+          | game: new_game,
+            all_valid_moves: all_valid_moves,
+            selected: nil,
+            move_dest: [],
+            last_move: move
+        }
+
+      {:error, _} ->
+        %{state | selected: nil, move_dest: []}
     end
   end
 

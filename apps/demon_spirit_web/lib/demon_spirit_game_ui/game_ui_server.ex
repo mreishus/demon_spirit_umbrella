@@ -32,7 +32,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   alias DemonSpiritGame.{GameSupervisor}
   alias DemonSpiritWeb.{GameRegistry, GameUI, GameUIOptions}
 
-  alias DemonSpiritGame.{AI, GameServer}
+  alias DemonSpiritGame.{AI}
 
   @doc """
   start_link/2: Generates a new game server under a provided name.
@@ -165,19 +165,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   def handle_call({:apply_move, move}, _from, state) do
-    # TODO: Move this into GameUI.
-    {:ok, new_game} = GameServer.move(state.game_name, move)
-    all_valid_moves = GameServer.all_valid_moves(state.game_name)
-
-    state = %{
-      state
-      | game: new_game,
-        all_valid_moves: all_valid_moves,
-        selected: nil,
-        move_dest: [],
-        last_move: move
-    }
-
+    state = GameUI.apply_move(state, move)
     {:reply, state, state, timeout(state)}
   end
 
