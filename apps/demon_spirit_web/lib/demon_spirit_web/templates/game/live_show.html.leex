@@ -1,17 +1,21 @@
+<% game = @state.game %>
+
+<% top_cards   = if @flip_per, do: game.cards.white, else: game.cards.black %>
+<% top_player  = if @flip_per, do: @state.white, else: @state.black %>
+<% bottom_cards   = if @flip_per, do: game.cards.black, else: game.cards.white %>
+<% bottom_player  = if @flip_per, do: @state.black, else: @state.white %>
+
 <style>
 
-* {
-  abox-sizing: border-box;
+.flex-column-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.vertical-center {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+.flex-grow {
+  flex-grow: 1;
 }
-
 
 .grid {
   display: grid;
@@ -158,27 +162,58 @@ td .content {
   left: 0;
   right: 0;
 } 
+
+.winner_overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  color: white;
+  font-size: 48px;
+}
 </style>
 
 <div class="grid">
   <div class="box box-header">
-    <%= for card <- @game.cards.black do %>
-      <%= render "card.html", card: card, flip: true %>
+    <%= for card <- top_cards do %>
+      <%= render "show/card.html", card: card, flip: true %>
     <% end %>
   </div>
   <div class="box box-force-square box-a pos-rel">
+
+    <%= if game.winner != nil do %>
+      <div class="winner_overlay">
+        <div style="height: 100%; width: 100%; display: flex; align-items: center">
+          <div style="width: 100%;">
+            <center>
+            <%= game.winner %> wins!
+            </center>
+          </div>
+          </span>
+        </div>
+      </div>
+    <% end %>
+
     <div class="chessboard">
       <%# Render Pieces %>
-      <%= for {{x, y}, piece} <- @game.board do %>
+      <%= for {{x, y}, piece} <- game.board do %>
         <div 
           phx-click="click-square-<%= x %>-<%= y %>"
         draggable='true' phx-hook="Draggable"
         class="piece <%= piece.type %> <%= piece.color %>" style="
         position: absolute;
-        transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
-        "><!--
-          <%= piece.color %> <%= piece.type %> at <%= x %>, <%= y %>
-        --></div>
+        <%= if @flip_per do %>
+          transform: translate( <%= (4 - x) * 100 %>%, <%= y * 100 %>%);
+        <% else %>
+          transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
+        <% end %>
+        ">
+        </div>
       <% end %>
 
       <%# Render Square Targets %>
@@ -201,7 +236,13 @@ td .content {
             <% end %>
             " style="
           position: absolute;
-          transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
+
+          <%= if @flip_per do %>
+            transform: translate( <%= (4 - x) * 100 %>%, <%= y * 100 %>%);
+          <% else %>
+            transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
+          <% end %>
+
           "><!--
           Blank Square
           --></div>
@@ -209,21 +250,36 @@ td .content {
       <% end %>
     </div>
   </div>
-  <div class="box box-b pos-rel">
-    <div class="vertical-center">
-    <%= render "card.html", card: @game.cards.side, flip: false %>
+  <div class="box box-b pos-rel flex-column-container">
+    <div>
+      <%= render "show/player.html", player: top_player %>
+    </div>
+    <div class="flex-grow" style="display: flex; align-items: center;">
+      <div>
+        <%= render "show/card.html", card: game.cards.side, flip: (game.turn == :black and not @flip_per) || (@flip_per and game.turn == :white) %>
+        <%= if game.winner == nil do %>
+          <p style="margin-top: 10px; font-size: 24px">
+            <%= game.turn %>'s turn
+          </p>
+        <% end %>
+      </div>
+    </div>
+    <div>
+      <%= render "show/player.html", player: bottom_player %>
     </div>
   </div>
   <div class="box box-footer">
-    <%= for card <- @game.cards.white do %>
-      <%= render "card.html", card: card, flip: false %>
+    <%= for card <- bottom_cards do %>
+      <%= render "show/card.html", card: card, flip: false %>
     <% end %>
   </div>
 </div>
 
-
 <pre>
-  <%#= inspect(@game, pretty: true) %>
+  <%#= inspect(game, pretty: true) %>
+</pre>
+<pre>
+  <%= inspect(@users, pretty: true) %>
 </pre>
 <pre>
   <%= inspect(@state, pretty: true) %>

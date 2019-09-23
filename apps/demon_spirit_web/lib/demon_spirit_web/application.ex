@@ -14,7 +14,8 @@ defmodule DemonSpiritWeb.Application do
       # {DemonSpiritWeb.Worker, arg},
       {Registry, keys: :unique, name: DemonSpiritWeb.GameUIRegistry},
       DemonSpiritWeb.GameUISupervisor,
-      DemonSpiritWeb.GameRegistry
+      DemonSpiritWeb.GameRegistry,
+      DemonSpiritWeb.Presence
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -1,72 +1,106 @@
 defmodule DemonSpiritWeb.LiveGameShow do
   use Phoenix.LiveView
   require Logger
-  alias DemonSpiritWeb.{Endpoint, GameUIServer, GameView}
-  alias DemonSpiritWeb.GameUIServer.State
+  alias DemonSpiritWeb.{Endpoint, GameUIServer, GameView, Presence}
 
   def render(assigns) do
     GameView.render("live_show.html", assigns)
   end
 
-  def mount(%{game_name: game_name}, socket) do
+  def mount(%{game_name: game_name, guest: guest}, socket) do
     topic = topic_for(game_name)
+
     if connected?(socket), do: Endpoint.subscribe(topic)
-    state = GameUIServer.state(game_name)
+    {:ok, _} = Presence.track(self(), topic, guest.id, guest)
+
+    state = GameUIServer.sit_down_if_possible(game_name, guest)
+
+    if connected?(socket) and state.options.vs == "computer",
+      do: :timer.send_interval(2500, self(), :tick)
+
+    notify(topic)
 
     socket =
-      socket
-      |> assign(game_name: game_name, topic: topic)
-      |> state_assign(state)
+      assign(socket,
+        game_name: game_name,
+        topic: topic,
+        state: state,
+        guest: guest,
+        users: [],
+        flip_per: guest == state.black
+      )
 
     {:ok, socket}
   end
 
-  def handle_event("click-square-" <> coords_str, _value, socket = %{assigns: assigns}) do
+  def handle_event(
+        "click-square-" <> coords_str,
+        _value,
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    {x, y} = extract_coords(coords_str)
+
+    Logger.info("Game #{game_name}: Clicked on piece: #{x} #{y}")
+    state = GameUIServer.click(game_name, {x, y}, guest)
+    notify(topic)
+
+    {:noreply, assign(socket, state: state, flip_per: guest == state.black)}
+  end
+
+  defp extract_coords(coords_str) do
     [{x, ""}, {y, ""}] = coords_str |> String.split("-") |> Enum.map(&Integer.parse/1)
-
-    Logger.info("Game #{assigns.game_name}: Clicked on piece: #{x} #{y}")
-    state = GameUIServer.click(assigns.game_name, {x, y})
-
-    # Tell others
-    Endpoint.broadcast_from(self(), assigns.topic, "state_update", %{})
-
-    # {:noreply, assign(socket, deploy_step: "Starting deploy...")}
-    {:noreply, state_assign(socket, state)}
+    {x, y}
   end
 
-  defp state_assign(socket, state = %State{}) do
-    assign(socket, state: state, game: state.game)
-  end
-
-  defp state_assign(socket, something) do
-    Logger.warn("LiveGameShow: State_assign: Didn't understand what was passed to me.")
-    Logger.debug(fn -> "Payload received: #{inspect(something)}" end)
-    socket
+  defp notify(topic) do
+    Endpoint.broadcast_from(self(), topic, "state_update", %{})
   end
 
   defp topic_for(game_name) do
     "game-topic:" <> game_name
   end
 
-  def handle_info(
-        broadcast = %{topic: broadcast_topic},
-        socket = %{assigns: %{game_name: game_name, topic: topic}}
-      )
-      when broadcast_topic == topic do
-    case broadcast.event do
-      "state_update" ->
-        state = GameUIServer.state(game_name)
-        {:noreply, state_assign(socket, state)}
+  ## Commented out for experiment below
 
-      _ ->
-        {:noreply, socket}
-    end
+  # def handle_info(
+  #       broadcast = %{event: "state_update", topic: broadcast_topic},
+  #       socket = %{assigns: %{game_name: game_name, topic: topic}}
+  #     )
+  #     when broadcast_topic == topic do
+  #   state = GameUIServer.state(game_name)
+  #   {:noreply, assign(socket, state: state)}
+  # end
+
+  ## Experiment: Keep the "topic matching" stuff out of
+  ## Handle_info - is it the case whenever handle_info is called
+  ## we're already assured the topic is correct? I think it might be.
+
+  # Handle incoming "state_updates": Game state has changed
+  def handle_info(
+        %{event: "state_update"},
+        socket = %{assigns: %{game_name: game_name}}
+      ) do
+    state = GameUIServer.state(game_name)
+    {:noreply, assign(socket, state: state)}
+  end
+
+  # Handle "presence_diff", someone joined or left
+  def handle_info(%{event: "presence_diff"}, socket = %{assigns: %{topic: topic}}) do
+    users =
+      Presence.list(topic)
+      |> Enum.map(fn {_user_id, data} ->
+        data[:metas]
+        |> List.first()
+      end)
+
+    {:noreply, assign(socket, users: users)}
+  end
+
+  def handle_info(
+        :tick,
+        socket = %{assigns: %{game_name: game_name}}
+      ) do
+    state = GameUIServer.state(game_name)
+    {:noreply, assign(socket, state: state)}
   end
 end
-
-# Phoenix.PubSub.broadcast(MyApp.PubSub, "sometopic", :some_event)
-# def handle_info(:some_event, socket) ...
-# make the topic something specific to that user/resource/etc
-# and in mount do if connected?(socket), do: Phoenix.PubSub.subscribe(MyApp.PubSub, topic)
-# so if you want to message a user, the topic can be "user:#{user.id}"
-# if it’s to report the result of an upload processing thing, you could do a topic “uploads:#{upload.id}“, etc

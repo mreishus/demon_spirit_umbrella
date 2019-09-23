@@ -1,6 +1,14 @@
 defmodule DemonSpiritWeb.GameController do
   use DemonSpiritWeb, :controller
-  alias DemonSpiritWeb.{GameUISupervisor, GameUIServer, LiveGameShow, LiveGameIndex}
+
+  alias DemonSpiritWeb.{
+    GameUIServer,
+    GameUISupervisor,
+    LiveGameIndex,
+    LiveGameShow,
+    NameGenerator
+  }
+
   alias Phoenix.LiveView
 
   plug(:require_logged_in)
@@ -13,10 +21,11 @@ defmodule DemonSpiritWeb.GameController do
     render(conn, "new.html")
   end
 
-  def create(conn, _params) do
-    game_name = "game-#{:rand.uniform(1000)}"
+  def create(conn, %{"game_opts" => game_opts}) do
+    game_name = NameGenerator.generate()
+    {:ok, game_opts} = DemonSpiritWeb.validate_game_ui_options(game_opts)
 
-    case GameUISupervisor.start_game(game_name) do
+    case GameUISupervisor.start_game(game_name, game_opts) do
       {:ok, _pid} ->
         redirect(conn, to: Routes.game_path(conn, :show, game_name))
 
@@ -27,12 +36,9 @@ defmodule DemonSpiritWeb.GameController do
     end
   end
 
-  def live_test(conn, _) do
-    LiveView.Controller.live_render(conn, DemonSpiritWeb.GithubDeployView, session: %{})
-  end
-
   def show(conn, %{"id" => game_name}) do
     state = GameUIServer.state(game_name)
+    guest = conn.assigns.current_guest
 
     case state do
       nil ->
@@ -41,8 +47,9 @@ defmodule DemonSpiritWeb.GameController do
         |> redirect(to: Routes.game_path(conn, :new))
 
       _ ->
-        # render(conn, "show.html", state: state)
-        LiveView.Controller.live_render(conn, LiveGameShow, session: %{game_name: game_name})
+        LiveView.Controller.live_render(conn, LiveGameShow,
+          session: %{game_name: game_name, guest: guest}
+        )
     end
   end
 

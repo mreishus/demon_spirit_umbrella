@@ -1,26 +1,31 @@
 defmodule GameUiServerTest do
   use ExUnit.Case, async: true
   doctest DemonSpiritWeb.GameUIServer
-  alias DemonSpiritWeb.{GameUIServer}
-  alias DemonSpiritWeb.GameUIServer.State
+  alias DemonSpiritWeb.{GameUIServer, GameUI, GameUIOptions}
   alias DemonSpiritGame.{Game, Move}
 
-  describe "start_link/1" do
+  defp default_options do
+    %GameUIOptions{
+      vs: "human"
+    }
+  end
+
+  describe "start_link/2, default" do
     test "spawns a process" do
       game_name = generate_game_name()
 
-      assert {:ok, _pid} = GameUIServer.start_link(game_name)
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, default_options())
     end
 
     test "each name can only have one process" do
       game_name = generate_game_name()
 
-      assert {:ok, _pid} = GameUIServer.start_link(game_name)
-      assert {:error, _reason} = GameUIServer.start_link(game_name)
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, default_options())
+      assert {:error, _reason} = GameUIServer.start_link(game_name, default_options())
     end
   end
 
-  describe "start_link/2" do
+  describe "start_link/2, hardcoded_cards" do
     test "spawns a process" do
       game_name = generate_game_name()
 
@@ -38,9 +43,9 @@ defmodule GameUiServerTest do
   describe "state/1" do
     test "get game state" do
       game_name = generate_game_name()
-      assert {:ok, _pid} = GameUIServer.start_link(game_name)
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, default_options())
       state = GameUIServer.state(game_name)
-      assert %State{} = state
+      assert %GameUI{} = state
       assert %Game{} = state.game
       assert state.game.board |> Map.keys() |> length == 10
       assert state.all_valid_moves |> length > 0
@@ -50,7 +55,7 @@ defmodule GameUiServerTest do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       state = GameUIServer.state(game_name)
-      assert %State{} = state
+      assert %GameUI{} = state
       assert %Game{} = state.game
       assert state.game.board |> Map.keys() |> length == 10
       assert state.all_valid_moves |> length > 0
@@ -58,12 +63,12 @@ defmodule GameUiServerTest do
     end
   end
 
-  describe "click/2" do
+  describe "click/3" do
     test "Click on empty square does nothing" do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       initial_state = GameUIServer.state(game_name)
-      new_state = GameUIServer.click(game_name, {2, 2})
+      new_state = GameUIServer.click(game_name, {2, 2}, :test)
       assert new_state == initial_state
       assert new_state.move_dest == []
       assert new_state.last_move == nil
@@ -73,7 +78,7 @@ defmodule GameUiServerTest do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       initial_state = GameUIServer.state(game_name)
-      new_state = GameUIServer.click(game_name, {4, 4})
+      new_state = GameUIServer.click(game_name, {4, 4}, :test)
       assert new_state == initial_state
       assert new_state.move_dest == []
       assert new_state.last_move == nil
@@ -82,7 +87,7 @@ defmodule GameUiServerTest do
     test "Click on my piece selects it" do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
-      new_state = GameUIServer.click(game_name, {0, 0})
+      new_state = GameUIServer.click(game_name, {0, 0}, :test)
       assert new_state.selected == {0, 0}
       assert new_state.move_dest == [{0, 1}, {1, 1}]
       assert new_state.last_move == nil
@@ -92,8 +97,8 @@ defmodule GameUiServerTest do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       initial_state = GameUIServer.state(game_name)
-      _new_state = GameUIServer.click(game_name, {0, 0})
-      new_state = GameUIServer.click(game_name, {2, 3})
+      _new_state = GameUIServer.click(game_name, {0, 0}, :test)
+      new_state = GameUIServer.click(game_name, {2, 3}, :test)
       assert new_state.selected == nil
       assert new_state.move_dest == []
       assert new_state == initial_state
@@ -104,8 +109,8 @@ defmodule GameUiServerTest do
       game_name = generate_game_name()
       assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
       initial_state = GameUIServer.state(game_name)
-      _new_state = GameUIServer.click(game_name, {0, 0})
-      new_state = GameUIServer.click(game_name, {1, 1})
+      _new_state = GameUIServer.click(game_name, {0, 0}, :test)
+      new_state = GameUIServer.click(game_name, {1, 1}, :test)
       assert new_state != initial_state
       assert new_state.game.board[{1, 1}] != nil
       assert new_state.game.board[{2, 2}] == nil
@@ -116,16 +121,70 @@ defmodule GameUiServerTest do
     end
   end
 
-  ## Test Selection
-  # new_state = GameUIServer.click("asdf", {0, 0})
-  # new_state.selected should be {0, 0}
+  describe "sit_down_if_possible/2" do
+    test "First sit goes to white" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      state = GameUIServer.sit_down_if_possible(game_name, :p1)
+      assert state.white == :p1
+    end
 
-  ## Test Invalid Move Clears Selection
-  # newest_state = GameUIServer.click("asdf", {4, 4})
-  # new_state.selected should be nil, and state should be same as original (deselected, no moves)
+    test "Second sit goes to black" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      state = GameUIServer.sit_down_if_possible(game_name, :p2)
+      assert state.white == :p1
+      assert state.black == :p2
+    end
 
-  ## Test Valid Move works
-  #
+    test "Third sit goes to neither" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      GameUIServer.sit_down_if_possible(game_name, :p2)
+      state = GameUIServer.sit_down_if_possible(game_name, :p3)
+      assert state.white == :p1
+      assert state.black == :p2
+    end
+
+    test "Can't sit in white and black at same time" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      state = GameUIServer.sit_down_if_possible(game_name, :p1)
+      assert state.white == :p1
+      assert state.black == nil
+    end
+  end
+
+  describe "only current sitting player allowed to click" do
+    test "correct player clicks, state changes" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      GameUIServer.sit_down_if_possible(game_name, :p2)
+
+      new_state = GameUIServer.click(game_name, {0, 0}, :p1)
+      assert new_state.selected == {0, 0}
+      assert new_state.move_dest == [{0, 1}, {1, 1}]
+      assert new_state.last_move == nil
+    end
+
+    test "incorrect player clicks, state is unchanged" do
+      game_name = generate_game_name()
+      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+      GameUIServer.sit_down_if_possible(game_name, :p1)
+      GameUIServer.sit_down_if_possible(game_name, :p2)
+      state = GameUIServer.state(game_name)
+
+      new_state = GameUIServer.click(game_name, {0, 0}, :p2)
+      assert state == new_state
+      refute new_state.selected == {0, 0}
+      refute new_state.move_dest == [{0, 1}, {1, 1}]
+    end
+  end
 
   defp generate_game_name do
     "game-#{:rand.uniform(1_000_000)}"

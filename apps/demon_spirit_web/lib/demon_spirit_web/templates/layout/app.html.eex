@@ -13,8 +13,7 @@
         <nav role="navigation">
           <ul>
             <%= if @current_guest do %>
-              <li>Logged in as <%= @current_guest.name %> (guest).</li>
-              <li>
+              <li>Logged in as <%= @current_guest.name %> (guest).
                 <%= link "Log Out", to: Routes.session_path(@conn, :delete), method: :delete  %>
               </li>
             <% else %>
@@ -27,10 +26,13 @@
           </ul>
 
         </nav>
+        <%= link "Demon Spirit", to: Routes.game_path(@conn, :index) %>
+        <!--
         <a href="http://phoenixframework.org/" class="phx-logo">
           <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
         </a>
       </section>
+        -->
     </header>
     <main role="main" class="container">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

@@ -1,0 +1,10 @@
+<%= case @player do %>
+  <%= nil -> %>
+    <em>(empty)</em>
+  <% %DemonSpirit.Guest{} -> %>
+    <%= @player.name %> <em>(Guest)</em>
+  <% %{type: :computer} -> %>
+    <span style="color: blue"><em><%= @player.name %></em></span>
+  <% _ -> %>
+    Unknown
+<% end %>

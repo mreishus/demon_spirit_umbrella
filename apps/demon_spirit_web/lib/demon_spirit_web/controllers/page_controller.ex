@@ -3,10 +3,10 @@ defmodule DemonSpiritWeb.PageController do
 
   def index(conn, _params) do
     case conn do
-      %{assigns: %{current_guest: current_guest}} ->
+      %{assigns: %{current_guest: _current_guest}} ->
         redirect(conn, to: Routes.game_path(conn, :index))
 
-      %{assigns: %{current_user: current_user}} ->
+      %{assigns: %{current_user: _current_user}} ->
         redirect(conn, to: Routes.game_path(conn, :index))
 
       _ ->

@@ -11,8 +11,8 @@ defmodule DemonSpirit.Guest do
 
   def changeset(base, params \\ %{}) do
     base
-    |> cast(params, [:name])
-    |> validate_required([:name])
+    |> cast(params, [:name, :id])
+    |> validate_required([:name, :id])
     |> validate_length(:name, min: 3)
   end
 

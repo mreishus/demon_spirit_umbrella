@@ -5,10 +5,6 @@ defmodule DemonSpiritWeb.GameRegistry do
   use GenServer
   require Logger
 
-  defmodule GameInfo do
-    defstruct name: nil, created_at: nil
-  end
-
   @topic "game-registry"
 
   ######### Public API
@@ -17,9 +13,13 @@ defmodule DemonSpiritWeb.GameRegistry do
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
-  def add(game_name) do
+  def add(game_name, info) do
     Logger.info("GameRegistry: Asked to add #{game_name}")
-    info = %GameInfo{name: game_name, created_at: DateTime.utc_now()}
+    put(game_name, info)
+    notify()
+  end
+
+  def update(game_name, info) do
     put(game_name, info)
     notify()
   end
@@ -33,7 +33,7 @@ defmodule DemonSpiritWeb.GameRegistry do
   def list() do
     :ets.match(__MODULE__, :"$1")
     |> Enum.map(fn [{_k, v}] -> v end)
-    |> Enum.sort_by(fn gi -> Date.to_iso8601(gi.created_at) end, &>=/2)
+    |> Enum.sort_by(fn gi -> DateTime.to_iso8601(gi.created_at) end, &>=/2)
   end
 
   ###### Private Implementation Helpers
