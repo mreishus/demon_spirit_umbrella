@@ -76,12 +76,25 @@ defmodule DemonSpiritWeb.GameUI do
       game_name: game_name,
       all_valid_moves: all_valid_moves,
       white: nil,
-      black: nil,
+      black: prefill_computer_player(game_opts),
       selected: nil,
       move_dest: [],
       created_at: DateTime.utc_now(),
       options: game_opts
     }
+  end
+
+  defp prefill_computer_player(game_opts = %GameUIOptions{vs: vs, computer_skill: computer_skill}) do
+    case vs do
+      "human" ->
+        nil
+
+      "computer" ->
+        %{
+          type: :computer,
+          name: "Computer (Level #{Integer.to_string(computer_skill |> div(10))})"
+        }
+    end
   end
 
   @doc """
