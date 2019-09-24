@@ -25,6 +25,6 @@
 
 Live View is installed.  Starting work on UI.  Current view:
 
-![Early Screenshot](/screenshot.png?raw=true "Early Screenshot")
+![Early Screenshot](/screenshot2.png?raw=true "Early Screenshot")
 
 Current task:  Building out `DemonSpiritWeb` module.
