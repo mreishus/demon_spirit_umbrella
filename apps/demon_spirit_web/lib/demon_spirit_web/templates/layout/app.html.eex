@@ -35,15 +35,7 @@
         </div>
       </div>
     </header>
-    <main role="main" class="container mx-auto px-4">
-
-      <div class="btn btn-primary">
-        BTA N
-      </div>
-      <div class="btn btn-gray">
-        BTN
-      </div>
-
+    <main role="main" class="container mx-auto px-4 pt-2">
       <%= if get_flash(@conn, :info) != nil do %>
         <p class="alert alert-info mt-2" role="alert"><%= get_flash(@conn, :info) %></p>
       <% end %>

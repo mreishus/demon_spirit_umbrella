@@ -1,4 +1,4 @@
-<div class="card
+<div class="card mx-4
      <%= if @flip do %>
        flip
      <% end %>
@@ -9,7 +9,7 @@
     <%= @card.name %>
   </span>
 
-  <table class="table_card">
+  <table class="table_card w-full">
     <tbody>
       <%= for i <- 0..4 do %>
         <tr class="card_row">

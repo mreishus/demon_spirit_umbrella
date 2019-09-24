@@ -178,53 +178,64 @@ td .content {
 }
 </style>
 
-<div class="flex flex-wrap">
-  <div class="w-full h-auto flex items-center justify-center">
-    <%# Top Bar  %>
+<div class="flex md:flex-row-reverse flex-wrap">
+  <div class="w-full md:w-3/4 bg-gray-500 p-4 text-center text-gray-200">1</div>
+  <div class="w-full md:w-1/4 bg-gray-400 p-4 text-center text-gray-700">
+
+    <div class="pos-rel">
+    <%= render "show/board.html", state: @state, flip_per: @flip_per %>
+    </div>
+    2</div>
+</div>
+
+<div class="grid">
+  <div class="box box-header">
     <%= for card <- top_cards do %>
       <%= render "show/card.html", card: card, flip: true %>
     <% end %>
   </div>
-  <div class="w-full p-4 text-center text-gray-800">
-    <%# Main %>
+  <div class="box box-force-square box-a pos-rel">
 
-    <div class="flex items-center justify-center">
-
-      <%# Main - Board %>
-      <div class="h-64 w-64 md:h-96 md:w-96 xl:h-128 xl:w-128 relative">
-        <%= render "show/board.html", state: @state, flip_per: @flip_per %>
-      </div>
-
-      <%# Main - Side %>
-      <div class="text-gray-900 ml-4">
-          <div>
-            <%= render "show/player.html", player: top_player %>
-          </div>
-
-          <div>
-            <%= render "show/card.html",
-                card: game.cards.side,
-                flip: (game.turn == :black and not @flip_per) || (@flip_per and game.turn == :white) 
-            %>
-            <%= if game.winner == nil do %>
-              <p style="margin-top: 10px; font-size: 24px">
-                <%= game.turn %>'s turn
-              </p>
-            <% end %>
-          </div>
-
-          <div>
-            <%= render "show/player.html", player: bottom_player %>
-          </div>
-
-      </div>
-    </div>
+    <%= render "show/board.html", state: @state, flip_per: @flip_per %>
 
   </div>
-  <div class="w-full h-auto flex items-center justify-center">
-    <%# Bottom Bar  %>
+  <div class="box box-b pos-rel flex-column-container">
+    <div>
+      <%= render "show/player.html", player: top_player %>
+    </div>
+    <div class="flex-grow" style="display: flex; align-items: center;">
+      <div>
+        <%= render "show/card.html", card: game.cards.side, flip: (game.turn == :black and not @flip_per) || (@flip_per and game.turn == :white) %>
+        <%= if game.winner == nil do %>
+          <p style="margin-top: 10px; font-size: 24px">
+            <%= game.turn %>'s turn
+          </p>
+        <% end %>
+      </div>
+    </div>
+    <div>
+      <%= render "show/player.html", player: bottom_player %>
+    </div>
+  </div>
+  <div class="box box-footer">
     <%= for card <- bottom_cards do %>
       <%= render "show/card.html", card: card, flip: false %>
     <% end %>
   </div>
 </div>
+%>
+
+<pre>
+  <%#= inspect(game, pretty: true) %>
+</pre>
+<pre>
+  <%= inspect(@users, pretty: true) %>
+</pre>
+<pre>
+  <%= inspect(@state, pretty: true) %>
+</pre>
+
+PHX Hook Example
+<br />Type 10 numbers
+<input type="text" name="user[phone_number]" phx-hook="PhoneNumber"/>
+

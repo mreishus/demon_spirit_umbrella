@@ -1,0 +1,65 @@
+<% game = @state.game %>
+
+<%= if game.winner != nil do %>
+  <div class="winner_overlay">
+    <div style="height: 100%; width: 100%; display: flex; align-items: center">
+      <div style="width: 100%;">
+        <center>
+        <%= game.winner %> wins!
+        </center>
+      </div>
+      </span>
+    </div>
+  </div>
+<% end %>
+
+<div class="chessboard">
+  <%# Render Pieces %>
+  <%= for {{x, y}, piece} <- game.board do %>
+    <div 
+      phx-click="click-square-<%= x %>-<%= y %>"
+    draggable='true' phx-hook="Draggable"
+    class="piece <%= piece.type %> <%= piece.color %>" style="
+    position: absolute;
+    <%= if @flip_per do %>
+      transform: translate( <%= (4 - x) * 100 %>%, <%= y * 100 %>%);
+    <% else %>
+      transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
+    <% end %>
+    ">
+    </div>
+  <% end %>
+
+  <%# Render Square Targets %>
+  <%= for x <- [0, 1, 2, 3, 4] do %>
+    <%= for y <- [0, 1, 2, 3, 4] do %>
+      <div
+        phx-click="click-square-<%= x %>-<%= y %>"
+        class="square
+        <%= if {x, y} == @state.selected do %>
+          selected
+        <% end %>
+        <%= if {x, y} in @state.move_dest do %>
+          move_dest
+        <% end %>
+        <%= if @state.game.board |> Map.has_key?({x,y}) do %>
+          also_piece
+        <% end %>
+        <%= if @state.last_move != nil and (@state.last_move.from == {x, y} or @state.last_move.to == {x, y}) do %>
+          last_move
+        <% end %>
+        " style="
+      position: absolute;
+
+      <%= if @flip_per do %>
+        transform: translate( <%= (4 - x) * 100 %>%, <%= y * 100 %>%);
+      <% else %>
+        transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
+      <% end %>
+
+      "><!--
+      Blank Square
+      --></div>
+    <% end %>
+  <% end %>
+</div>
