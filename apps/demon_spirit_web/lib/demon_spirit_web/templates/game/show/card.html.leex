@@ -1,41 +1,41 @@
 <div class="card mx-4
     bg-gray-200
-    border shadow
+    border shadow-md
     rounded
-    p-2 pt-0 inline-block
+    inline-block
     w-24 lg:w-32
-
-     <%= if @flip do %>
-       flip
-     <% end %>
-     <%= @card.color %>
+    <%= @card.color %>
   "
   >
-  <span class="title font-semibold py-1 inline-block text-lg">
-    <%= @card.name %>
-  </span>
+  <div class="p-2 pt-0
+     <%= if @flip do %> flip <% end %> 
+  ">
+    <span class="title font-semibold py-1 inline-block text-lg">
+      <%= @card.name %>
+    </span>
 
-  <table class="table_card w-full">
-    <tbody>
-      <%= for i <- 0..4 do %>
-        <tr class="card_row">
-          <%= for j <- 0..4 do %>
-              <%
-                x = j - 2
-                y = (i * -1) + 2
-              %>
-              <td class="card_cell
-                <%= if {x, y} in @card.moves do %>
-                  move
-                <% end %>
-                <%= if {x, y} == {0, 0} do %>
-                    center
-                <% end %>
-              ">
-            </td>
-          <% end %>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+    <table class="table_card w-full">
+      <tbody>
+        <%= for i <- 0..4 do %>
+          <tr class="card_row">
+            <%= for j <- 0..4 do %>
+                <%
+                  x = j - 2
+                  y = (i * -1) + 2
+                %>
+                <td class="card_cell
+                  <%= if {x, y} in @card.moves do %>
+                    move
+                  <% end %>
+                  <%= if {x, y} == {0, 0} do %>
+                      center
+                  <% end %>
+                ">
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>

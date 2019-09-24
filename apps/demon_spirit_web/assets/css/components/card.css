@@ -2,7 +2,7 @@
 .card .title {
   transition: all 0.5s ease-in-out;
 }
-.card.flip {
+.flip {
   transform: rotate(180deg);
 }
 
