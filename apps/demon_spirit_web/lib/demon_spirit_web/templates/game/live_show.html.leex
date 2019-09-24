@@ -4,6 +4,8 @@
 <% top_player  = if @flip_per, do: @state.white, else: @state.black %>
 <% bottom_cards   = if @flip_per, do: game.cards.black, else: game.cards.white %>
 <% bottom_player  = if @flip_per, do: @state.black, else: @state.white %>
+<% bottom_next = game.winner == nil and if @flip_per, do: game.turn == :black, else: game.turn == :white %>
+<% top_next = game.winner == nil and if @flip_per, do: game.turn == :white, else: game.turn == :black %>
 
 <style>
 
@@ -184,8 +186,13 @@ td .content {
       </div>
 
       <%# Main - Side %>
-      <div class="text-gray-900 ml-4">
+      <div class="h-64 md:h-96 xl:h-128 flex flex-col justify-between ml-4">
           <div>
+            <%= if top_next do %>
+              <div class="bg-blue-200 text-blue-600 font-semibold rounded">
+                Next Move<br />
+              </div>
+            <% end %>
             <%= render "show/player.html", player: top_player %>
           </div>
 
@@ -202,6 +209,11 @@ td .content {
           </div>
 
           <div>
+            <%= if bottom_next do %>
+              <div class="bg-blue-200 text-blue-600 font-semibold rounded">
+                Next Move<br />
+              </div>
+            <% end %>
             <%= render "show/player.html", player: bottom_player %>
           </div>
 
