@@ -1,0 +1,32 @@
+.btn {
+  @apply inline-block px-3 py-2 rounded-lg text-sm tracking-wider font-semibold;
+}
+.btn:focus {
+  @apply outline-none shadow-outline;
+}
+
+.btn-primary {
+  @apply bg-blue-700 text-white;
+}
+.btn-primary:hover {
+  @apply bg-blue-400;
+}
+.btn-primary:active {
+  @apply bg-blue-600;
+}
+
+.btn-gray {
+  @apply bg-gray-400 text-white;
+}
+.btn-gray:hover {
+  @apply bg-gray-300;
+}
+.btn-gray:active {
+  @apply bg-gray-500;
+}
+
+@screen sm {
+  .xxxxbtn {
+    @apply text-base
+  }
+}

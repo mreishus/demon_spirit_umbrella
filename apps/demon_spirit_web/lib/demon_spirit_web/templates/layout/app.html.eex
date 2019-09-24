@@ -7,36 +7,49 @@
     <title>DemonSpirit · Phoenix Framework</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
-  <body>
+  <body class="antialiased text-gray-900">
     <header>
-      <section class="container">
-        <nav role="navigation">
-          <ul>
-            <%= if @current_guest do %>
-              <li>Logged in as <%= @current_guest.name %> (guest).
-                <%= link "Log Out", to: Routes.session_path(@conn, :delete), method: :delete  %>
-              </li>
-            <% else %>
-              <li>
-                <%= link "Log In", to: Routes.session_path(@conn, :new)  %>
-              </li>
-              
-            <% end %>
+      <div class="bg-gray-100 font-sans w-full m-0 mb-2 shadow">
+        <div class="bg-blue-700 text-white shadow">
+          <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-1">
+              <!-- Left Side -->
+              <div class="flex items-center">
+                <%= link "Demon Spirit", to: Routes.game_path(@conn, :index), class: "underline hover:text-blue-300" %>
+              </div>
 
-          </ul>
+              <!-- Right Side -->
+              <div class="flex items-center">
+                <%= if @current_guest do %>
+                  <span class="mx-6">
+                  Logged in as <%= @current_guest.name %> (guest).
+                  </span>
+                  <%= link "Log Out", to: Routes.session_path(@conn, :delete), method: :delete, class: "hover:text-red-600 underline"  %>
+                <% else %>
+                    <%= link "Log In", to: Routes.session_path(@conn, :new), class: "underline hover:text-blue-300"  %>
+                <% end %>
+              </div>
 
-        </nav>
-        <%= link "Demon Spirit", to: Routes.game_path(@conn, :index) %>
-        <!--
-        <a href="http://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
-      </section>
-        -->
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
-    <main role="main" class="container">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    <main role="main" class="container mx-auto px-4">
+
+      <div class="btn btn-primary">
+        BTA N
+      </div>
+      <div class="btn btn-gray">
+        BTN
+      </div>
+
+      <%= if get_flash(@conn, :info) != nil do %>
+        <p class="alert alert-info mt-2" role="alert"><%= get_flash(@conn, :info) %></p>
+      <% end %>
+      <%= if get_flash(@conn, :error) != nil do %>
+        <p class="alert alert-error mt-2" role="alert"><%= get_flash(@conn, :error) %></p>
+      <% end %>
       <%= render @view_module, @view_template, assigns %>
     </main>
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>

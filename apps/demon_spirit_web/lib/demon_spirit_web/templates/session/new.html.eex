@@ -4,7 +4,7 @@
     Please log in as a guest account.
     <%= form_for @guest, Routes.session_path(@conn, :create), fn f -> %>
       <%= label f, :name %>
-      <%= text_input f, :name, placeholder: "Name", autofocus: true, required: true %>
+      <%= text_input f, :name, placeholder: "Name", autofocus: true, required: true, class: 'form-control' %>
       <%= error_tag f, :name %>
       <%= submit "Log In As Guest", class: "btn btn-primary" %>
     <% end %>
