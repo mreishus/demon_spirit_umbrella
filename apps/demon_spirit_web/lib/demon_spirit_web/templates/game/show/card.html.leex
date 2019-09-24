@@ -1,11 +1,17 @@
 <div class="card mx-4
+    bg-gray-200
+    border shadow
+    rounded
+    p-2 pt-0 inline-block
+    w-24 lg:w-32
+
      <%= if @flip do %>
        flip
      <% end %>
      <%= @card.color %>
   "
-  style="">
-  <span class="title">
+  >
+  <span class="title font-semibold py-1 inline-block text-lg">
     <%= @card.name %>
   </span>
 
@@ -20,7 +26,7 @@
               %>
               <td class="card_cell
                 <%= if {x, y} in @card.moves do %>
-                    move
+                  move
                 <% end %>
                 <%= if {x, y} == {0, 0} do %>
                     center

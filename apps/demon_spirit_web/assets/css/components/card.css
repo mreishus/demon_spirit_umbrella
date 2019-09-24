@@ -1,0 +1,20 @@
+
+.card .title {
+  transition: all 0.5s ease-in-out;
+}
+.card.flip {
+  transform: rotate(180deg);
+}
+
+td.card_cell.center {
+  @apply bg-gray-800
+}
+.card.green td.card_cell.move {
+  @apply bg-green-600
+}
+.card.blue td.card_cell.move {
+  @apply bg-blue-600
+}
+.card.red td.card_cell.move {
+  @apply bg-red-600
+}

@@ -113,19 +113,7 @@
 }
 
 /* Cards */
-.card {
-  background-color: #EEE;
-  padding: 5px;
-  display: inline-block;
-  width: 90px;
-  border-radius: 5px;
-}
-.card .title {
-  transition: all 0.5s ease-in-out;
-}
-.card.flip {
-  transform: rotate(180deg);
-}
+
 table.table_card {
   border-collapse: collapse;
   margin-bottom: 0px;
@@ -135,18 +123,6 @@ td.card_cell {
   padding: 0px;
   width: 20%;
   transition: all 0.5s ease-in-out;
-}
-td.card_cell.center {
-  background-color: #333;
-}
-.card.green td.card_cell.move {
-  background-color: green;
-}
-.card.blue td.card_cell.move {
-  background-color: #0a6783;
-}
-.card.red td.card_cell.move {
-  background-color: #830a0a;
 }
 
 td:after {
@@ -179,20 +155,32 @@ td .content {
 </style>
 
 <div class="flex flex-wrap">
-  <div class="w-full h-auto flex items-center justify-center">
-    <%# Top Bar  %>
-    <%= for card <- top_cards do %>
-      <%= render "show/card.html", card: card, flip: true %>
-    <% end %>
-  </div>
   <div class="w-full p-4 text-center text-gray-800">
     <%# Main %>
 
     <div class="flex items-center justify-center">
 
       <%# Main - Board %>
-      <div class="h-64 w-64 md:h-96 md:w-96 xl:h-128 xl:w-128 relative">
-        <%= render "show/board.html", state: @state, flip_per: @flip_per %>
+      <div class=" w-64  md:w-96  xl:w-128 relative">
+
+        <div class="w-full h-auto flex items-center justify-center mb-4">
+          <%# Top Bar  %>
+          <%= for card <- top_cards do %>
+            <%= render "show/card.html", card: card, flip: true %>
+          <% end %>
+        </div>
+
+        <div class="h-64 w-64 md:h-96 md:w-96 xl:h-128 xl:w-128 relative">
+          <%= render "show/board.html", state: @state, flip_per: @flip_per %>
+        </div>
+
+        <div class="w-full h-auto flex items-center justify-center mt-4">
+          <%# Top Bar  %>
+          <%= for card <- bottom_cards do %>
+            <%= render "show/card.html", card: card, flip: false %>
+          <% end %>
+        </div>
+
       </div>
 
       <%# Main - Side %>
@@ -220,11 +208,5 @@ td .content {
       </div>
     </div>
 
-  </div>
-  <div class="w-full h-auto flex items-center justify-center">
-    <%# Bottom Bar  %>
-    <%= for card <- bottom_cards do %>
-      <%= render "show/card.html", card: card, flip: false %>
-    <% end %>
   </div>
 </div>
