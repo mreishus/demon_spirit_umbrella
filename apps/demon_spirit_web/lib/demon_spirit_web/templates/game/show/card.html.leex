@@ -14,7 +14,7 @@
       <%= @card.name %>
     </span>
 
-    <table class="table_card w-full">
+    <table class="border-collapse mb-0 w-full">
       <tbody>
         <%= for i <- 0..4 do %>
           <tr class="card_row">
@@ -23,7 +23,7 @@
                   x = j - 2
                   y = (i * -1) + 2
                 %>
-                <td class="card_cell
+                <td class="card_cell border border-black w-1/5 p-0
                   <%= if {x, y} in @card.moves do %>
                     move
                   <% end %>

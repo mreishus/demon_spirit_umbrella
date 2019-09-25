@@ -4,7 +4,7 @@ defmodule DemonSpiritGame.GameServer do
   """
   use GenServer
   require Logger
-  @timeout :timer.hours(2)
+  @timeout :timer.hours(1)
 
   alias DemonSpiritGame.{Game, Move}
 

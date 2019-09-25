@@ -25,7 +25,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   use GenServer
-  @timeout :timer.hours(2)
+  @timeout :timer.hours(1)
   @timeout_game_won :timer.minutes(5)
 
   require Logger

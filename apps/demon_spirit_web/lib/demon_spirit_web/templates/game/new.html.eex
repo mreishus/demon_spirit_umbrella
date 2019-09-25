@@ -6,9 +6,10 @@
   <li>Choose Expansions / Sets of Cards</li>
 </ul>
 -->
+<h2 class="text-lg font-semibold">New Game Options</h2>
 <%= form_for @conn, Routes.game_path(@conn, :create), [as: :game_opts], fn f ->  %>
-  <%= label f, "Play against human or computer?" %>
-  <%= select(f, :vs, ["Human": "human", "Computer": "computer"]) %>
+  <%= label f, "Play against human or computer?", class: "block font-semibold mt-6" %>
+  <%= select(f, :vs, ["Human": "human", "Computer": "computer"], class: "mt-4 rounded p-1 border") %>
   <%= select(f, :computer_skill, [
         "Level 0 (Easiest)": 1,
         "Level 1": 10,
@@ -21,9 +22,8 @@
         "Level 8": 80,
         "Level 9": 90,
         "Level 10 (Hardest)": 100,
-], class: "hidden") %>
-  <br />
-  <%= submit "Start Game", class: "btn btn-primary" %>
+], class: "hidden mt-4 p-1 rounded block border") %>
+  <%= submit "Start Game", class: "btn btn-primary mt-4 block" %>
 <% end %>
 
 <style>
