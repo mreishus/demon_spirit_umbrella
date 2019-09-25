@@ -80,8 +80,12 @@ td .content {
   bottom: 0;
   left: 0;
   right: 0;
-} 
+}
 </style>
+
+<%= if staging?(@state) do %>
+  <%= render "show/ready.html", state: @state, socket: @socket, guest: @guest %>
+<% end %>
 
 <div class="flex flex-wrap">
   <div class="w-full p-4 text-center text-gray-800">
@@ -92,27 +96,38 @@ td .content {
       <%# Main - Board %>
       <div class=" w-64  md:w-96  xl:w-128 relative">
 
-        <div class="w-full h-auto flex items-center justify-center mb-4">
-          <%# Top Bar  %>
-          <%= for card <- top_cards do %>
-            <%= render "show/card.html", card: card, flip: true %>
-          <% end %>
-        </div>
+        <%# Top cards, hide while staging %>
+        <%= if staging?(@state) do %>
+          <div class="w-full h-32 mb-4"></div>
+        <% else %>
+          <div class="w-full h-auto flex items-center justify-center mb-4">
+            <%# Top Bar  %>
+            <%= for card <- top_cards do %>
+              <%= render "show/card.html", card: card, flip: true %>
+            <% end %>
+          </div>
+        <% end %>
 
         <div class="h-64 w-64 md:h-96 md:w-96 xl:h-128 xl:w-128 relative">
           <%= render "show/board.html", state: @state, flip_per: @flip_per %>
         </div>
 
-        <div class="w-full h-auto flex items-center justify-center mt-4">
-          <%# Top Bar  %>
-          <%= for card <- bottom_cards do %>
-            <%= render "show/card.html", card: card, flip: false %>
-          <% end %>
-        </div>
+        <%# Bottom cards, hide while staging %>
+        <%= if staging?(@state) do %>
+          <div class="w-full h-32 mb-4"></div>
+        <% else %>
+          <div class="w-full h-auto flex items-center justify-center mt-4">
+            <%# Top Bar  %>
+            <%= for card <- bottom_cards do %>
+              <%= render "show/card.html", card: card, flip: false %>
+            <% end %>
+          </div>
+        <% end %>
 
       </div>
 
       <%# Main - Side %>
+      <%= if not staging?(@state) do %>
       <div class="h-64 md:h-96 xl:h-128 flex flex-col justify-between ml-4">
           <div>
             <%= if top_next do %>
@@ -126,7 +141,7 @@ td .content {
           <div>
             <%= render "show/card.html",
                 card: game.cards.side,
-                flip: (game.turn == :black and not @flip_per) || (@flip_per and game.turn == :white) 
+                flip: (game.turn == :black and not @flip_per) || (@flip_per and game.turn == :white)
             %>
             <%= if game.winner == nil do %>
               <p style="margin-top: 10px; font-size: 24px">
@@ -145,6 +160,8 @@ td .content {
           </div>
 
       </div>
+      <% end %>
+
     </div>
 
   </div>

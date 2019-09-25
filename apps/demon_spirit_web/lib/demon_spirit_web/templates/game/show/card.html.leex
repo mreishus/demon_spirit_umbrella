@@ -10,7 +10,13 @@
   <div class="p-2 pt-0
      <%= if @flip do %> flip <% end %> 
   ">
-    <span class="title font-semibold py-1 inline-block text-lg">
+    <span class="title font-semibold py-1 inline-block 
+      <%= if String.length(@card.name) > 8 do %>
+        text-md
+      <% else %>
+        text-lg
+      <% end %>
+    ">
       <%= @card.name %>
     </span>
 

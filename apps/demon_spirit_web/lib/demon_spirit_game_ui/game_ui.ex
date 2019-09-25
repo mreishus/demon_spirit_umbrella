@@ -1,5 +1,5 @@
 defmodule DemonSpiritWeb.GameUI do
-  alias DemonSpiritGame.{GameServer, GameSupervisor, Move}
+  alias DemonSpiritGame.{GameServer, GameSupervisor, Move, Game}
   alias DemonSpiritWeb.{GameUI, GameUIOptions}
 
   @moduledoc """
@@ -8,8 +8,11 @@ defmodule DemonSpiritWeb.GameUI do
   game: %Game{} holding the actual game.  This is duplicated, since the GameServer holds it too.
   game_name: t.String() holding the game name.
   all_valid_moves: [ %Move{}, ... ]
+  status: :staging | :playing | :done
   white: any.  Represents the player in the white seat.
   black: any.  Represents the player in the black seat.
+  white_ready: boolean
+  black_ready: boolean
   selected: nil, or, The coordinate of the piece that is currently selected.
   move_dest: If a piece is selected, the coordinates of where that piece may move to.
   last_move: nil, or the %Move{} describing the last move taken.
@@ -19,9 +22,12 @@ defmodule DemonSpiritWeb.GameUI do
   defstruct game: nil,
             game_name: nil,
             all_valid_moves: [],
-            state: nil,
+            status: :staging,
+            game_started: false,
             white: nil,
             black: nil,
+            white_ready: false,
+            black_ready: false,
             selected: nil,
             move_dest: [],
             last_move: nil,
@@ -76,7 +82,9 @@ defmodule DemonSpiritWeb.GameUI do
       game_name: game_name,
       all_valid_moves: all_valid_moves,
       white: nil,
+      white_ready: prefill_ready_if_vs_computer(game_opts),
       black: prefill_computer_player(game_opts),
+      black_ready: prefill_ready_if_vs_computer(game_opts),
       selected: nil,
       move_dest: [],
       created_at: DateTime.utc_now(),
@@ -84,7 +92,10 @@ defmodule DemonSpiritWeb.GameUI do
     }
   end
 
-  defp prefill_computer_player(game_opts = %GameUIOptions{vs: vs, computer_skill: computer_skill}) do
+  defp prefill_ready_if_vs_computer(%GameUIOptions{vs: "computer"}), do: true
+  defp prefill_ready_if_vs_computer(_), do: false
+
+  defp prefill_computer_player(%GameUIOptions{vs: vs, computer_skill: computer_skill}) do
     case vs do
       "human" ->
         nil
@@ -118,6 +129,80 @@ defmodule DemonSpiritWeb.GameUI do
       true ->
         gameui
     end
+    |> check_status_advance()
+  end
+
+  @doc """
+  stand_up_if_possible/2:  If the person passed is sitting
+  in one of the seats, and the game is still in the staging
+  status, remove them.
+  Input 1: %GameUI{}
+  Input 2: any (Represents a person, must be consistent with other functions taking a person)
+  Output: %GameUI{}
+  """
+  def stand_up_if_possible(gameui, person) do
+    cond do
+      gameui.status == :staging && gameui.black == person ->
+        %{gameui | black: nil, black_ready: false}
+
+      gameui.status == :staging && gameui.white == person ->
+        %{gameui | white: nil, white_ready: false}
+
+      true ->
+        gameui
+    end
+  end
+
+  @doc """
+  ready/2: Person clicked ready.
+  """
+  def ready(gameui, person) do
+    ready_updater(gameui, person, true)
+    |> check_status_advance()
+  end
+
+  @doc """
+  not_ready/2: Person clicked not ready.
+  """
+  def not_ready(gameui, person) do
+    ready_updater(gameui, person, false)
+    |> check_status_advance()
+  end
+
+  defp ready_updater(gameui, person, value) do
+    cond do
+      gameui.status == :staging && gameui.black == person ->
+        %{gameui | black_ready: value}
+
+      gameui.status == :staging && gameui.white == person ->
+        %{gameui | white_ready: value}
+
+      false ->
+        gameui
+    end
+  end
+
+  def check_status_advance(gameui = %GameUI{status: :staging}) do
+    cond do
+      everyone_ready(gameui) ->
+        %{gameui | status: :playing}
+
+      true ->
+        gameui
+    end
+  end
+
+  def check_status_advance(gameui = %GameUI{status: :playing, game: %Game{winner: winner}})
+      when not is_nil(winner) do
+    %{gameui | status: :done}
+  end
+
+  def check_status_advance(gameui) do
+    gameui
+  end
+
+  defp everyone_ready(gameui) do
+    gameui.white != nil and gameui.black != nil and gameui.white_ready and gameui.black_ready
   end
 
   @doc """
@@ -228,5 +313,9 @@ defmodule DemonSpiritWeb.GameUI do
   def computer_next?(gameui) do
     ## Add something about turns here TODO
     gameui.options.vs == "computer"
+  end
+
+  def staging?(gameui) do
+    gameui.status == :staging
   end
 end

@@ -15,8 +15,28 @@
   @apply bg-blue-600;
 }
 
+.btn-red {
+  @apply bg-red-700 text-white;
+}
+.btn-red:hover {
+  @apply bg-red-400;
+}
+.btn-red:active {
+  @apply bg-red-600;
+}
+
+.btn-green {
+  @apply bg-green-700 text-white;
+}
+.btn-green:hover {
+  @apply bg-green-400;
+}
+.btn-green:active {
+  @apply bg-green-600;
+}
+
 .btn-gray {
-  @apply bg-gray-400 text-white;
+  @apply bg-gray-400 text-gray-900;
 }
 .btn-gray:hover {
   @apply bg-gray-300;
@@ -24,6 +44,7 @@
 .btn-gray:active {
   @apply bg-gray-500;
 }
+
 
 @screen sm {
   .xxxxbtn {

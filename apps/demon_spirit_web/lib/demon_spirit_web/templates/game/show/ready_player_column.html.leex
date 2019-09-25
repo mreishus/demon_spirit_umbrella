@@ -1,0 +1,25 @@
+<div class="w-1/2 px-2">
+  <div class="<%= @bg %> rounded h-32 flex flex-col justify-between py-2">
+    <div class="text-center font-semibold text-2xl">
+      <%= @color %>
+    </div>
+    <div class="text-center text-xl">
+      <%= render "show/player.html", player: @player %>
+    </div>
+
+    <%= if @player != nil do %>
+      <div class="text-center text-lg font-semibold">
+        <%= if @ready do %>
+          <span class="text-green-600 bg-green-200 p-1 rounded inline-block">
+            Ready.
+          </span>
+        <% else %>
+          <span class="text-red-600 bg-red-200 p-1 rounded inline-block">
+            Not Ready.
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+
+  </div>
+</div>

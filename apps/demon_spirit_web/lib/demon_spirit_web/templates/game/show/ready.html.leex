@@ -1,0 +1,50 @@
+<div class="fixed w-full h-full left-0 top-0 overflow-auto z-10000 bg-black-60">
+
+  <!-- Modal content -->
+  <div class="p-4 w-5/6 xl:w-1/2 bg-gray-100 border border-gray-600 rounded-lg shadow-lg" style="margin: 15% auto">
+    <h2 class="text-2xl">Waiting for players..</h2>
+
+      <div class="px-2 mt-4">
+        <div class="flex -mx-2">
+
+          <%= render "show/ready_player_column.html", player: @state.white, ready: @state.white_ready, color: "White", bg: "bg-gray-300" %>
+          <%= render "show/ready_player_column.html", player: @state.black, ready: @state.black_ready, color: "Black", bg: "bg-gray-400" %>
+
+        </div>
+      </div>
+
+      <div class="text-lg mt-4">
+        <span class="text-gray-600">Room name:</span>
+        <%= @state.game_name %>
+      </div>
+      <div class="text-lg mt-1">
+        <span class="text-gray-600">Link:</span>
+        <input type="text" readonly class="form-control w-4/5 inline-block"
+          value="<%= Routes.game_path(@socket, :show, @state.game_name) %>"
+        / >
+        <div class="text-sm text-gray-600">
+          Send the link to a friend to have them join the game.
+        </div>
+      </div>
+      <div class="mt-2 flex justify-around w-1/2 mx-auto">
+
+        <%= if show_ready_button?(@state, @guest) do %>
+          <button class="btn btn-green" phx-click="click-ready" >
+            Ready
+          </button>
+        <% end %>
+
+        <%= if show_not_ready_button?(@state, @guest) do %>
+          <button class="btn btn-red" phx-click="click-not-ready" >
+            Not Ready
+          </button>
+        <% end %>
+
+        <button class="btn btn-gray" phx-click="click-leave" >
+          Leave Room
+        </button>
+      </div>
+
+  </div>
+
+</div>

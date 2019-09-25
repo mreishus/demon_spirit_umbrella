@@ -2,6 +2,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
   use Phoenix.LiveView
   require Logger
   alias DemonSpiritWeb.{Endpoint, GameUIServer, GameView, Presence}
+  alias DemonSpiritWeb.Router.Helpers, as: Routes
 
   def render(assigns) do
     GameView.render("live_show.html", assigns)
@@ -33,6 +34,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:ok, socket}
   end
 
+  ## Event: "click-square-3-3" (Someone clicked on square (3,3))
   def handle_event(
         "click-square-" <> coords_str,
         _value,
@@ -45,6 +47,45 @@ defmodule DemonSpiritWeb.LiveGameShow do
     notify(topic)
 
     {:noreply, assign(socket, state: state, flip_per: guest == state.black)}
+  end
+
+  def handle_event(
+        "click-ready",
+        _value,
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    Logger.info("Game #{game_name}: Someone clicked ready")
+    state = GameUIServer.ready(game_name, guest)
+    notify(topic)
+    {:noreply, assign(socket, state: state)}
+  end
+
+  def handle_event(
+        "click-not-ready",
+        _value,
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    Logger.info("Game #{game_name}: Someone clicked not ready")
+    state = GameUIServer.not_ready(game_name, guest)
+    notify(topic)
+    {:noreply, assign(socket, state: state)}
+  end
+
+  def handle_event(
+        "click-leave",
+        _value,
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    Logger.info("Game #{game_name}: Someone clicked leave")
+    state = GameUIServer.stand_up_if_possible(game_name, guest)
+    notify(topic)
+
+    socket =
+      socket
+      |> assign(state: state)
+      |> redirect(to: Routes.game_path(socket, :index))
+
+    {:stop, socket}
   end
 
   defp extract_coords(coords_str) do
@@ -96,6 +137,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:noreply, assign(socket, users: users)}
   end
 
+  # Handle ":tick", a request to update game state on a timer
   def handle_info(
         :tick,
         socket = %{assigns: %{game_name: game_name}}

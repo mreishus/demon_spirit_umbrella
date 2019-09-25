@@ -92,6 +92,31 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   @doc """
+  stand_up_if_possible/2: Stand up from a seat if the game hasn't started yet.
+  Returns state.
+  """
+  # @spec stand_up_if_possible(any) :: %Game{}
+  def stand_up_if_possible(game_name, person) do
+    GenServer.call(via_tuple(game_name), {:stand_up_if_possible, person})
+  end
+
+  @doc """
+  ready/2: Person clicked ready.
+  """
+  # @spec ready(any) :: %Game{}
+  def ready(game_name, person) do
+    GenServer.call(via_tuple(game_name), {:ready, person})
+  end
+
+  @doc """
+  not_ready/2: Person clicked not_ready.
+  """
+  # @spec not_ready(any) :: %Game{}
+  def not_ready(game_name, person) do
+    GenServer.call(via_tuple(game_name), {:not_ready, person})
+  end
+
+  @doc """
   click/3: A person has clicked on square {x, y}.
   Inputs:
      game_name (String)
@@ -171,6 +196,24 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   def handle_call({:sit_down_if_possible, person}, _from, gameui) do
     gameui = GameUI.sit_down_if_possible(gameui, person)
+    GameRegistry.update(gameui.game_name, game_info(gameui))
+    {:reply, gameui, gameui, timeout(gameui)}
+  end
+
+  def handle_call({:stand_up_if_possible, person}, _from, gameui) do
+    gameui = GameUI.stand_up_if_possible(gameui, person)
+    GameRegistry.update(gameui.game_name, game_info(gameui))
+    {:reply, gameui, gameui, timeout(gameui)}
+  end
+
+  def handle_call({:ready, person}, _from, gameui) do
+    gameui = GameUI.ready(gameui, person)
+    GameRegistry.update(gameui.game_name, game_info(gameui))
+    {:reply, gameui, gameui, timeout(gameui)}
+  end
+
+  def handle_call({:not_ready, person}, _from, gameui) do
+    gameui = GameUI.not_ready(gameui, person)
     GameRegistry.update(gameui.game_name, game_info(gameui))
     {:reply, gameui, gameui, timeout(gameui)}
   end
