@@ -292,6 +292,8 @@ defmodule DemonSpiritWeb.GameUI do
             move_dest: [],
             last_move: move
         }
+        |> check_status_advance()
+        |> IO.inspect()
 
       {:error, _} ->
         %{state | selected: nil, move_dest: []}

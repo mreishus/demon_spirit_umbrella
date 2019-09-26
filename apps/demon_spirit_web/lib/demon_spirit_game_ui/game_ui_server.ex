@@ -21,7 +21,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   """
 
   defmodule GameInfo do
-    defstruct name: nil, created_at: nil, white: nil, black: nil, winner: nil
+    defstruct name: nil, created_at: nil, white: nil, black: nil, winner: nil, status: nil
   end
 
   use GenServer
@@ -151,7 +151,8 @@ defmodule DemonSpiritWeb.GameUIServer do
       created_at: state.created_at,
       white: state.white,
       black: state.black,
-      winner: state.game.winner
+      winner: state.game.winner,
+      status: state.status
     }
   end
 
@@ -189,9 +190,14 @@ defmodule DemonSpiritWeb.GameUIServer do
     {:reply, state, state, timeout(state)}
   end
 
-  def handle_call({:apply_move, move}, _from, state) do
-    state = GameUI.apply_move(state, move)
+  def handle_call({:apply_move, nil}, _from, state) do
     {:reply, state, state, timeout(state)}
+  end
+
+  def handle_call({:apply_move, move}, _from, gameui) do
+    gameui = GameUI.apply_move(gameui, move)
+    GameRegistry.update(gameui.game_name, game_info(gameui))
+    {:reply, gameui, gameui, timeout(gameui)}
   end
 
   def handle_call({:sit_down_if_possible, person}, _from, gameui) do
