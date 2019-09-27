@@ -6,9 +6,8 @@ defmodule DemonSpirit.Application do
   use Application
 
   def start(_type, _args) do
-    children = [
-      DemonSpirit.Repo
-    ]
+    # DemonSpirit.Repo # Removing DB for now -MR 9/27/19
+    children = []
 
     Supervisor.start_link(children, strategy: :one_for_one, name: DemonSpirit.Supervisor)
   end
