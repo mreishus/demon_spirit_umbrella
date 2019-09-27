@@ -13,7 +13,7 @@ config :demon_spirit_web, DemonSpiritWeb.Endpoint,
   url: [host: "demonspirit.xyz", port: 80],
   code_reloader: false,
   cache_static_manifest: "priv/static/cache_manifest.json",
-  check_origin: ["//demonspirit.xyz", "//example.com", "//localhost"]
+  check_origin: ["//demonspirit.xyz", "//example.com", "//localhost", "//172.22.2.30:31229", "//172.22.2.31:31229", "//172.22.2.32:31229", "//172.22.2.33:31229"]
 
 # ## SSL Support
 #
