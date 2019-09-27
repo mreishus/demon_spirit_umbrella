@@ -10,10 +10,10 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :demon_spirit_web, DemonSpiritWeb.Endpoint,
-  url: [host: "example.com", port: 80],
+  url: [host: "demonspirit.xyz", port: 80],
   code_reloader: false,
   cache_static_manifest: "priv/static/cache_manifest.json",
-  check_origin: ["//example.com", "//localhost"]
+  check_origin: ["//demonspirit.xyz", "//example.com", "//localhost"]
 
 # ## SSL Support
 #
