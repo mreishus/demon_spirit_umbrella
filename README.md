@@ -2,6 +2,23 @@
 
 *Demon Spirit*, an abstract board game on a 5x5 grid.
 
+# Status
+
+*Alpha version is deployed at [https://demonspirit.xyz/](https://demonspirit.xyz/). It's buggy.*
+
+# Most Important Issues
+
+* Drag and drop does not work.
+* No way to move pieces on the iphone: Clicking does nothing.
+* Players should not see what piece their opponents are selecting.
+* No indication when a player has left the game (closed the browser window).  You could be waiting a long time for a missing opponent.
+* No chess timer.
+* Link to game in waiting window is missing domain name.
+* Automated tests missing on web layer.
+* No CI/CD pipeline.
+* Kubernetes hosting does not use Deployment resource, only ReplicaSet.  No clear strategy for rolling out new deployments at the moment.
+* Add a chat window?
+
 # Organization
 
 * DemonSpiritGame.*
@@ -15,16 +32,7 @@
   If the web app ever tracks user accounts, win records, etc, the data models and associated functions
   will be here.  Initial implementation will be anonymous sessions only.
 
-# Status
 
-*Heavy WIP*. 
-
-`DemonSpiritGame` - ~90% done. Mostly built out and tested, with GenServers, a dynamic supervisor and a process registry.  Will probably need some sort of "What cards can this move, (specified by a pair of coordinates) use?" function that's used by the UI.
-
-`DemonSpiritWeb` - Added Guest login (no automated tests).  Need to build lobby, game creation and selection mechanism: Want games with a specific url that spawns a GenServer running `DemonSpiritGame`.  Need to build UI reflecting game state.  Need to allow users to move pieces.  
-
-Live View is installed.  Starting work on UI.  Current view:
+Current view:
 
 ![Early Screenshot](/screenshot2.png?raw=true "Early Screenshot")
-
-Current task:  Building out `DemonSpiritWeb` module.
