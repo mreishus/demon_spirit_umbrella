@@ -11,7 +11,9 @@ use Mix.Config
 # before starting your production server.
 config :demon_spirit_web, DemonSpiritWeb.Endpoint,
   url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  code_reloader: false,
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  check_origin: ["//example.com", "//localhost"]
 
 # ## SSL Support
 #

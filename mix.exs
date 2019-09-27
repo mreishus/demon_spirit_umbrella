@@ -5,7 +5,17 @@ defmodule DemonSpirit.Umbrella.MixProject do
     [
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      version: "0.1.0",
+      releases: [
+        demon_spirit_umbrella: [
+          applications: [
+            demon_spirit_web: :permanent,
+            demon_spirit_game: :permanent,
+            demon_spirit: :permanent
+          ]
+        ]
+      ]
     ]
   end
 
