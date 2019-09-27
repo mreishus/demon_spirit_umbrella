@@ -27,6 +27,8 @@ defmodule DemonSpiritWeb.GameUIServer do
   use GenServer
   @timeout :timer.hours(1)
   @timeout_game_won :timer.minutes(5)
+  @timeout_game_staging :timer.minutes(10)
+  @timeout_unknown :timer.minutes(15)
 
   require Logger
   alias DemonSpiritGame.{GameSupervisor}
@@ -228,9 +230,20 @@ defmodule DemonSpiritWeb.GameUIServer do
   # Given the current state of the game, what should the
   # GenServer timeout be? (Games with winners expire quickly)
   defp timeout(state) do
-    case state.game.winner do
-      nil -> @timeout
-      _ -> @timeout_game_won
+    state |> IO.inspect()
+
+    case state.status do
+      :done ->
+        @timeout_game_won
+
+      :staging ->
+        @timeout_game_staging
+
+      :playing ->
+        @timeout
+
+      _ ->
+        @timeout_unknown
     end
   end
 
