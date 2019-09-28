@@ -47,7 +47,8 @@ defmodule DemonSpiritWeb.MixProject do
       {:demon_spirit_game, in_umbrella: true},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:phoenix_live_view, "~> 0.3.1"}
+      {:phoenix_live_view, "~> 0.3.1"},
+      {:accessible, "~> 0.2.1"}
     ]
   end
 

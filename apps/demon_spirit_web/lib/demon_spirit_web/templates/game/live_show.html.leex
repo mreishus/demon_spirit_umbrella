@@ -109,7 +109,7 @@ td .content {
         <% end %>
 
         <div class="h-64 w-64 md:h-96 md:w-96 xl:h-128 xl:w-128 relative">
-          <%= render "show/board.html", state: @state, flip_per: @flip_per %>
+          <%= render "show/board.html", state: @state, flip_per: @flip_per, guest: @guest %>
         </div>
 
         <%# Bottom cards, hide while staging %>

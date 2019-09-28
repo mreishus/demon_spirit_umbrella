@@ -34,6 +34,8 @@ defmodule DemonSpiritWeb.GameUI do
             options: nil,
             created_at: nil
 
+  use Accessible
+
   @doc """
   new/2: Create a new gameui + game with random cards.
 

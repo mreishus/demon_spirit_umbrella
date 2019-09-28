@@ -1,4 +1,5 @@
 <% game = @state.game %>
+<% my_turn = @state[game.turn] == @guest %>
 
 <%= if game.winner != nil do %>
   <div class="absolute inset-0 w-full h-full z-2000 bg-black-60 text-white text-5xl xl:text-6xl winner_overlay">
@@ -12,6 +13,7 @@
     </div>
   </div>
 <% end %>
+
 
 <div class="chessboard w-full h-full absolute top-0 left-0">
   <%# Render Pieces %>
@@ -36,10 +38,10 @@
       <div
         phx-click="click-square-<%= x %>-<%= y %>"
         class="square
-        <%= if {x, y} == @state.selected do %>
+        <%= if my_turn and {x, y} == @state.selected do %>
           selected
         <% end %>
-        <%= if {x, y} in @state.move_dest do %>
+        <%= if my_turn and {x, y} in @state.move_dest do %>
           move_dest
         <% end %>
         <%= if @state.game.board |> Map.has_key?({x,y}) do %>

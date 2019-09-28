@@ -10,7 +10,6 @@
 
 * Drag and drop does not work.
 * No way to move pieces on the iphone: Clicking does nothing.
-* Players should not see what piece their opponents are selecting.
 * No indication when a player has left the game (closed the browser window).  You could be waiting a long time for a missing opponent.
 * No chess timer.
 * Link to game in waiting window is missing domain name.
@@ -21,6 +20,11 @@
 * Games don't seem to be dying out even when left alone for hours.  Could be related to the :ping for vs computer games?
 * "Sea Snake" card has a smaller font to avoid line wrapping, however there is still some minor visual shifting that's annoying.
 * Add a chat window?
+
+# Fixed
+
+* Players should not see what piece their opponents are selecting.
+
 
 # Organization
 
