@@ -4,7 +4,7 @@
 
 # Status
 
-*Alpha version is deployed at [https://demonspirit.xyz/](https://demonspirit.xyz/). It's buggy.*
+** Alpha version is deployed at [https://demonspirit.xyz/](https://demonspirit.xyz/). **
 
 # Most Important Issues
 

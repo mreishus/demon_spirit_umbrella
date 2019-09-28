@@ -29,17 +29,57 @@
   </div>
 <% end %>
 
-<%#
-Modal Example
+<h3 class="text-lg font-semibold mt-6">About</h3>
+<div class="mt-2 max-w-lg">
+  <p>
+    Demon Spirit is an abstract strategy game, something like chess with different rules, smaller board, and random starting conditions.
+  </p>
+  <p class="mt-2">
+    Play against a friend or the computer AI.
+  </p>
+  <p class="mt-2">
+    <span class="underline text-blue-700 cursor-pointer" id="show_rules">Show text rules</span> or
+    <%= link "Watch a YouTube video", to: "https://www.youtube.com/watch?v=IFRewjcngwU", class: "underline text-blue-700" %>
+  </p>
 
-<div class="fixed w-full h-full left-0 top-0 overflow-auto z-0 bg-black-50">
+  <div class="hidden mt-6" id="rules">
+    <h2 class="text-xl font-semibold">Rules</h2>
+    <ul class="list-disc ml-4 mt-2 mb-2">
+      <li>The pieces move according to 2 <span class="italic text-green-600">move cards</span> you have.</li>
+      <li>The king and pawns move the same.</li>
+      <li>Using a <span class="italic text-green-600">move card</span> places that card on the side, where your opponent will get it next turn.</li>
+    </ul>
+    There are two ways to win:
+    <ul class="list-disc ml-4 mt-2 mb-2">
+      <li>Capture your opponent's king.</li>
+      <li>Move your king to the square where your opponent's king started.</li>
+    </ul>
+  </div>
 
-  <!-- Modal content -->
-  <div class="px-4 pb-4 w-5/6 bg-gray-100 border border-gray-600 rounded" style="margin: 15% auto">
-    <div class="close text-gray-500 font-bold text-2xl float-right cursor-pointer">&times;</div>
-    <div class="clearfix"></div>
-    <p>Some text in the Modal..</p>
+  <div class="mt-6 text-sm text-gray-600">
+    <h2 class="text-lg font-semibold">Development</h2>
+    <p class="mt-2">
+      The site is a work in progress.
+      <%= link "Check out the GitHub", to: "https://github.com/mreishus/demon_spirit_umbrella", class: "underline text-blue-700" %>.
+    </p>
+    <p class="mt-2">
+      Made with: Elixir, Phoenix, LiveView, Tailwind CSS, Docker, Kubernetes, Caddy, Proxmox, Cloudflare.
+    </p>
+    <p class="mt-2">
+      By: <%= link "Matthew Reishus", to: "https://matthewreishus.com", class: "underline text-blue-700" %>
+    </p>
   </div>
 
 </div>
-%>
+
+<script>
+  let $ = (f) => document.querySelector(f);
+  $('#show_rules').onclick = function() {
+    $('#rules').classList.toggle('hidden');
+    if ($('#rules').classList.contains('hidden')) {
+      $('#show_rules').innerHTML = $('#show_rules').innerHTML.replace('Hide', 'Show');
+    } else {
+      $('#show_rules').innerHTML = $('#show_rules').innerHTML.replace('Show', 'Hide');
+    }
+  };
+</script>
