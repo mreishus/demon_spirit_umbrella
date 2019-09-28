@@ -93,6 +93,36 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:stop, socket}
   end
 
+  def handle_event(
+        "drag-piece",
+        %{"sx" => sx, "sy" => sy},
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    state = GameUIServer.drag_start(game_name, {sx, sy}, guest)
+    notify(topic)
+    {:noreply, assign(socket, state: state)}
+  end
+
+  def handle_event(
+        "drag-end",
+        _val,
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    state = GameUIServer.drag_end(game_name, guest)
+    notify(topic)
+    {:noreply, assign(socket, state: state)}
+  end
+
+  def handle_event(
+        "drop-piece",
+        %{"sx" => sx, "sy" => sy, "tx" => tx, "ty" => ty},
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    state = GameUIServer.drag_drop(game_name, {sx, sy}, {tx, ty}, guest)
+    notify(topic)
+    {:noreply, assign(socket, state: state)}
+  end
+
   defp extract_coords(coords_str) do
     [{x, ""}, {y, ""}] = coords_str |> String.split("-") |> Enum.map(&Integer.parse/1)
     {x, y}

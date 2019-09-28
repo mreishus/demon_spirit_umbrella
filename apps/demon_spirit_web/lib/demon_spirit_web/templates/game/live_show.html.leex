@@ -166,3 +166,10 @@ td .content {
 
   </div>
 </div>
+ <script>
+   console.log('adding top function');
+   top.onDrop = (event) => {
+     console.log("Got drop: ");
+     console.log(event);
+   };
+ </script>

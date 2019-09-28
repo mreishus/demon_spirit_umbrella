@@ -130,6 +130,21 @@ defmodule DemonSpiritWeb.GameUIServer do
     GenServer.call(via_tuple(game_name), {:click, coords, person})
   end
 
+  def drag_start(game_name, source = {sx, sy}, person)
+      when is_integer(sx) and is_integer(sy) do
+    GenServer.call(via_tuple(game_name), {:drag_start, source, person})
+  end
+
+  def drag_end(game_name, person) do
+    GenServer.call(via_tuple(game_name), {:drag_end, person})
+  end
+
+  def drag_drop(game_name, source = {sx, sy}, target = {tx, ty}, person)
+      when is_integer(sx) and is_integer(sy) and
+             is_integer(tx) and is_integer(ty) do
+    GenServer.call(via_tuple(game_name), {:drag_drop, source, target, person})
+  end
+
   ####### IMPLEMENTATION #######
 
   def init({game_name, :hardcoded_cards}) do
@@ -162,6 +177,31 @@ defmodule DemonSpiritWeb.GameUIServer do
       when is_integer(x) and is_integer(y) do
     new_gameui = GameUI.click(gameui, coords, person)
 
+    trigger_ai_move(gameui, new_gameui)
+
+    {:reply, new_gameui, new_gameui, timeout(new_gameui)}
+  end
+
+  def handle_call({:drag_start, source = {sx, sy}, person}, _from, gameui)
+      when is_integer(sx) and is_integer(sy) do
+    new_gameui = GameUI.drag_start(gameui, source, person)
+    {:reply, new_gameui, new_gameui, timeout(new_gameui)}
+  end
+
+  def handle_call({:drag_end, person}, _from, gameui) do
+    new_gameui = GameUI.drag_end(gameui, person)
+    {:reply, new_gameui, new_gameui, timeout(new_gameui)}
+  end
+
+  def handle_call({:drag_drop, source = {sx, sy}, target = {tx, ty}, person}, _from, gameui)
+      when is_integer(sx) and is_integer(sy) and
+             is_integer(tx) and is_integer(ty) do
+    new_gameui = GameUI.drag_drop(gameui, source, target, person)
+    trigger_ai_move(gameui, new_gameui)
+    {:reply, new_gameui, new_gameui, timeout(new_gameui)}
+  end
+
+  defp trigger_ai_move(gameui, new_gameui) do
     if GameUI.did_move?(gameui, new_gameui) and GameUI.computer_next?(new_gameui) do
       pid = self()
 
@@ -169,9 +209,13 @@ defmodule DemonSpiritWeb.GameUIServer do
         GenServer.call(pid, :ai_move)
       end)
     end
-
-    {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
+
+  # def drag_drop(gameui, source = {sx, sy}, target = {tx, ty}, person)
+  #     when is_integer(sx) and is_integer(sy) and
+  #            is_integer(tx) and is_integer(ty) do
+  #   GenServer.call(via_tuple(game_name), {:drag_drop, source, target, person})
+  # end
 
   def handle_call(:state, _from, state) do
     {:reply, state, state, timeout(state)}

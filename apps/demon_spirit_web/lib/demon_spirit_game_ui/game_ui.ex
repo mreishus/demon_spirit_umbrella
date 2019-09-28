@@ -238,6 +238,30 @@ defmodule DemonSpiritWeb.GameUI do
     end
   end
 
+  def drag_start(gameui, source = {sx, sy}, person)
+      when is_integer(sx) and is_integer(sy) do
+    cond do
+      not allowed_to_click?(gameui, person) -> gameui
+      true -> click_unselected(gameui, source)
+    end
+  end
+
+  def drag_end(gameui, person) do
+    cond do
+      not allowed_to_click?(gameui, person) -> gameui
+      true -> %{gameui | selected: nil, move_dest: []}
+    end
+  end
+
+  def drag_drop(gameui, source = {sx, sy}, target = {tx, ty}, person)
+      when is_integer(sx) and is_integer(sy) and
+             is_integer(tx) and is_integer(ty) do
+    cond do
+      not allowed_to_click?(gameui, person) -> gameui
+      true -> user_wants_to_move(gameui, source, target)
+    end
+  end
+
   # Clicking while nothing is selected.
   # If there's an active piece there, select it (Update `selected` and `move_dest`)
   # If there isn't, do nothing
@@ -263,7 +287,13 @@ defmodule DemonSpiritWeb.GameUI do
   # If (from: selected, to: click) a valid move, send the move, update state
   # If it isn't, clear selection
   defp click_selected(state, coords = {x, y}) when is_integer(x) and is_integer(y) do
-    candidates = coords_to_moves(state, state.selected, coords)
+    user_wants_to_move(state, state.selected, coords)
+  end
+
+  defp user_wants_to_move(state, source = {sx, sy}, target = {tx, ty})
+       when is_integer(sx) and is_integer(sy) and
+              is_integer(tx) and is_integer(ty) do
+    candidates = coords_to_moves(state, source, target)
 
     case length(candidates) do
       0 ->

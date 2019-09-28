@@ -20,9 +20,10 @@
   <%= for {{x, y}, piece} <- game.board do %>
     <div 
       phx-click="click-square-<%= x %>-<%= y %>"
-    draggable='true' phx-hook="Draggable"
-    class="piece <%= piece.type %> <%= piece.color %>" style="
-    position: absolute;
+    draggable='true' phx-hook="DraggableDroppable"
+    data-x="<%= x %>"
+    data-y="<%= y %>"
+    class="absolute piece <%= piece.type %> <%= piece.color %>" style="
     <%= if @flip_per do %>
       transform: translate( <%= (4 - x) * 100 %>%, <%= y * 100 %>%);
     <% else %>
@@ -37,7 +38,10 @@
     <%= for y <- [0, 1, 2, 3, 4] do %>
       <div
         phx-click="click-square-<%= x %>-<%= y %>"
-        class="square
+        phx-hook="Droppable"
+        data-x="<%= x %>"
+        data-y="<%= y %>"
+        class="absolute square
         <%= if my_turn and {x, y} == @state.selected do %>
           selected
         <% end %>
@@ -51,15 +55,13 @@
           last_move
         <% end %>
         " style="
-      position: absolute;
-
       <%= if @flip_per do %>
         transform: translate( <%= (4 - x) * 100 %>%, <%= y * 100 %>%);
       <% else %>
         transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
       <% end %>
-
-      "><!--
+      "
+      ><!--
       Blank Square
       --></div>
     <% end %>

@@ -26,6 +26,10 @@ Hooks.PhoneNumber = PhoneNumber;
 
 import Draggable from "./hooks/draggable";
 Hooks.Draggable = Draggable;
+import Droppable from "./hooks/droppable";
+Hooks.Droppable = Droppable;
+import DraggableDroppable from "./hooks/draggable_droppable";
+Hooks.DraggableDroppable = DraggableDroppable;
 
 let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks});
 liveSocket.connect();
