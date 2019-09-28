@@ -8,7 +8,6 @@
 
 # Most Important Issues
 
-* Drag and drop does not work.
 * If you have a move that could apply to either card, when you use it, you don't get to pick which card you want to use.
 * No way to move pieces on the iphone: Clicking does nothing.
 * No indication when a player has left the game (closed the browser window).  You could be waiting a long time for a missing opponent.
@@ -18,11 +17,12 @@
 * No CI/CD pipeline.
 * Kubernetes hosting does not use Deployment resource, only ReplicaSet.  No clear strategy for rolling out new deployments at the moment.
 * Misalignment of squares (Highlight doesn't line up properly)
-* Games don't seem to be dying out even when left alone for hours.  Could be related to the :ping for vs computer games?
+* Games don't seem to be dying out even when left alone for hours.  Could be related to the :ping for vs computer games? (Possible fix implemented)
 * Add a chat window?
 
 # Fixed
 
+* Drag and drop does not work.
 * Players should not see what piece their opponents are selecting.
 * "Sea Snake" card has a smaller font to avoid line wrapping, however there is still some minor visual shifting that's annoying.
 

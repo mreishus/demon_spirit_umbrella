@@ -1,15 +1,17 @@
+See also README.md for larger tasks.
+
 TODO
-- Split out GameUIServer: Create GameUI module
-- Board flip
-- CSS Revamp
 - GameRegistry tests
-- Seating system (Track people leaving game in progress)
+- (Partially done) Seating system (Track people leaving game in progress)
+- (Partially done) Let people stand up or switch seats if the game hasn't started yet
 - First move / Has Game Started
-- Let people stand up or switch seats if the game hasn't started yet
-- AI
 - Clean up: comments on all functions
 - Types: %Game -> t.Game() ?
 
 DONE
 - game controller / list: Looks at GameRegistry and lists games using liveview
 - Render cards better (show the moves that can be done, flip for black)
+- CSS Revamp
+- Split out GameUIServer: Create GameUI module
+- Board flip
+- AI
