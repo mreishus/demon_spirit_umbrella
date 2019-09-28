@@ -16,8 +16,14 @@ defmodule DemonSpiritWeb.LiveGameShow do
 
     state = GameUIServer.sit_down_if_possible(game_name, guest)
 
-    if connected?(socket) and state.options.vs == "computer",
-      do: :timer.send_interval(2500, self(), :tick)
+    tick_ref = nil
+
+    {:ok, tick_ref} =
+      if connected?(socket) and state.options.vs == "computer" do
+        :timer.send_interval(2500, self(), :tick)
+      else
+        {:ok, nil}
+      end
 
     notify(topic)
 
@@ -28,7 +34,8 @@ defmodule DemonSpiritWeb.LiveGameShow do
         state: state,
         guest: guest,
         users: [],
-        flip_per: guest == state.black
+        flip_per: guest == state.black,
+        tick_ref: tick_ref
       )
 
     {:ok, socket}
@@ -140,9 +147,14 @@ defmodule DemonSpiritWeb.LiveGameShow do
   # Handle ":tick", a request to update game state on a timer
   def handle_info(
         :tick,
-        socket = %{assigns: %{game_name: game_name}}
+        socket = %{assigns: %{game_name: game_name, tick_ref: tick_ref}}
       ) do
     state = GameUIServer.state(game_name)
+
+    if tick_ref != nil and state.game.winner != nil do
+      :timer.cancel(tick_ref)
+    end
+
     {:noreply, assign(socket, state: state)}
   end
 end

@@ -230,8 +230,6 @@ defmodule DemonSpiritWeb.GameUIServer do
   # Given the current state of the game, what should the
   # GenServer timeout be? (Games with winners expire quickly)
   defp timeout(state) do
-    state |> IO.inspect()
-
     case state.status do
       :done ->
         @timeout_game_won
