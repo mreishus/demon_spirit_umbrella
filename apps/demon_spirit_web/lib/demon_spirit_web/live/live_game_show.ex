@@ -16,8 +16,6 @@ defmodule DemonSpiritWeb.LiveGameShow do
 
     state = GameUIServer.sit_down_if_possible(game_name, guest)
 
-    tick_ref = nil
-
     {:ok, tick_ref} =
       if connected?(socket) and state.options.vs == "computer" do
         :timer.send_interval(2500, self(), :tick)
