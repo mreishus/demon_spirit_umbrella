@@ -151,10 +151,20 @@ defmodule DemonSpiritWeb.LiveGameShow do
       ) do
     state = GameUIServer.state(game_name)
 
-    if tick_ref != nil and state.game.winner != nil do
+    if tick_ref != nil and stop_ticking?(state) do
       :timer.cancel(tick_ref)
     end
 
     {:noreply, assign(socket, state: state)}
+  end
+
+  # There's a winner or game has been alive for a long time
+  defp stop_ticking?(state) do
+    state.game.winner != nil or game_alive_too_long?(state)
+  end
+
+  # Game alive more than 4 hours
+  defp game_alive_too_long?(game_state) do
+    DateTime.diff(DateTime.utc_now(), game_state.created_at) > 60 * 60 * 4
   end
 end
