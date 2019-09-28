@@ -17,6 +17,9 @@
 * Automated tests missing on web layer.
 * No CI/CD pipeline.
 * Kubernetes hosting does not use Deployment resource, only ReplicaSet.  No clear strategy for rolling out new deployments at the moment.
+* Misalignment of squares (Highlight doesn't line up properly)
+* Games don't seem to be dying out even when left alone for hours.  Could be related to the :ping for vs computer games?
+* "Sea Snake" card has a smaller font to avoid line wrapping, however there is still some minor visual shifting that's annoying.
 * Add a chat window?
 
 # Organization
