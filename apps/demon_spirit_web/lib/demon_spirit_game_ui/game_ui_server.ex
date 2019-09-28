@@ -211,12 +211,6 @@ defmodule DemonSpiritWeb.GameUIServer do
     end
   end
 
-  # def drag_drop(gameui, source = {sx, sy}, target = {tx, ty}, person)
-  #     when is_integer(sx) and is_integer(sy) and
-  #            is_integer(tx) and is_integer(ty) do
-  #   GenServer.call(via_tuple(game_name), {:drag_drop, source, target, person})
-  # end
-
   def handle_call(:state, _from, state) do
     {:reply, state, state, timeout(state)}
   end
