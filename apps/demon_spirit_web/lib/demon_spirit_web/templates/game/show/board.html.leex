@@ -8,6 +8,9 @@
         <center>
         <%= game.winner %> wins!
         </center>
+        <div>
+          <%= link "Back to Lobby", to: Routes.game_path(@socket, :index), class: "btn btn-primary" %>
+        </div>
       </div>
       </span>
     </div>
@@ -21,9 +24,10 @@
     <div 
       phx-click="click-square-<%= x %>-<%= y %>"
     draggable='true' phx-hook="DraggableDroppable"
+    onclick="event.preventDefault(); return false;"
     data-x="<%= x %>"
     data-y="<%= y %>"
-    class="absolute piece <%= piece.type %> <%= piece.color %>" style="
+    class="cursor-pointer absolute piece <%= piece.type %> <%= piece.color %>" style="
     <%= if @flip_per do %>
       transform: translate( <%= (4 - x) * 100 %>%, <%= y * 100 %>%);
     <% else %>
@@ -39,9 +43,10 @@
       <div
         phx-click="click-square-<%= x %>-<%= y %>"
         phx-hook="Droppable"
+        onclick="event.preventDefault(); return false;"
         data-x="<%= x %>"
         data-y="<%= y %>"
-        class="absolute square
+        class="cursor-pointer absolute square
         <%= if my_turn and {x, y} == @state.selected do %>
           selected
         <% end %>

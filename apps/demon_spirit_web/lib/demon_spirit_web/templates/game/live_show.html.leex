@@ -109,7 +109,7 @@ td .content {
         <% end %>
 
         <div class="h-64 w-64 md:h-96 md:w-96 xl:h-128 xl:w-128 relative">
-          <%= render "show/board.html", state: @state, flip_per: @flip_per, guest: @guest %>
+          <%= render "show/board.html", state: @state, flip_per: @flip_per, guest: @guest, socket: @socket %>
         </div>
 
         <%# Bottom cards, hide while staging %>
@@ -128,7 +128,7 @@ td .content {
 
       <%# Main - Side %>
       <%= if not staging?(@state) do %>
-      <div class="h-64 md:h-96 xl:h-128 flex flex-col justify-between ml-4">
+      <div class="h-64 md:h-96 xl:h-128 flex flex-col justify-between ml-2 md:ml-4">
           <div>
             <%= if top_next do %>
               <div class="bg-blue-200 text-blue-600 font-semibold rounded">
