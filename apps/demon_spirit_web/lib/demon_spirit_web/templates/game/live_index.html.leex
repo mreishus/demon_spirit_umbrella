@@ -7,16 +7,16 @@
 <h3 class="text-lg font-semibold mt-6">Current Games</h3>
 
 <%= if length(@games) > 0 do %>
-  <table class="shadow-lg mt-3 rounded-lg bg-blue-100">
+  <table class="shadow-lg mt-3 rounded-lg bg-blue-100 border">
     <%= for game <- @games do %>
       <tr>
-        <td class="py-3 px-3 border-b border-gray-400"><%= link game.name, to: Routes.game_path(@socket, :show, game.name), class: "text-blue-500 underline" %></td>
-        <td class="py-3 px-3 border-b border-gray-400">
+        <td class="p-3 border-b border-gray-400"><%= link game.name, to: Routes.game_path(@socket, :show, game.name), class: "text-blue-500 underline" %></td>
+        <td class="p-3 border-b border-gray-400">
           <%= render "show/player.html", player: game.white %>
           vs.
           <%= render "show/player.html", player: game.black %>
         </td>
-        <td class="py-3 px-3 border-b border-gray-400">
+        <td class="p-3 border-b border-gray-400">
           <%= date_to_hms(game.created_at) %>
           <span class="ml-2 text-gray-500 text-xs"><%= date_to_md(game.created_at) %></span>
         </td>
@@ -24,7 +24,7 @@
     <% end %>
   </table>
 <% else %>
-  <div class="shadow-lg mt-3 rounded-lg border p-4 w-1/2">
+  <div class="shadow-lg mt-3 rounded-lg bg-blue-100 border p-3 w-1/2">
     No games are currently running.
   </div>
 <% end %>
