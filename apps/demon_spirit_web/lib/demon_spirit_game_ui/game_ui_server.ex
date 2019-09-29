@@ -184,6 +184,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   def handle_call({:click, coords = {x, y}, person}, _from, gameui)
       when is_integer(x) and is_integer(y) do
     new_gameui = GameUI.click(gameui, coords, person)
+    GameRegistry.update(new_gameui.game_name, game_info(new_gameui))
 
     trigger_ai_move(gameui, new_gameui)
 
@@ -205,12 +206,14 @@ defmodule DemonSpiritWeb.GameUIServer do
       when is_integer(sx) and is_integer(sy) and
              is_integer(tx) and is_integer(ty) do
     new_gameui = GameUI.drag_drop(gameui, source, target, person)
+    GameRegistry.update(new_gameui.game_name, game_info(new_gameui))
     trigger_ai_move(gameui, new_gameui)
     {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
 
   def handle_call({:clarify_move, i, person}, _from, gameui) when is_integer(i) do
     new_gameui = GameUI.clarify_move(gameui, i, person)
+    GameRegistry.update(new_gameui.game_name, game_info(new_gameui))
     trigger_ai_move(gameui, new_gameui)
     {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end

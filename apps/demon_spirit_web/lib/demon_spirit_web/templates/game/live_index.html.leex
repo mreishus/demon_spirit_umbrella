@@ -8,13 +8,42 @@
 
 <%= if length(@games) > 0 do %>
   <table class="shadow-lg mt-3 rounded-lg bg-blue-100 border">
-    <%= for game <- @games do %>
-      <tr>
-        <td class="p-3 border-b border-gray-400"><%= link game.name, to: Routes.game_path(@socket, :show, game.name), class: "text-blue-500 underline" %></td>
+    <%= for game <- sort_gameinfos(@games) do %>
+      <tr class="
+          <%= case game.status do %>
+            <% :playing -> %>
+              bg-blue-200
+            <% :staging -> %>
+              bg-blue-100
+            <% :done -> %>
+              bg-blue-300
+            <% _ -> %>
+              bg-blue-400
+            <% end %>
+      ">
+        <td class="p-3 border-b border-gray-400"><%= link game.name, to: Routes.game_path(@socket, :show, game.name), class: "text-blue-600 underline" %></td>
         <td class="p-3 border-b border-gray-400">
           <%= render "show/player.html", player: game.white %>
+          <%= if game.winner == :white do %>
+            <span class="bg-teal-400 text-gray-100 rounded px-1 font-sm italic">winner</span>
+          <% end %>
           vs.
           <%= render "show/player.html", player: game.black %>
+          <%= if game.winner == :black do %>
+            <span class="bg-teal-400 text-gray-100 rounded px-1 font-sm italic">winner</span>
+          <% end %>
+        </td>
+        <td class="p-3 border-b border-gray-400 text-sm italic text-teal-600">
+          <%= case game.status do %>
+            <% :playing -> %>
+              in progress
+            <% :staging -> %>
+              staging
+            <% :done -> %>
+              won
+            <% _ -> %>
+              unknown
+            <% end %>
         </td>
         <td class="p-3 border-b border-gray-400">
           <%= date_to_hms(game.created_at) %>

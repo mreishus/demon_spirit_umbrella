@@ -66,6 +66,10 @@ defmodule DemonSpiritWeb.GameView do
     end
   end
 
+  def sort_gameinfos(gis) do
+    gis |> Enum.sort_by(fn g -> {g.status, DateTime.to_iso8601(g.created_at)} end, &>=/2)
+  end
+
   @doc """
   date_to_md/1: Turn a DateTime into a string representing the month and day in UTC.
   """
