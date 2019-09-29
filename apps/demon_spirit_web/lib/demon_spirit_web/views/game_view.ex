@@ -12,6 +12,27 @@ defmodule DemonSpiritWeb.GameView do
   end
 
   @doc """
+  needs_clarify?/1: Does the current player need to clarify which move they meant?
+  """
+  def needs_clarify?(gameui) do
+    gameui.moves_need_clarify != nil and length(gameui.moves_need_clarify) > 0
+  end
+
+  @doc """
+  clarify_moves/1: Get a list of moves a clarifying player can choose from, with index.
+  In format:  [ {0, %Card{}}, {1, %Card{}}, ... ]
+  """
+  def clarify_moves(gameui) do
+    if needs_clarify?(gameui) do
+      gameui.moves_need_clarify
+      |> Enum.with_index()
+      |> Enum.map(fn {move, i} -> {i, move.card} end)
+    else
+      []
+    end
+  end
+
+  @doc """
   show_ready_button?/1: Given a gameui state and a player, should
   they see the ready button?
   """

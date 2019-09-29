@@ -8,6 +8,7 @@ defmodule DemonSpiritWeb.GameUI do
   game: %Game{} holding the actual game.  This is duplicated, since the GameServer holds it too.
   game_name: t.String() holding the game name.
   all_valid_moves: [ %Move{}, ... ]
+  moves_need_clarify: nil |  [ %Move{}, ... ]   If the user clicked something with 2 valid moves, list.
   status: :staging | :playing | :done
   white: any.  Represents the player in the white seat.
   black: any.  Represents the player in the black seat.
@@ -22,6 +23,7 @@ defmodule DemonSpiritWeb.GameUI do
   defstruct game: nil,
             game_name: nil,
             all_valid_moves: [],
+            moves_need_clarify: nil,
             status: :staging,
             game_started: false,
             white: nil,
@@ -297,15 +299,18 @@ defmodule DemonSpiritWeb.GameUI do
 
     case length(candidates) do
       0 ->
-        %{state | selected: nil, move_dest: []}
+        %{state | selected: nil, move_dest: [], moves_need_clarify: nil}
 
-      _ ->
+      1 ->
         # TODO: There could be multiple moves!
         # Game always chooses the first one available.  We should
         # ask the user.
         move = candidates |> Enum.at(0)
 
         apply_move(state, move)
+
+      2 ->
+        %{state | moves_need_clarify: candidates}
     end
   end
 
@@ -322,12 +327,13 @@ defmodule DemonSpiritWeb.GameUI do
             all_valid_moves: all_valid_moves,
             selected: nil,
             move_dest: [],
-            last_move: move
+            last_move: move,
+            moves_need_clarify: nil
         }
         |> check_status_advance()
 
       {:error, _} ->
-        %{state | selected: nil, move_dest: []}
+        %{state | selected: nil, move_dest: [], moves_need_clarify: nil}
     end
   end
 

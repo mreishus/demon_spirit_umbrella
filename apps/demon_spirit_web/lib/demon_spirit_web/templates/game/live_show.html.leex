@@ -103,7 +103,7 @@ td .content {
           <div class="w-full h-auto flex items-center justify-center mb-4">
             <%# Top Bar  %>
             <%= for card <- top_cards do %>
-              <%= render "show/card.html", card: card, flip: true %>
+              <%= render "show/card.html", card: card, flip: true, class: "mx-4" %>
             <% end %>
           </div>
         <% end %>
@@ -116,10 +116,10 @@ td .content {
         <%= if staging?(@state) do %>
           <div class="w-full h-32 mb-4"></div>
         <% else %>
-          <div class="w-full h-auto flex items-center justify-center mt-4">
-            <%# Top Bar  %>
+          <div class="w-full h-auto flex items-center justify-center mt-4 relative">
+            <%# Bottom Bar %>
             <%= for card <- bottom_cards do %>
-              <%= render "show/card.html", card: card, flip: false %>
+              <%= render "show/card.html", card: card, flip: false, class: "mx-4" %>
             <% end %>
           </div>
         <% end %>
@@ -141,7 +141,8 @@ td .content {
           <div>
             <%= render "show/card.html",
                 card: game.cards.side,
-                flip: (game.turn == :black and not @flip_per) || (@flip_per and game.turn == :white)
+                flip: (game.turn == :black and not @flip_per) || (@flip_per and game.turn == :white),
+                class: "mx-4"
             %>
             <%= if game.winner == nil do %>
               <p style="margin-top: 10px; font-size: 24px">

@@ -123,6 +123,28 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:noreply, assign(socket, state: state)}
   end
 
+  def handle_event(
+        "clarify-move",
+        %{"i" => i},
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    state = GameUIServer.state(game_name)
+    notify(topic)
+    "CLARIFY MOVE #{i}" |> IO.inspect()
+    {:noreply, assign(socket, state: state)}
+  end
+
+  def handle_event(
+        "cancel-clarify",
+        _val,
+        socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
+      ) do
+    state = GameUIServer.state(game_name)
+    notify(topic)
+    "CANCEL Clarify" |> IO.inspect()
+    {:noreply, assign(socket, state: state)}
+  end
+
   defp extract_coords(coords_str) do
     [{x, ""}, {y, ""}] = coords_str |> String.split("-") |> Enum.map(&Integer.parse/1)
     {x, y}
