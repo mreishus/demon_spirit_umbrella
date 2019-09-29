@@ -145,6 +145,14 @@ defmodule DemonSpiritWeb.GameUIServer do
     GenServer.call(via_tuple(game_name), {:drag_drop, source, target, person})
   end
 
+  def clarify_move(game_name, i, person) when is_integer(i) do
+    GenServer.call(via_tuple(game_name), {:clarify_move, i, person})
+  end
+
+  def clarify_cancel(game_name, person) do
+    GenServer.call(via_tuple(game_name), {:clarify_cancel, person})
+  end
+
   ####### IMPLEMENTATION #######
 
   def init({game_name, :hardcoded_cards}) do
@@ -198,6 +206,17 @@ defmodule DemonSpiritWeb.GameUIServer do
              is_integer(tx) and is_integer(ty) do
     new_gameui = GameUI.drag_drop(gameui, source, target, person)
     trigger_ai_move(gameui, new_gameui)
+    {:reply, new_gameui, new_gameui, timeout(new_gameui)}
+  end
+
+  def handle_call({:clarify_move, i, person}, _from, gameui) when is_integer(i) do
+    new_gameui = GameUI.clarify_move(gameui, i, person)
+    trigger_ai_move(gameui, new_gameui)
+    {:reply, new_gameui, new_gameui, timeout(new_gameui)}
+  end
+
+  def handle_call({:clarify_cancel, person}, _from, gameui) do
+    new_gameui = GameUI.clarify_cancel(gameui, person)
     {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
 

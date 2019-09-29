@@ -264,6 +264,24 @@ defmodule DemonSpiritWeb.GameUI do
     end
   end
 
+  def clarify_move(gameui, i, person) when is_integer(i) do
+    cond do
+      not allowed_to_click?(gameui, person) ->
+        gameui
+
+      true ->
+        move = gameui.moves_need_clarify |> Enum.at(i)
+        apply_move(gameui, move)
+    end
+  end
+
+  def clarify_cancel(gameui, person) do
+    cond do
+      not allowed_to_click?(gameui, person) -> gameui
+      true -> %{gameui | selected: nil, move_dest: [], moves_need_clarify: nil}
+    end
+  end
+
   # Clicking while nothing is selected.
   # If there's an active piece there, select it (Update `selected` and `move_dest`)
   # If there isn't, do nothing

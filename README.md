@@ -8,7 +8,6 @@
 
 # Most Important Issues
 
-* If you have a move that could apply to either card, when you use it, you don't get to pick which card you want to use.
 * No indication when a player has left the game (closed the browser window).  You could be waiting a long time for a missing opponent.
 * No chess timer.
 * Automated tests missing on web layer.
@@ -20,6 +19,7 @@
 
 # Fixed
 
+* If you have a move that could apply to either card, when you use it, you don't get to pick which card you want to use.
 * No way to move pieces on the iphone: Clicking does nothing.
 * Link to game in waiting window is missing domain name.
 * Drag and drop does not work.

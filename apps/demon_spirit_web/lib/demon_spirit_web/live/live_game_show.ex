@@ -128,9 +128,9 @@ defmodule DemonSpiritWeb.LiveGameShow do
         %{"i" => i},
         socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
       ) do
-    state = GameUIServer.state(game_name)
+    {i, ""} = Integer.parse(i)
+    state = GameUIServer.clarify_move(game_name, i, guest)
     notify(topic)
-    "CLARIFY MOVE #{i}" |> IO.inspect()
     {:noreply, assign(socket, state: state)}
   end
 
@@ -139,9 +139,8 @@ defmodule DemonSpiritWeb.LiveGameShow do
         _val,
         socket = %{assigns: %{game_name: game_name, guest: guest, topic: topic}}
       ) do
-    state = GameUIServer.state(game_name)
+    state = GameUIServer.clarify_cancel(game_name, guest)
     notify(topic)
-    "CANCEL Clarify" |> IO.inspect()
     {:noreply, assign(socket, state: state)}
   end
 
