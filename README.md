@@ -12,7 +12,6 @@
 * No way to move pieces on the iphone: Clicking does nothing.
 * No indication when a player has left the game (closed the browser window).  You could be waiting a long time for a missing opponent.
 * No chess timer.
-* Link to game in waiting window is missing domain name.
 * Automated tests missing on web layer.
 * No CI/CD pipeline.
 * Kubernetes hosting does not use Deployment resource, only ReplicaSet.  No clear strategy for rolling out new deployments at the moment.
@@ -22,6 +21,7 @@
 
 # Fixed
 
+* Link to game in waiting window is missing domain name.
 * Drag and drop does not work.
 * Players should not see what piece their opponents are selecting.
 * "Sea Snake" card has a smaller font to avoid line wrapping, however there is still some minor visual shifting that's annoying.
