@@ -36,9 +36,6 @@ RUN mix deps.compile
 
 ## Umbrella Version
 COPY apps/demon_spirit_web/assets apps/demon_spirit_web/assets
-COPY deps/phoenix deps/phoenix
-COPY deps/phoenix_html deps/phoenix_html
-COPY deps/phoenix_live_view deps/phoenix_live_view
 
 # build project
 #COPY priv priv
