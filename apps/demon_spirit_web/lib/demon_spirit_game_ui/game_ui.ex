@@ -101,14 +101,18 @@ defmodule DemonSpiritWeb.GameUI do
 
   defp prefill_computer_player(%GameUIOptions{vs: vs, computer_skill: computer_skill}) do
     case vs do
-      "human" ->
-        nil
-
       "computer" ->
         %{
           type: :computer,
           name: "Computer (Level #{Integer.to_string(computer_skill |> div(10))})"
         }
+
+      "human" ->
+        nil
+
+      _ ->
+        # Should this be an error?
+        nil
     end
   end
 
@@ -275,10 +279,19 @@ defmodule DemonSpiritWeb.GameUI do
     end
   end
 
+  @doc """
+  clarify_cancel/2:  `person` just clicked the "Cancel" button
+  while in a clarifying state.  Removes the clarification state and
+  lets them create another move.
+  Input: gameui: %GameUI
+  Input: person: any
+  Output: gameui
+  """
   def clarify_cancel(gameui, person) do
-    cond do
-      not allowed_to_click?(gameui, person) -> gameui
-      true -> %{gameui | selected: nil, move_dest: [], moves_need_clarify: nil}
+    if allowed_to_click?(gameui, person) do
+      %{gameui | selected: nil, move_dest: [], moves_need_clarify: nil}
+    else
+      gameui
     end
   end
 
