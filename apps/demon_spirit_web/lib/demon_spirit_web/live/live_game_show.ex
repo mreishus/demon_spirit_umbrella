@@ -15,13 +15,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:ok, _} = Presence.track(self(), topic, guest.id, guest)
 
     state = GameUIServer.sit_down_if_possible(game_name, guest)
-
-    {:ok, tick_ref} =
-      if connected?(socket) and state.options.vs == "computer" do
-        :timer.send_interval(2500, self(), :tick)
-      else
-        {:ok, nil}
-      end
+    tick_ref = create_tick_interval(socket, state)
 
     notify(topic)
 
@@ -37,6 +31,21 @@ defmodule DemonSpiritWeb.LiveGameShow do
       )
 
     {:ok, socket}
+  end
+
+  # If playing against the computer, create a timer that automatically sends
+  # ":tick" messages, so I am constantly updating the game state.
+  # If we can get the AI to publish an "update state" message over the 
+  # pubsub channel, then we can remove this.
+  defp create_tick_interval(socket, state) do
+    {:ok, tick_ref} =
+      if connected?(socket) and state.options.vs == "computer" do
+        :timer.send_interval(2500, self(), :tick)
+      else
+        {:ok, nil}
+      end
+
+    tick_ref
   end
 
   ## Event: "click-square-3-3" (Someone clicked on square (3,3))
