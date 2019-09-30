@@ -273,6 +273,45 @@ defmodule GameUiServerTest do
       state1 = GameUIServer.state(game_name)
       assert state1.status == :staging
     end
+
+    test "p1 only ready: still staging" do
+      game_name = new_game_with_p1_p2_sitting()
+      GameUIServer.ready(game_name, :p1)
+      state1 = GameUIServer.state(game_name)
+      assert state1.status == :staging
+    end
+
+    test "p2 only ready: still staging" do
+      game_name = new_game_with_p1_p2_sitting()
+      GameUIServer.ready(game_name, :p2)
+      state1 = GameUIServer.state(game_name)
+      assert state1.status == :staging
+    end
+
+    test "both ready: playing state" do
+      game_name = new_game_with_p1_p2_sitting()
+      GameUIServer.ready(game_name, :p1)
+      GameUIServer.ready(game_name, :p2)
+      state1 = GameUIServer.state(game_name)
+      assert state1.status == :playing
+    end
+
+    test "game has a winner: done state" do
+      game_name = new_game_with_p1_p2_sitting()
+      GameUIServer.ready(game_name, :p1)
+      GameUIServer.ready(game_name, :p2)
+      GameUIServer.drag_drop(game_name, {2, 0}, {2, 1}, :p1)
+      GameUIServer.drag_drop(game_name, {2, 4}, {2, 3}, :p2)
+      GameUIServer.clarify_move(game_name, 0, :p2)
+      GameUIServer.drag_drop(game_name, {2, 1}, {3, 2}, :p1)
+      GameUIServer.drag_drop(game_name, {3, 4}, {3, 3}, :p2)
+      GameUIServer.clarify_move(game_name, 0, :p2)
+      GameUIServer.drag_drop(game_name, {3, 2}, {3, 3}, :p1)
+      GameUIServer.drag_drop(game_name, {2, 3}, {3, 3}, :p2)
+      state1 = GameUIServer.state(game_name)
+      assert state1.status == :done
+      assert state1.game.winner == :black
+    end
   end
 
   defp game_in_clarification_state do
