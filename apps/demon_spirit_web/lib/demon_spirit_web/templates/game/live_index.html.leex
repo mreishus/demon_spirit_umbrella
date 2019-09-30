@@ -16,9 +16,9 @@
             <% :staging -> %>
               bg-blue-100
             <% :done -> %>
-              bg-blue-300
+              bg-blue-200
             <% _ -> %>
-              bg-blue-400
+              bg-blue-300
             <% end %>
       ">
         <td class="p-3 border-b border-gray-400"><%= link game.name, to: Routes.game_path(@socket, :show, game.name), class: "text-blue-600 underline" %></td>
