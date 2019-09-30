@@ -47,7 +47,7 @@ defmodule DemonSpiritGame.Card do
 
   @spec cards() :: nonempty_list(%Card{})
   def cards do
-    base_cards() ++ sensei_cards()
+    base_cards() ++ exp1_cards() ++ exp2_cards()
   end
 
   @doc """
@@ -156,8 +156,8 @@ defmodule DemonSpiritGame.Card do
     ]
   end
 
-  @spec sensei_cards() :: nonempty_list(%Card{})
-  def sensei_cards do
+  @spec exp1_cards() :: nonempty_list(%Card{})
+  def exp1_cards do
     [
       %Card{
         id: 17,
@@ -248,6 +248,75 @@ defmodule DemonSpiritGame.Card do
         name: "Kawauso",
         moves: [{-1, 1}, {1, -1}, {2, 0}],
         color: :blue
+      }
+    ]
+  end
+
+  @spec exp2_cards() :: nonempty_list(%Card{})
+  def exp2_cards do
+    # Green - Default
+    # Blue - Left
+    # Red - Right
+    [
+      %Card{
+        id: 33,
+        name: "Wasp",
+        moves: [{-1, 1}, {-1, -1}, {1, 2}, {1, -2}],
+        color: :red
+      },
+      %Card{
+        id: 34,
+        name: "Bee",
+        moves: [{1, 1}, {1, -1}, {-1, 2}, {-1, -2}],
+        color: :blue
+      },
+      %Card{
+        id: 35,
+        name: "Mole",
+        moves: [{2, 0}, {2, -1}, {2, 1}],
+        color: :red
+      },
+      %Card{
+        id: 36,
+        name: "Gopher",
+        moves: [{-2, 0}, {-2, -1}, {-2, 1}],
+        color: :blue
+      },
+      %Card{
+        id: 37,
+        name: "Duck",
+        moves: [{0, 1}, {1, 0}, {2, 2}],
+        color: :red
+      },
+      %Card{
+        id: 38,
+        name: "Swan",
+        moves: [{0, 1}, {-1, 0}, {-2, 2}],
+        color: :blue
+      },
+      %Card{
+        id: 39,
+        name: "Raging Demon",
+        moves: [{0, 2}, {1, 1}, {-1, 1}],
+        color: :green
+      },
+      %Card{
+        id: 40,
+        name: "Dolphin",
+        moves: [{0, 1}, {-1, 0}, {1, 2}],
+        color: :red
+      },
+      %Card{
+        id: 41,
+        name: "Shark",
+        moves: [{0, 1}, {1, 0}, {-1, 2}],
+        color: :blue
+      },
+      %Card{
+        id: 42,
+        name: "Eagle",
+        moves: [{2, 2}, {-2, 2}, {0, -1}],
+        color: :green
       }
     ]
   end
