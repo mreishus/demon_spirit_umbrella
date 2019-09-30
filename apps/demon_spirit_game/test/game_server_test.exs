@@ -49,19 +49,19 @@ defmodule GameServerTest do
       state = GameServer.state(game_name)
       assert %Game{} = state
       assert state.board |> Map.keys() |> length == 10
-      assert state.cards.side.name == "Dragon"
+      assert state.cards.side.name == "Drake"
     end
   end
 
   describe "move/2" do
     setup do
-      {:ok, boar} = Card.by_name("Boar")
-      {:ok, cobra} = Card.by_name("Cobra")
-      {:ok, dragon} = Card.by_name("Dragon")
-      %{boar: boar, cobra: cobra, dragon: dragon}
+      {:ok, wild_pig} = Card.by_name("Wild Pig")
+      {:ok, cobra} = Card.by_name("Python")
+      {:ok, drake} = Card.by_name("Drake")
+      %{wild_pig: wild_pig, cobra: cobra, drake: drake}
     end
 
-    test "Moving a piece via GameServer", %{cobra: cobra, boar: boar, dragon: dragon} do
+    test "Moving a piece via GameServer", %{cobra: cobra, wild_pig: wild_pig, drake: drake} do
       ## Need a way to generate an initial game state w/o RNG
       ## To know a move we can test
       game_name = generate_game_name()
@@ -85,8 +85,8 @@ defmodule GameServerTest do
       assert game_move_server.turn == :black
       # Card rotated
       assert game_move_server.cards.side == cobra
-      assert boar in game_move_server.cards.white
-      assert dragon in game_move_server.cards.white
+      assert wild_pig in game_move_server.cards.white
+      assert drake in game_move_server.cards.white
       # Piece Moved
       refute game_move_server.board |> Map.has_key?({0, 0})
       assert game_move_server.board |> Map.has_key?({1, 1})
@@ -126,7 +126,7 @@ defmodule GameServerTest do
       assert count == 1
       # Check game
       assert state.board |> Map.keys() |> length == 10
-      assert state.cards.side.name == "Dragon"
+      assert state.cards.side.name == "Drake"
     end
   end
 

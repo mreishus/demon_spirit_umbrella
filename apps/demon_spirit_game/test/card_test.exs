@@ -5,34 +5,36 @@ defmodule CardTest do
   alias DemonSpiritGame.{Card}
 
   setup do
-    dragon = %Card{
+    drake = %Card{
       id: 5,
-      name: "Dragon",
+      name: "Drake",
+      oname: "Dragon",
       moves: [{-2, 1}, {2, 1}, {-1, -1}, {1, -1}],
       color: :green
     }
 
-    mantis = %Card{
+    hiero = %Card{
       id: 7,
-      name: "Mantis",
+      name: "Hierodula",
+      oname: "Mantis",
       moves: [{-1, 1}, {1, 1}, {0, -1}],
       color: :green
     }
 
-    %{dragon: dragon, mantis: mantis}
+    %{drake: drake, hiero: hiero}
   end
 
   describe "flip/1" do
-    test "flips a card", %{dragon: dragon} do
-      flipped_dragon = Card.flip(dragon)
-      assert flipped_dragon.moves == [{2, -1}, {-2, -1}, {1, 1}, {-1, 1}]
+    test "flips a card", %{drake: drake} do
+      flipped_drake = Card.flip(drake)
+      assert flipped_drake.moves == [{2, -1}, {-2, -1}, {1, 1}, {-1, 1}]
     end
   end
 
   describe "by_name/1" do
-    test "finds a card by name", %{dragon: dragon, mantis: mantis} do
-      assert Card.by_name("Mantis") == {:ok, mantis}
-      assert Card.by_name("Dragon") == {:ok, dragon}
+    test "finds a card by name", %{drake: drake, hiero: hiero} do
+      assert Card.by_name("Hierodula") == {:ok, hiero}
+      assert Card.by_name("Drake") == {:ok, drake}
     end
   end
 end

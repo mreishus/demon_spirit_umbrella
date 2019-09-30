@@ -59,7 +59,7 @@ defmodule GameUiServerTest do
       assert %Game{} = state.game
       assert state.game.board |> Map.keys() |> length == 10
       assert state.all_valid_moves |> length > 0
-      assert state.game.cards.side.name == "Dragon"
+      assert state.game.cards.side.name == "Drake"
     end
   end
 

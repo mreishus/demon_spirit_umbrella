@@ -6,26 +6,26 @@ defmodule GameTest do
 
   setup do
     # Static list of cards, use when creating a new game to remove RNG from tests
-    cards = Card.base_cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
+    cards = Card.base_cards() |> Enum.sort_by(fn card -> card.oname end) |> Enum.take(5)
     game = Game.new(cards)
     game_black = %{game | turn: :black}
-    {:ok, boar} = Card.by_name("Boar")
-    {:ok, cobra} = Card.by_name("Cobra")
-    {:ok, crab} = Card.by_name("Crab")
-    {:ok, crane} = Card.by_name("Crane")
-    {:ok, dragon} = Card.by_name("Dragon")
-    {:ok, tiger} = Card.by_name("Tiger")
+    {:ok, boar} = Card.by_name("Wild Pig")
+    {:ok, python} = Card.by_name("Python")
+    {:ok, crustacean} = Card.by_name("Crustacean")
+    {:ok, heron} = Card.by_name("Heron")
+    {:ok, drake} = Card.by_name("Drake")
+    {:ok, panther} = Card.by_name("Panther")
 
     %{
       cards: cards,
       game: game,
       game_black: game_black,
       boar: boar,
-      cobra: cobra,
-      crab: crab,
-      crane: crane,
-      dragon: dragon,
-      tiger: tiger
+      python: python,
+      crustacean: crustacean,
+      heron: heron,
+      drake: drake,
+      panther: panther
     }
   end
 
@@ -87,15 +87,15 @@ defmodule GameTest do
   end
 
   describe "move/3" do
-    test "one valid move", %{game: game, boar: boar, cobra: cobra, dragon: dragon} do
-      move = %Move{from: {0, 0}, to: {1, 1}, card: cobra}
+    test "one valid move", %{game: game, boar: boar, python: python, drake: drake} do
+      move = %Move{from: {0, 0}, to: {1, 1}, card: python}
       {:ok, game} = Game.move(game, move)
       # Player flipped
       assert game.turn == :black
       # Card rotated
-      assert game.cards.side == cobra
+      assert game.cards.side == python
       assert boar in game.cards.white
-      assert dragon in game.cards.white
+      assert drake in game.cards.white
       # Piece Moved
       refute game.board |> Map.has_key?({0, 0})
       assert game.board |> Map.has_key?({1, 1})
@@ -112,132 +112,132 @@ defmodule GameTest do
   describe "valid_move?/2" do
     # White's cards are:                   #
     # Boar:  [{0, 1}, {-1, 0}, {1, 0}]    #x#    #
-    # Cobra: [{1, 1}, {1, -1}, {-1, 0}]        #x
+    # python: [{1, 1}, {1, -1}, {-1, 0}]        #x
     #                                            #
     # Black's cards are:                    #
-    # Crab:  [{0, 1}, {-2, 0}, {2, 0}]    # x #   #
-    # Crane: [{0, 1}, {-1, -1}, {1, -1}]          x
+    # crustacean:  [{0, 1}, {-2, 0}, {2, 0}]    # x #   #
+    # heron: [{0, 1}, {-1, -1}, {1, -1}]          x
     #                                            # #
     test "some valid moves", %{
       game: game,
       game_black: game_black,
       boar: boar,
-      cobra: cobra,
-      crab: crab,
-      crane: crane
+      python: python,
+      crustacean: crustacean,
+      heron: heron
     } do
       ## White
       assert Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 1}, card: boar})
-      assert Game.valid_move?(game, %Move{from: {0, 0}, to: {1, 1}, card: cobra})
+      assert Game.valid_move?(game, %Move{from: {0, 0}, to: {1, 1}, card: python})
       assert Game.valid_move?(game, %Move{from: {2, 0}, to: {2, 1}, card: boar})
-      assert Game.valid_move?(game, %Move{from: {2, 0}, to: {3, 1}, card: cobra})
+      assert Game.valid_move?(game, %Move{from: {2, 0}, to: {3, 1}, card: python})
 
       ## Black
-      assert Game.valid_move?(game_black, %Move{from: {0, 4}, to: {0, 3}, card: crab})
-      assert Game.valid_move?(game_black, %Move{from: {0, 4}, to: {0, 3}, card: crane})
-      assert Game.valid_move?(game_black, %Move{from: {2, 4}, to: {2, 3}, card: crab})
-      assert Game.valid_move?(game_black, %Move{from: {2, 4}, to: {2, 3}, card: crane})
+      assert Game.valid_move?(game_black, %Move{from: {0, 4}, to: {0, 3}, card: crustacean})
+      assert Game.valid_move?(game_black, %Move{from: {0, 4}, to: {0, 3}, card: heron})
+      assert Game.valid_move?(game_black, %Move{from: {2, 4}, to: {2, 3}, card: crustacean})
+      assert Game.valid_move?(game_black, %Move{from: {2, 4}, to: {2, 3}, card: heron})
     end
 
-    test "correct move with wrong card disallowed", %{game: game, boar: boar, cobra: cobra} do
+    test "correct move with wrong card disallowed", %{game: game, boar: boar, python: python} do
       ## White
-      refute Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 1}, card: cobra})
+      refute Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 1}, card: python})
       refute Game.valid_move?(game, %Move{from: {0, 0}, to: {1, 1}, card: boar})
 
       ## Black
-      # No valid tests with Crab/Crane
+      # No valid tests with crustacean/heron
     end
 
     test "moving off the board disallowed", %{
       game: game,
       game_black: game_black,
       boar: boar,
-      cobra: cobra,
-      crab: crab
+      python: python,
+      crustacean: crustacean
     } do
       ## White
-      refute Game.valid_move?(game, %Move{from: {0, 0}, to: {-1, 0}, card: cobra})
+      refute Game.valid_move?(game, %Move{from: {0, 0}, to: {-1, 0}, card: python})
       refute Game.valid_move?(game, %Move{from: {0, 0}, to: {-1, 0}, card: boar})
       refute Game.valid_move?(game, %Move{from: {4, 0}, to: {5, 0}, card: boar})
-      refute Game.valid_move?(game, %Move{from: {0, 0}, to: {1, -1}, card: cobra})
+      refute Game.valid_move?(game, %Move{from: {0, 0}, to: {1, -1}, card: python})
 
       ## Black
-      refute Game.valid_move?(game_black, %Move{from: {0, 4}, to: {-2, 4}, card: crab})
-      refute Game.valid_move?(game_black, %Move{from: {4, 4}, to: {6, 4}, card: crab})
+      refute Game.valid_move?(game_black, %Move{from: {0, 4}, to: {-2, 4}, card: crustacean})
+      refute Game.valid_move?(game_black, %Move{from: {4, 4}, to: {6, 4}, card: crustacean})
     end
 
     test "moving to allied piece disallowed", %{
       game: game,
       game_black: game_black,
       boar: boar,
-      crab: crab
+      crustacean: crustacean
     } do
       ## White
       refute Game.valid_move?(game, %Move{from: {0, 0}, to: {1, 0}, card: boar})
       refute Game.valid_move?(game, %Move{from: {1, 0}, to: {0, 0}, card: boar})
       refute Game.valid_move?(game, %Move{from: {1, 0}, to: {2, 0}, card: boar})
       ## Black
-      refute Game.valid_move?(game_black, %Move{from: {0, 4}, to: {2, 4}, card: crab})
-      refute Game.valid_move?(game_black, %Move{from: {4, 4}, to: {2, 4}, card: crab})
+      refute Game.valid_move?(game_black, %Move{from: {0, 4}, to: {2, 4}, card: crustacean})
+      refute Game.valid_move?(game_black, %Move{from: {4, 4}, to: {2, 4}, card: crustacean})
     end
 
     test "unactive player moving disallowed", %{
       game: game,
       game_black: game_black,
       boar: boar,
-      cobra: cobra,
-      crab: crab,
-      crane: crane
+      python: python,
+      crustacean: crustacean,
+      heron: heron
     } do
       ## White
       refute Game.valid_move?(game_black, %Move{from: {0, 0}, to: {0, 1}, card: boar})
-      refute Game.valid_move?(game_black, %Move{from: {0, 0}, to: {1, 1}, card: cobra})
+      refute Game.valid_move?(game_black, %Move{from: {0, 0}, to: {1, 1}, card: python})
       refute Game.valid_move?(game_black, %Move{from: {2, 0}, to: {2, 1}, card: boar})
-      refute Game.valid_move?(game_black, %Move{from: {2, 0}, to: {3, 1}, card: cobra})
+      refute Game.valid_move?(game_black, %Move{from: {2, 0}, to: {3, 1}, card: python})
 
       ## Black
-      refute Game.valid_move?(game, %Move{from: {0, 4}, to: {0, 3}, card: crab})
-      refute Game.valid_move?(game, %Move{from: {0, 4}, to: {0, 3}, card: crane})
-      refute Game.valid_move?(game, %Move{from: {2, 4}, to: {2, 3}, card: crab})
-      refute Game.valid_move?(game, %Move{from: {2, 4}, to: {2, 3}, card: crane})
+      refute Game.valid_move?(game, %Move{from: {0, 4}, to: {0, 3}, card: crustacean})
+      refute Game.valid_move?(game, %Move{from: {0, 4}, to: {0, 3}, card: heron})
+      refute Game.valid_move?(game, %Move{from: {2, 4}, to: {2, 3}, card: crustacean})
+      refute Game.valid_move?(game, %Move{from: {2, 4}, to: {2, 3}, card: heron})
     end
 
     test "moving a blank square disallowed", %{
       game: game,
       game_black: game_black,
       boar: boar,
-      crab: crab
+      crustacean: crustacean
     } do
       ## White
       refute Game.valid_move?(game, %Move{from: {0, 1}, to: {0, 2}, card: boar})
       refute Game.valid_move?(game, %Move{from: {0, 2}, to: {0, 3}, card: boar})
       ## Black
-      refute Game.valid_move?(game_black, %Move{from: {2, 2}, to: {4, 2}, card: crab})
+      refute Game.valid_move?(game_black, %Move{from: {2, 2}, to: {4, 2}, card: crustacean})
     end
 
     test "correct move with correct card, but card is not in player's possession disallowed", %{
       game: game,
-      tiger: tiger
+      panther: panther
     } do
-      refute Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 2}, card: tiger})
+      refute Game.valid_move?(game, %Move{from: {0, 0}, to: {0, 2}, card: panther})
     end
   end
 
   describe "card_provides_move?/2" do
-    test "positive case, white", %{dragon: dragon} do
-      move = %Move{from: {2, 2}, to: {4, 3}, card: dragon}
+    test "positive case, white", %{drake: drake} do
+      move = %Move{from: {2, 2}, to: {4, 3}, card: drake}
       assert Game.card_provides_move?(move, :white)
       refute Game.card_provides_move?(move, :black)
     end
 
-    test "positive case, black", %{dragon: dragon} do
-      move = %Move{from: {2, 2}, to: {4, 1}, card: dragon}
+    test "positive case, black", %{drake: drake} do
+      move = %Move{from: {2, 2}, to: {4, 1}, card: drake}
       assert Game.card_provides_move?(move, :black)
       refute Game.card_provides_move?(move, :white)
     end
 
-    test "negative case", %{dragon: dragon} do
-      move = %Move{from: {2, 2}, to: {2, 3}, card: dragon}
+    test "negative case", %{drake: drake} do
+      move = %Move{from: {2, 2}, to: {2, 3}, card: drake}
       refute Game.card_provides_move?(move, :black)
       refute Game.card_provides_move?(move, :white)
     end
@@ -248,8 +248,8 @@ defmodule GameTest do
       assert Game.active_player_has_card?(game, boar)
     end
 
-    test "negative case", %{game: game, crab: crab} do
-      refute Game.active_player_has_card?(game, crab)
+    test "negative case", %{game: game, crustacean: crustacean} do
+      refute Game.active_player_has_card?(game, crustacean)
     end
   end
 
@@ -268,25 +268,26 @@ defmodule GameTest do
   end
 
   describe "all_valid_moves/1" do
-    test "5 boar moves, 4 cobra moves", %{game: game, boar: boar, cobra: cobra} do
+    test "5 boar moves, 4 python moves", %{game: game, boar: boar, python: python} do
       count_boar = Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == boar end) |> length
 
-      count_cobra =
-        Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == cobra end) |> length
+      count_python =
+        Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == python end) |> length
 
       assert count_boar == 5
-      assert count_cobra == 4
+      assert count_python == 4
     end
 
-    test "no crab or crane moves", %{game: game, crab: crab, crane: crane} do
+    test "no crustacean or heron moves", %{game: game, crustacean: crustacean, heron: heron} do
       # These are the other player's cards, they shouldn't count
-      count_crab = Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == crab end) |> length
+      count_crustacean =
+        Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == crustacean end) |> length
 
-      count_crane =
-        Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == crane end) |> length
+      count_heron =
+        Game.all_valid_moves(game) |> Enum.filter(fn m -> m.card == heron end) |> length
 
-      assert count_crab == 0
-      assert count_crane == 0
+      assert count_crustacean == 0
+      assert count_heron == 0
     end
   end
 
@@ -326,22 +327,22 @@ defmodule GameTest do
   end
 
   describe "possible_moves/3" do
-    test "white dragon case", %{dragon: dragon} do
-      moves = Game.possible_moves({2, 2}, dragon, :white)
-      assert %Move{from: {2, 2}, to: {0, 3}, card: dragon} in moves
-      assert %Move{from: {2, 2}, to: {4, 3}, card: dragon} in moves
-      assert %Move{from: {2, 2}, to: {3, 1}, card: dragon} in moves
-      assert %Move{from: {2, 2}, to: {1, 1}, card: dragon} in moves
+    test "white drake case", %{drake: drake} do
+      moves = Game.possible_moves({2, 2}, drake, :white)
+      assert %Move{from: {2, 2}, to: {0, 3}, card: drake} in moves
+      assert %Move{from: {2, 2}, to: {4, 3}, card: drake} in moves
+      assert %Move{from: {2, 2}, to: {3, 1}, card: drake} in moves
+      assert %Move{from: {2, 2}, to: {1, 1}, card: drake} in moves
       assert length(moves) == 4
     end
 
-    test "black dragon case", %{dragon: dragon} do
-      moves = Game.possible_moves({2, 2}, dragon, :black)
+    test "black drake case", %{drake: drake} do
+      moves = Game.possible_moves({2, 2}, drake, :black)
 
-      assert %Move{from: {2, 2}, to: {0, 1}, card: dragon} in moves
-      assert %Move{from: {2, 2}, to: {4, 1}, card: dragon} in moves
-      assert %Move{from: {2, 2}, to: {3, 3}, card: dragon} in moves
-      assert %Move{from: {2, 2}, to: {1, 3}, card: dragon} in moves
+      assert %Move{from: {2, 2}, to: {0, 1}, card: drake} in moves
+      assert %Move{from: {2, 2}, to: {4, 1}, card: drake} in moves
+      assert %Move{from: {2, 2}, to: {3, 3}, card: drake} in moves
+      assert %Move{from: {2, 2}, to: {1, 3}, card: drake} in moves
       assert length(moves) == 4
     end
   end
@@ -366,7 +367,7 @@ end
 
 # To test in IEX:
 # alias DemonSpiritGame.{Game, Card, Move}
-# {:ok, cobra} = Card.by_name("Cobra")
-# move = %Move{from: {0, 0}, to: {1, 1}, card: cobra}
+# {:ok, python} = Card.by_name("python")
+# move = %Move{from: {0, 0}, to: {1, 1}, card: python}
 # cards = Card.cards() |> Enum.sort_by(fn card -> card.name end) |> Enum.take(5)
 # game = Game.new(cards)
