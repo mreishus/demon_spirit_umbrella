@@ -24,7 +24,7 @@
 * Link to game in waiting window is missing domain name.
 * Drag and drop does not work.
 * Players should not see what piece their opponents are selecting.
-* "Sea Snake" card has a smaller font to avoid line wrapping, however there is still some minor visual shifting that's annoying.
+* Cards with longer names have  a smaller font to avoid line wrapping, however there is still some minor visual shifting that's annoying.
 
 
 # Organization
@@ -43,4 +43,4 @@
 
 Current view:
 
-![Early Screenshot](/screenshot2.png?raw=true "Early Screenshot")
+![Early Screenshot](/screenshot.png?raw=true&i=0 "Screenshot")
