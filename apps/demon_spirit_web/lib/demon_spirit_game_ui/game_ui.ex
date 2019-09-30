@@ -262,9 +262,10 @@ defmodule DemonSpiritWeb.GameUI do
   def drag_drop(gameui, source = {sx, sy}, target = {tx, ty}, person)
       when is_integer(sx) and is_integer(sy) and
              is_integer(tx) and is_integer(ty) do
-    cond do
-      not allowed_to_click?(gameui, person) -> gameui
-      true -> user_wants_to_move(gameui, source, target)
+    if allowed_to_click?(gameui, person) do
+      user_wants_to_move(gameui, source, target)
+    else
+      gameui
     end
   end
 
