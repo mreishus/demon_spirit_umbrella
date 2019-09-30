@@ -267,6 +267,14 @@ defmodule GameUiServerTest do
     end
   end
 
+  describe "ready system" do
+    test "new game is in staging state" do
+      game_name = new_game_with_p1_p2_sitting()
+      state1 = GameUIServer.state(game_name)
+      assert state1.status == :staging
+    end
+  end
+
   defp game_in_clarification_state do
     game_name = new_game_with_p1_p2_sitting()
     # White moves up one
