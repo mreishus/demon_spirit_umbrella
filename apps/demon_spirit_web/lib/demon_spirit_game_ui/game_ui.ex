@@ -276,13 +276,11 @@ defmodule DemonSpiritWeb.GameUI do
   Output: gameui
   """
   def clarify_move(gameui, i, person) when is_integer(i) do
-    cond do
-      not allowed_to_click?(gameui, person) ->
-        gameui
-
-      true ->
-        move = gameui.moves_need_clarify |> Enum.at(i)
-        apply_move(gameui, move)
+    if allowed_to_click?(gameui, person) do
+      move = gameui.moves_need_clarify |> Enum.at(i)
+      apply_move(gameui, move)
+    else
+      gameui
     end
   end
 
