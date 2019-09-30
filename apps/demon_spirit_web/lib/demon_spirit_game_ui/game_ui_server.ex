@@ -131,25 +131,68 @@ defmodule DemonSpiritWeb.GameUIServer do
     GenServer.call(via_tuple(game_name), {:click, coords, person})
   end
 
+  @doc """
+  drag_start/3: A person has started dragging a piece. Updates the UI to 
+  have that piece selected and destination squares highlighted.
+  Input: game_name (string)
+  Input: source: {integer, integer} coordinates of square dragged
+  Input: person: any, who did it
+  Output: %GameUI{}
+  """
   def drag_start(game_name, source = {sx, sy}, person)
       when is_integer(sx) and is_integer(sy) do
     GenServer.call(via_tuple(game_name), {:drag_start, source, person})
   end
 
+  @doc """
+  drag_end/3: A person has canceled or ended their drag. Removes the
+  selected state.
+  Input: game_name (string)
+  Input: Person: any, who did it
+  Output: %GameUI{}
+  """
   def drag_end(game_name, person) do
     GenServer.call(via_tuple(game_name), {:drag_end, person})
   end
 
+  @doc """
+  drag_drop/4: A person has finished a drag/drop event. Makes the desired move
+  if possible
+  Input: game_name (string)
+  Input: source {integer, integer} coordinates of beginning of drag/drop
+  Input: target {integer, integer} coordinates of end of drag/drop
+  Output: %GameUI{}
+  """
   def drag_drop(game_name, source = {sx, sy}, target = {tx, ty}, person)
       when is_integer(sx) and is_integer(sy) and
              is_integer(tx) and is_integer(ty) do
     GenServer.call(via_tuple(game_name), {:drag_drop, source, target, person})
   end
 
+  @doc """
+  clarify_move/3: `person` has choosen a move from the clarification popup.
+  Sometimes when someone specifies a move using two squares (0,0) -> (0,1), there
+  are multiple moves that can be done to that specification.
+
+  We put the user in a 'clarification' state by putting a list of moves in 
+  gameui.moves_need_clarify, which shows a modal on the player's UI. When they
+  choose a move, call this function.
+
+  input: game_name (string)
+  input: i (integer) Index of which move they chose, 0 indexed.
+  output: %GameUI{}
+  """
   def clarify_move(game_name, i, person) when is_integer(i) do
     GenServer.call(via_tuple(game_name), {:clarify_move, i, person})
   end
 
+  @doc """
+  clarify_cancel/2: `person` wants to cancel the clarification state
+  and choose a different move.
+  input: game_name (string)
+  input: person (any)
+  output: %GameUI{}
+  """
   def clarify_cancel(game_name, person) do
     GenServer.call(via_tuple(game_name), {:clarify_cancel, person})
   end

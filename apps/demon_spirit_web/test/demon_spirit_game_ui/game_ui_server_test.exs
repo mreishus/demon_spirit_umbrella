@@ -228,6 +228,45 @@ defmodule GameUiServerTest do
     end
   end
 
+  describe "drag and drop system" do
+    test "start drag sets selected state" do
+      game_name = new_game_with_p1_p2_sitting()
+      state1 = GameUIServer.state(game_name)
+      GameUIServer.drag_start(game_name, {1, 0}, :p1)
+      state2 = GameUIServer.state(game_name)
+      assert state1 != state2
+      assert state2.selected == {1, 0}
+    end
+
+    test "complete drag and drop moves piece" do
+      game_name = new_game_with_p1_p2_sitting()
+      state1 = GameUIServer.state(game_name)
+      GameUIServer.drag_start(game_name, {1, 0}, :p1)
+      GameUIServer.drag_drop(game_name, {1, 0}, {1, 1}, :p1)
+      state2 = GameUIServer.state(game_name)
+      assert state1 != state2
+      assert state2.game.board[{1, 1}] != nil
+    end
+
+    test "opponent isn't allowed to drag and drop" do
+      game_name = new_game_with_p1_p2_sitting()
+      state1 = GameUIServer.state(game_name)
+      GameUIServer.drag_start(game_name, {1, 0}, :p2)
+      GameUIServer.drag_drop(game_name, {1, 0}, {1, 1}, :p2)
+      state2 = GameUIServer.state(game_name)
+      assert state1 == state2
+    end
+
+    test "start drag, then cancel restores original state" do
+      game_name = new_game_with_p1_p2_sitting()
+      state1 = GameUIServer.state(game_name)
+      GameUIServer.drag_start(game_name, {1, 0}, :p1)
+      GameUIServer.drag_end(game_name, :p1)
+      state2 = GameUIServer.state(game_name)
+      assert state1 == state2
+    end
+  end
+
   defp game_in_clarification_state do
     game_name = new_game_with_p1_p2_sitting()
     # White moves up one
