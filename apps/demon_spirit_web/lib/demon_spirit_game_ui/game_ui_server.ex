@@ -33,6 +33,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   require Logger
   alias DemonSpiritGame.{GameSupervisor}
   alias DemonSpiritWeb.{GameRegistry, GameUI, GameUIOptions}
+  alias DemonSpiritWeb.LiveGameShow
 
   alias DemonSpiritGame.{AI}
 
@@ -241,12 +242,15 @@ defmodule DemonSpiritWeb.GameUIServer do
     pid = self()
 
     ## Compute AI move, in the background..
-    ## I don't know how to notify the front-end when this is
-    ## finished, though.
     spawn_link(fn ->
       ai_info = state.game |> AI.alphabeta_skill(state.options.computer_skill)
       move = ai_info.move
       GenServer.call(pid, {:apply_move, move})
+
+      ## Tell the LiveView controller that a move has been made.
+      ## This is a little bit of tight coupling, but it 
+      ## beats my earlier polling solution.
+      state.game_name |> LiveGameShow.topic_for() |> LiveGameShow.notify()
     end)
 
     {:reply, state, state, timeout(state)}

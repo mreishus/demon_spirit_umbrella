@@ -15,7 +15,6 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:ok, _} = Presence.track(self(), topic, guest.id, guest)
 
     state = GameUIServer.sit_down_if_possible(game_name, guest)
-    tick_ref = create_tick_interval(socket, state)
 
     notify(topic)
 
@@ -26,26 +25,10 @@ defmodule DemonSpiritWeb.LiveGameShow do
         state: state,
         guest: guest,
         users: [],
-        flip_per: guest == state.black,
-        tick_ref: tick_ref
+        flip_per: guest == state.black
       )
 
     {:ok, socket}
-  end
-
-  # If playing against the computer, create a timer that automatically sends
-  # ":tick" messages, so I am constantly updating the game state.
-  # If we can get the AI to publish an "update state" message over the 
-  # pubsub channel, then we can remove this.
-  defp create_tick_interval(socket, state) do
-    {:ok, tick_ref} =
-      if connected?(socket) and state.options.vs == "computer" do
-        :timer.send_interval(2500, self(), :tick)
-      else
-        {:ok, nil}
-      end
-
-    tick_ref
   end
 
   ## Event: "click-square-3-3" (Someone clicked on square (3,3))
@@ -158,11 +141,11 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {x, y}
   end
 
-  defp notify(topic) do
+  def notify(topic) do
     Endpoint.broadcast_from(self(), topic, "state_update", %{})
   end
 
-  defp topic_for(game_name) do
+  def topic_for(game_name) do
     "game-topic:" <> game_name
   end
 
@@ -185,29 +168,5 @@ defmodule DemonSpiritWeb.LiveGameShow do
       end)
 
     {:noreply, assign(socket, users: users)}
-  end
-
-  # Handle ":tick", a request to update game state on a timer
-  def handle_info(
-        :tick,
-        socket = %{assigns: %{game_name: game_name, tick_ref: tick_ref}}
-      ) do
-    state = GameUIServer.state(game_name)
-
-    if tick_ref != nil and stop_ticking?(state) do
-      :timer.cancel(tick_ref)
-    end
-
-    {:noreply, assign(socket, state: state)}
-  end
-
-  # There's a winner or game has been alive for a long time
-  defp stop_ticking?(state) do
-    state.game.winner != nil or game_alive_too_long?(state)
-  end
-
-  # Game alive more than 4 hours
-  defp game_alive_too_long?(game_state) do
-    DateTime.diff(DateTime.utc_now(), game_state.created_at) > 60 * 60 * 4
   end
 end
