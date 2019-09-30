@@ -191,12 +191,10 @@ defmodule DemonSpiritWeb.GameUI do
   end
 
   def check_status_advance(gameui = %GameUI{status: :staging}) do
-    cond do
-      everyone_ready(gameui) ->
-        %{gameui | status: :playing}
-
-      true ->
-        gameui
+    if everyone_ready(gameui) do
+      %{gameui | status: :playing}
+    else
+      gameui
     end
   end
 
