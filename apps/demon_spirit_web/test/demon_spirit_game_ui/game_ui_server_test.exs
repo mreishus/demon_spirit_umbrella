@@ -139,10 +139,7 @@ defmodule GameUiServerTest do
     end
 
     test "Third sit goes to neither" do
-      game_name = generate_game_name()
-      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
-      GameUIServer.sit_down_if_possible(game_name, :p1)
-      GameUIServer.sit_down_if_possible(game_name, :p2)
+      game_name = new_game_with_p1_p2_sitting()
       state = GameUIServer.sit_down_if_possible(game_name, :p3)
       assert state.white == :p1
       assert state.black == :p2
@@ -161,10 +158,7 @@ defmodule GameUiServerTest do
 
   describe "only current sitting player allowed to click" do
     test "correct player clicks, state changes" do
-      game_name = generate_game_name()
-      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
-      GameUIServer.sit_down_if_possible(game_name, :p1)
-      GameUIServer.sit_down_if_possible(game_name, :p2)
+      game_name = new_game_with_p1_p2_sitting()
 
       new_state = GameUIServer.click(game_name, {0, 0}, :p1)
       assert new_state.selected == {0, 0}
@@ -173,10 +167,7 @@ defmodule GameUiServerTest do
     end
 
     test "incorrect player clicks, state is unchanged" do
-      game_name = generate_game_name()
-      assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
-      GameUIServer.sit_down_if_possible(game_name, :p1)
-      GameUIServer.sit_down_if_possible(game_name, :p2)
+      game_name = new_game_with_p1_p2_sitting()
       state = GameUIServer.state(game_name)
 
       new_state = GameUIServer.click(game_name, {0, 0}, :p2)
@@ -184,6 +175,77 @@ defmodule GameUiServerTest do
       refute new_state.selected == {0, 0}
       refute new_state.move_dest == [{0, 1}, {1, 1}]
     end
+  end
+
+  describe "clarification system" do
+    test "clarification state invoked" do
+      game_name = game_in_clarification_state()
+      state = GameUIServer.state(game_name)
+      assert length(state.moves_need_clarify) == 2
+      assert state.game.turn == :black
+    end
+
+    test "correct clarification (choose card 0)" do
+      game_name = game_in_clarification_state()
+      GameUIServer.clarify_move(game_name, 0, :p2)
+      state = GameUIServer.state(game_name)
+      assert state.moves_need_clarify == nil
+      assert state.game.turn == :white
+      assert state.game.cards.side.name == "Crustacean"
+    end
+
+    test "correct clarification (choose card 1)" do
+      game_name = game_in_clarification_state()
+      GameUIServer.clarify_move(game_name, 1, :p2)
+      state = GameUIServer.state(game_name)
+      assert state.moves_need_clarify == nil
+      assert state.game.turn == :white
+      assert state.game.cards.side.name == "Heron"
+    end
+
+    test "correct clarification (cancel)" do
+      game_name = game_in_clarification_state()
+      GameUIServer.clarify_cancel(game_name, :p2)
+      state = GameUIServer.state(game_name)
+      assert state.moves_need_clarify == nil
+      assert state.game.turn == :black
+    end
+
+    test "opponent can't clarify" do
+      game_name = game_in_clarification_state()
+      GameUIServer.clarify_move(game_name, 0, :p1)
+      state = GameUIServer.state(game_name)
+      assert length(state.moves_need_clarify) == 2
+      assert state.game.turn == :black
+    end
+
+    test "opponent can't cancel clarify" do
+      game_name = game_in_clarification_state()
+      GameUIServer.clarify_cancel(game_name, :p1)
+      state = GameUIServer.state(game_name)
+      assert length(state.moves_need_clarify) == 2
+      assert state.game.turn == :black
+    end
+  end
+
+  defp game_in_clarification_state do
+    game_name = new_game_with_p1_p2_sitting()
+    # White moves up one
+    GameUIServer.click(game_name, {1, 0}, :test)
+    GameUIServer.click(game_name, {1, 1}, :test)
+    # Black attempts to move up one, but two moves possible
+    # Crustacean(0) / Heron(1)
+    GameUIServer.click(game_name, {2, 4}, :test)
+    GameUIServer.click(game_name, {2, 3}, :test)
+    game_name
+  end
+
+  defp new_game_with_p1_p2_sitting do
+    game_name = generate_game_name()
+    assert {:ok, _pid} = GameUIServer.start_link(game_name, :hardcoded_cards)
+    GameUIServer.sit_down_if_possible(game_name, :p1)
+    GameUIServer.sit_down_if_possible(game_name, :p2)
+    game_name
   end
 
   defp generate_game_name do

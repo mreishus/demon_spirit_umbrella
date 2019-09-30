@@ -268,6 +268,13 @@ defmodule DemonSpiritWeb.GameUI do
     end
   end
 
+  @doc """
+  clarify_move/2: `person` was in a clarification state, and they clicked
+  the `i`th option (0 indexed).  Apply that move to the game.
+  Input: gameui: %GameUI
+  Input: person: any
+  Output: gameui
+  """
   def clarify_move(gameui, i, person) when is_integer(i) do
     cond do
       not allowed_to_click?(gameui, person) ->
