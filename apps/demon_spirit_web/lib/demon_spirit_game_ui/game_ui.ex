@@ -339,11 +339,7 @@ defmodule DemonSpiritWeb.GameUI do
         %{state | selected: nil, move_dest: [], moves_need_clarify: nil}
 
       1 ->
-        # TODO: There could be multiple moves!
-        # Game always chooses the first one available.  We should
-        # ask the user.
         move = candidates |> Enum.at(0)
-
         apply_move(state, move)
 
       2 ->
