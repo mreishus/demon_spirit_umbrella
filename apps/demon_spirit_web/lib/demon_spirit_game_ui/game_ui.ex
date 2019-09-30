@@ -252,9 +252,10 @@ defmodule DemonSpiritWeb.GameUI do
   end
 
   def drag_end(gameui, person) do
-    cond do
-      not allowed_to_click?(gameui, person) -> gameui
-      true -> %{gameui | selected: nil, move_dest: []}
+    if allowed_to_click?(gameui, person) do
+      %{gameui | selected: nil, move_dest: []}
+    else
+      gameui
     end
   end
 
