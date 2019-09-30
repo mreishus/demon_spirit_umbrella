@@ -244,9 +244,10 @@ defmodule DemonSpiritWeb.GameUI do
 
   def drag_start(gameui, source = {sx, sy}, person)
       when is_integer(sx) and is_integer(sy) do
-    cond do
-      not allowed_to_click?(gameui, person) -> gameui
-      true -> click_unselected(gameui, source)
+    if allowed_to_click?(gameui, person) do
+      click_unselected(gameui, source)
+    else
+      gameui
     end
   end
 
