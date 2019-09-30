@@ -8,7 +8,6 @@ defmodule CardTest do
     drake = %Card{
       id: 5,
       name: "Drake",
-      oname: "Dragon",
       moves: [{-2, 1}, {2, 1}, {-1, -1}, {1, -1}],
       color: :green
     }
@@ -16,7 +15,6 @@ defmodule CardTest do
     hiero = %Card{
       id: 7,
       name: "Hierodula",
-      oname: "Mantis",
       moves: [{-1, 1}, {1, 1}, {0, -1}],
       color: :green
     }

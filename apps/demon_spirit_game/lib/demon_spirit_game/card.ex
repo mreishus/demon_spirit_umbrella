@@ -11,7 +11,7 @@ defmodule DemonSpiritGame.Card do
     Blue is left-oriented, red is right-oriented, green is balanced.
   """
   alias DemonSpiritGame.{Card}
-  defstruct id: nil, name: nil, oname: nil, moves: [], color: nil
+  defstruct id: nil, name: nil, moves: [], color: nil
 
   @doc """
   by_name/1: Retrieve a card by name.
@@ -60,112 +60,96 @@ defmodule DemonSpiritGame.Card do
       %Card{
         id: 1,
         name: "Panther",
-        oname: "Tiger",
         moves: [{0, 2}, {0, -1}],
         color: :green
       },
       %Card{
         id: 2,
         name: "Crustacean",
-        oname: "Crab",
         moves: [{0, 1}, {-2, 0}, {2, 0}],
         color: :green
       },
       %Card{
         id: 3,
         name: "Wukong",
-        oname: "Monkey",
         moves: [{-1, 1}, {1, 1}, {-1, -1}, {1, -1}],
         color: :green
       },
       %Card{
         id: 4,
         name: "Heron",
-        oname: "Crane",
         moves: [{0, 1}, {-1, -1}, {1, -1}],
         color: :green
       },
       %Card{
         id: 5,
         name: "Drake",
-        oname: "Dragon",
         moves: [{-2, 1}, {2, 1}, {-1, -1}, {1, -1}],
         color: :green
       },
       %Card{
         id: 6,
         name: "Pachyderm",
-        oname: "Elephant",
         moves: [{1, 0}, {-1, 0}, {1, 1}, {-1, 1}],
         color: :green
       },
       %Card{
         id: 7,
         name: "Hierodula",
-        oname: "Mantis",
         moves: [{-1, 1}, {1, 1}, {0, -1}],
         color: :green
       },
       %Card{
         id: 8,
         name: "Wild Pig",
-        oname: "Boar",
         moves: [{0, 1}, {-1, 0}, {1, 0}],
         color: :green
       },
       %Card{
         id: 9,
         name: "Toad",
-        oname: "Frog",
         moves: [{-2, 0}, {-1, 1}, {1, -1}],
         color: :blue
       },
       %Card{
         id: 10,
         name: "Chen",
-        oname: "Goose",
         moves: [{-1, 1}, {-1, 0}, {1, 0}, {1, -1}],
         color: :blue
       },
       %Card{
         id: 11,
         name: "Pony",
-        oname: "Horse",
         moves: [{-1, 0}, {0, 1}, {0, -1}],
         color: :blue
       },
       %Card{
         id: 12,
         name: "Moray",
-        oname: "Eel",
         moves: [{-1, 1}, {-1, -1}, {1, 0}],
         color: :blue
       },
       %Card{
         id: 13,
         name: "Hare",
-        oname: "Rabbit",
         moves: [{2, 0}, {1, 1}, {-1, -1}],
         color: :red
       },
       %Card{
         id: 14,
         name: "Cockerel",
-        oname: "Rooster",
         moves: [{1, 1}, {1, 0}, {-1, 0}, {-1, -1}],
         color: :red
       },
       %Card{
         id: 15,
         name: "Steer",
-        oname: "Ox",
         moves: [{1, 0}, {0, 1}, {0, -1}],
         color: :red
       },
       %Card{
         id: 16,
         name: "Python",
-        oname: "Cobra",
         moves: [{1, 1}, {1, -1}, {-1, 0}],
         color: :red
       }
@@ -178,105 +162,90 @@ defmodule DemonSpiritGame.Card do
       %Card{
         id: 17,
         name: "Camelopard",
-        oname: "Giraffe",
         moves: [{0, -1}, {-2, 1}, {2, 1}],
         color: :green
       },
       %Card{
         id: 18,
         name: "Qilin",
-        oname: "Kirin",
         moves: [{1, 2}, {-1, 2}, {0, -2}],
         color: :green
       },
       %Card{
         id: 19,
         name: "Hawk",
-        oname: "Phoenix",
         moves: [{-2, 0}, {2, 0}, {-1, 1}, {1, 1}],
         color: :green
       },
       %Card{
         id: 21,
         name: "Vulpa",
-        oname: "Fox",
         moves: [{1, 1}, {1, 0}, {1, -1}],
         color: :red
       },
       %Card{
         id: 22,
         name: "Bao Bao",
-        oname: "Panda",
         moves: [{0, 1}, {1, 1}, {-1, -1}],
         color: :red
       },
       %Card{
         id: 23,
         name: "Threadsnake",
-        oname: "Sea Snake",
         moves: [{0, 1}, {2, 0}, {-1, -1}],
         color: :red
       },
       %Card{
         id: 24,
         name: "Rodent",
-        oname: "Mouse",
         moves: [{1, 0}, {0, 1}, {-1, -1}],
         color: :red
       },
       %Card{
         id: 25,
         name: "Raccoon Dog",
-        oname: "Tanuki",
         moves: [{0, 1}, {2, 1}, {-1, -1}],
         color: :red
       },
       %Card{
         id: 26,
         name: "Marten",
-        oname: "Sable",
         moves: [{1, 1}, {-2, 0}, {-1, -1}],
         color: :red
       },
       %Card{
         id: 27,
         name: "Canine",
-        oname: "Dog",
         moves: [{-1, 0}, {-1, 1}, {-1, -1}],
         color: :blue
       },
       %Card{
         id: 28,
         name: "Ursidae",
-        oname: "Bear",
         moves: [{0, 1}, {-1, 1}, {1, -1}],
         color: :blue
       },
       %Card{
         id: 29,
         name: "Boa",
-        oname: "Viper",
         moves: [{-2, 0}, {0, 1}, {1, -1}],
         color: :blue
       },
       %Card{
         id: 30,
         name: "Bandicoot",
-        oname: "Rat",
         moves: [{-1, 0}, {0, 1}, {1, -1}],
         color: :blue
       },
       %Card{
         id: 31,
         name: "Lizard",
-        oname: "Iguana",
         moves: [{0, 1}, {-2, 1}, {1, -1}],
         color: :blue
       },
       %Card{
         id: 32,
         name: "Kawauso",
-        oname: "Otter",
         moves: [{-1, 1}, {1, -1}, {2, 0}],
         color: :blue
       }
