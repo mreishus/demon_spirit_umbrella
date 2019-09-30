@@ -166,21 +166,6 @@ defmodule DemonSpiritWeb.LiveGameShow do
     "game-topic:" <> game_name
   end
 
-  ## Commented out for experiment below
-
-  # def handle_info(
-  #       broadcast = %{event: "state_update", topic: broadcast_topic},
-  #       socket = %{assigns: %{game_name: game_name, topic: topic}}
-  #     )
-  #     when broadcast_topic == topic do
-  #   state = GameUIServer.state(game_name)
-  #   {:noreply, assign(socket, state: state)}
-  # end
-
-  ## Experiment: Keep the "topic matching" stuff out of
-  ## Handle_info - is it the case whenever handle_info is called
-  ## we're already assured the topic is correct? I think it might be.
-
   # Handle incoming "state_updates": Game state has changed
   def handle_info(
         %{event: "state_update"},
