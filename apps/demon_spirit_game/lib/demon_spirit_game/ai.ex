@@ -87,9 +87,10 @@ defmodule DemonSpiritGame.AI do
     # "Transform moves: skill[#{skill}] num moves[#{max_moves}}] moves considered[#{num_moves}]"
     # |> IO.inspect()
 
-    cond do
-      num_moves >= max_moves -> moves
-      true -> Enum.take_random(moves, num_moves)
+    if num_moves >= max_moves do
+      moves
+    else
+      Enum.take_random(moves, num_moves)
     end
   end
 
