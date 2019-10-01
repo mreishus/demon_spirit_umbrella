@@ -273,16 +273,6 @@ defmodule DemonSpiritWeb.GameUIServer do
     {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
 
-  defp trigger_ai_move(gameui, new_gameui) do
-    if GameUI.did_move?(gameui, new_gameui) and GameUI.computer_next?(new_gameui) do
-      pid = self()
-
-      spawn_link(fn ->
-        GenServer.call(pid, :ai_move)
-      end)
-    end
-  end
-
   def handle_call(:state, _from, state) do
     {:reply, state, state, timeout(state)}
   end
@@ -337,6 +327,23 @@ defmodule DemonSpiritWeb.GameUIServer do
     gameui = GameUI.not_ready(gameui, person)
     GameRegistry.update(gameui.game_name, game_info(gameui))
     {:reply, gameui, gameui, timeout(gameui)}
+  end
+
+  # trigger_ai_move/2
+  # Takes two game states.
+  # Looks to see if a move occured between the states.
+  # If a move did occur, and the computer is due to play next, sends an ":ai_move" message
+  # to self.
+  # Basically, this needs to be called whenever we might have processed a move,
+  # in order to keep the computer playing.
+  defp trigger_ai_move(gameui, new_gameui) do
+    if GameUI.did_move?(gameui, new_gameui) and GameUI.computer_next?(new_gameui) do
+      pid = self()
+
+      spawn_link(fn ->
+        GenServer.call(pid, :ai_move)
+      end)
+    end
   end
 
   # timeout/1
