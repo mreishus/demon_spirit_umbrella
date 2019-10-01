@@ -1,7 +1,11 @@
 ########## TODO NEEDS TESTS ###############
-########## TODO NEEDS TESTS ###############
-########## TODO NEEDS TESTS ###############
 defmodule DemonSpiritWeb.GameRegistry do
+  @moduledoc """
+    GameRegistry: A centralized list of all games going on, and a little information about them.
+    It's stored in key value format, in ETS. 
+    keys = game_name (string)
+    values = %GameInfo{}, which is a short summary about the game
+  """
   use GenServer
   require Logger
 

@@ -1,4 +1,8 @@
 defmodule DemonSpiritWeb.LiveGameShow do
+  @moduledoc """
+  LiveGameShow:  This is the liveView of the "show" action of the game controller.
+  If you are watching or playing a game, you're using this module.
+  """
   use Phoenix.LiveView
   require Logger
   alias DemonSpiritWeb.{Endpoint, GameUIServer, GameView, Presence}

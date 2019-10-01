@@ -1,4 +1,9 @@
 defmodule DemonSpiritWeb.LiveGameIndex do
+  @moduledoc """
+  LiveGameIndex:  LiveView for the index action of the /game page.
+  Essentially, it's the lobby that shows all games that have been created.
+  """
+
   use Phoenix.LiveView
   require Logger
   alias DemonSpiritWeb.{Endpoint, GameRegistry, GameView}

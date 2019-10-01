@@ -1,4 +1,10 @@
 defmodule DemonSpiritGame.AI do
+  @moduledoc """
+  AI: This is a compute opponent to play against.  You can feed it a game state, some
+  parameters about how smart to be, and it will tell you its next move.
+
+  Main function is alphabeta_skill/2.
+  """
   alias DemonSpiritGame.Game
 
   # terminal?/1: Is this game in a terminal state? Boolean

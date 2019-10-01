@@ -1,4 +1,11 @@
 defmodule DemonSpiritWeb.NameGenerator do
+  @moduledoc """
+  NameGenerator: Makes random room names.
+  """
+
+  @doc """
+  generate/1: Takes no input.  Outputs a string of a random room name.
+  """
   def generate do
     [
       Enum.random(adj()),

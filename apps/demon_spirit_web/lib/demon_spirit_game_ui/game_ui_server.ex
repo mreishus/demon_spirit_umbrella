@@ -7,7 +7,7 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   The GameUIServer takes click events, marks squares as selected, and listens
   for a second click to move that piece.  It will also display where a piece
-  can move to.
+  can move to.  It also handles "Drag and Drop" events and the "ready button".
 
   It will spin up a GameServer and communicate with it to handle the actual
   moves and board state, but it holds its own state on top.
@@ -20,7 +20,13 @@ defmodule DemonSpiritWeb.GameUIServer do
   didn't seem like the right place either.
   """
 
+  # TODO: Split out to file
   defmodule GameInfo do
+    @moduledoc """
+    GameInfo holds an abbreviated version of a game in progress.  It's what's everyone
+    sees a list of in the lobby.  We periodically update our GameInfo struct in the GameRegistry
+    so others in the lobby can see the state of this game (did someone sit down, etc.)
+    """
     defstruct name: nil, created_at: nil, white: nil, black: nil, winner: nil, status: nil
   end
 
