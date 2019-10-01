@@ -30,7 +30,8 @@ defmodule DemonSpiritGame.Game do
             },
             turn: :white,
             winner: nil,
-            game_name: nil
+            game_name: nil,
+            moves: 0
 
   alias DemonSpiritGame.{Game, Card, Move, GameWinCheck}
 
@@ -120,7 +121,7 @@ defmodule DemonSpiritGame.Game do
   defp _move(game, %Move{from: from, to: to}) do
     {piece, board} = game.board |> Map.pop(from)
     board = board |> Map.put(to, piece)
-    %Game{game | board: board}
+    %Game{game | board: board, moves: game.moves + 1}
   end
 
   _ = """

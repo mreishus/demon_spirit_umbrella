@@ -87,6 +87,10 @@ td .content {
   <%= render "show/ready.html", state: @state, socket: @socket, guest: @guest %>
 <% end %>
 
+<div phx-hook="UpdateDing" class="hidden">
+  <%= @state.game.moves %>
+</div>
+
 <div class="flex flex-wrap">
   <div class="w-full p-4 text-center text-gray-800">
     <%# Main %>

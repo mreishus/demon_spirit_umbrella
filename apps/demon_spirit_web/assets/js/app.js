@@ -30,6 +30,8 @@ import Droppable from "./hooks/droppable";
 Hooks.Droppable = Droppable;
 import DraggableDroppable from "./hooks/draggable_droppable";
 Hooks.DraggableDroppable = DraggableDroppable;
+import UpdateDing from "./hooks/update_ding";
+Hooks.UpdateDing = UpdateDing;
 
 let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks});
 liveSocket.connect();

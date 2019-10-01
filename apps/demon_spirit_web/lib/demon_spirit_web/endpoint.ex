@@ -16,7 +16,7 @@ defmodule DemonSpiritWeb.Endpoint do
     at: "/",
     from: :demon_spirit_web,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(css fonts images sounds js favicon.ico robots.txt)
   )
 
   # Code reloading can be explicitly enabled under the
