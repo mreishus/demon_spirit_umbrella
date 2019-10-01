@@ -42,7 +42,7 @@ COPY apps/demon_spirit_web/assets apps/demon_spirit_web/assets
 ## Umbrella Version
 COPY ./apps/demon_spirit_web/priv ./apps/demon_spirit_web/priv
 
-RUN cd apps/demon_spirit_web/assets && npm install && npm run deploy
+RUN cd apps/demon_spirit_web/assets && yarn install && yarn run deploy
 RUN mix phx.digest
 
 #COPY lib lib
