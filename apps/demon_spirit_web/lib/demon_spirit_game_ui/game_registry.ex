@@ -59,14 +59,8 @@ defmodule DemonSpiritWeb.GameRegistry do
     )
   end
 
+  # Basic put function.  See git history for "get" if needed.
   defp put(key, value) do
     :ets.insert(__MODULE__, {key, value})
-  end
-
-  defp get(key) do
-    case :ets.lookup(__MODULE__, key) do
-      [{^key, value}] -> value
-      [] -> nil
-    end
   end
 end
