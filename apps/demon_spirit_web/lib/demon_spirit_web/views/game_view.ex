@@ -86,7 +86,7 @@ defmodule DemonSpiritWeb.GameView do
 
   # Zero_pad: Given an integer and an amount, pad left with 0s. 
   # Returns string. zero_pad(1, 2) = "01". zero_pad(1, 3) = "001".
-  @spec zero_pad(Integer, Integer) :: String
+  @spec zero_pad(integer(), non_neg_integer()) :: String.t()
   def zero_pad(number, amount \\ 2) do
     number
     |> Integer.to_string()

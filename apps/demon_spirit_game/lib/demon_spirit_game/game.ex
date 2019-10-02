@@ -47,6 +47,7 @@ defmodule DemonSpiritGame.Game do
     _new(cards)
   end
 
+  @spec new(nonempty_list(%Card{}) | :hardcoded_cards) :: %Game{}
   @doc """
   new/1: Create a new game with cards specified.  Provide a list of
   5 cards.  They will be assigned in this order:
@@ -55,14 +56,12 @@ defmodule DemonSpiritGame.Game do
   Input: cards: [%Cards{}].  List should be length 5
   Output: %Game{}
   """
-  @spec new(nonempty_list(%Card{})) :: %Game{}
   def new(cards) when is_list(cards) and length(cards) == 5, do: _new(cards)
 
   @doc """
   new/1 new(:hardcoded_cards): Create a new game with a set of cards that will
   always be the same.  Useful for removing the RNG when building a test case.
   """
-  @spec new(:harcoded_cards) :: %Game{}
   def new(:hardcoded_cards) do
     ["Wild Pig", "Python", "Crustacean", "Heron", "Drake"]
     |> Enum.map(fn name ->
@@ -117,7 +116,7 @@ defmodule DemonSpiritGame.Game do
   Output: %Game{}
   """
 
-  @spec _move(%Game{}, %Move{}) :: {:ok, %Game{}} | {:error, any}
+  @spec _move(%Game{}, %Move{}) :: %Game{}
   defp _move(game, %Move{from: from, to: to}) do
     {piece, board} = game.board |> Map.pop(from)
     board = board |> Map.put(to, piece)

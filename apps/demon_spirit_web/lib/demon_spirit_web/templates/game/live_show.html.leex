@@ -87,7 +87,7 @@ td .content {
   <%= render "show/ready.html", state: @state, socket: @socket, guest: @guest %>
 <% end %>
 
-<div phx-hook="UpdateDing" class="hidden">
+<div phx-hook="UpdateDing" class="">
   <%= @state.game.moves %>
 </div>
 

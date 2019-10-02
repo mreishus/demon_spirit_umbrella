@@ -185,7 +185,7 @@ defmodule DemonSpiritWeb.GameUI do
       gameui.status == :staging && gameui.white == person ->
         %{gameui | white_ready: value}
 
-      false ->
+      true ->
         gameui
     end
   end
