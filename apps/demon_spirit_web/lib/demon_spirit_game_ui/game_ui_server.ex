@@ -20,16 +20,6 @@ defmodule DemonSpiritWeb.GameUIServer do
   didn't seem like the right place either.
   """
 
-  # TODO: Split out to file
-  defmodule GameInfo do
-    @moduledoc """
-    GameInfo holds an abbreviated version of a game in progress.  It's what's everyone
-    sees a list of in the lobby.  We periodically update our GameInfo struct in the GameRegistry
-    so others in the lobby can see the state of this game (did someone sit down, etc.)
-    """
-    defstruct name: nil, created_at: nil, white: nil, black: nil, winner: nil, status: nil
-  end
-
   use GenServer
   @timeout :timer.hours(1)
   @timeout_game_won :timer.minutes(5)
@@ -37,11 +27,8 @@ defmodule DemonSpiritWeb.GameUIServer do
   @timeout_unknown :timer.minutes(15)
 
   require Logger
-  alias DemonSpiritGame.{GameSupervisor}
-  alias DemonSpiritWeb.{GameRegistry, GameUI, GameUIOptions}
-  alias DemonSpiritWeb.LiveGameShow
-
-  alias DemonSpiritGame.{AI}
+  alias DemonSpiritGame.{GameSupervisor, AI}
+  alias DemonSpiritWeb.{GameRegistry, GameUI, GameUIOptions, GameInfo, LiveGameShow}
 
   @doc """
   start_link/2: Generates a new game server under a provided name.

@@ -1,7 +1,6 @@
 defmodule GameRegistryTest do
   use ExUnit.Case, async: true
-  alias DemonSpiritWeb.{GameRegistry}
-  alias DemonSpiritWeb.GameUIServer.GameInfo
+  alias DemonSpiritWeb.{GameRegistry, GameInfo}
 
   describe "start_link/1" do
     test "Already started by application" do
