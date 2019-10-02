@@ -33,8 +33,10 @@ defmodule DemonSpiritWeb.SessionController do
   end
 
   def redirect_to_destination(conn) do
-    # TODO: Make smarter
+    destination = get_session(conn, :redir_to) || Routes.game_path(conn, :index)
+
     conn
-    |> redirect(to: "/")
+    |> put_session(:redir_to, nil)
+    |> redirect(to: destination)
   end
 end

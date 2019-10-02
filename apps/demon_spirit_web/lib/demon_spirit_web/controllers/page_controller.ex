@@ -10,7 +10,9 @@ defmodule DemonSpiritWeb.PageController do
         redirect(conn, to: Routes.game_path(conn, :index))
 
       _ ->
-        redirect(conn, to: Routes.session_path(conn, :new))
+        conn
+        |> put_session(:redir_to, conn.request_path)
+        |> redirect(to: Routes.session_path(conn, :new))
     end
   end
 end
