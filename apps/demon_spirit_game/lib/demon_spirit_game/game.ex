@@ -36,54 +36,60 @@ defmodule DemonSpiritGame.Game do
   alias DemonSpiritGame.{Game, Card, Move, GameWinCheck}
 
   @doc """
-  new/0: Create a new game with random cards.
+  new/1: Create a new game with random cards.
 
-  Input: None
+  Input: game_name: String. Can be anything.
   Output: %Game{}
   """
-  @spec new() :: %Game{}
-  def new do
+  @spec new(String.t()) :: %Game{}
+  def new(game_name) do
     cards = Card.cards() |> Enum.take_random(5)
-    _new(cards)
+    _new(cards, game_name)
   end
 
-  @spec new(nonempty_list(%Card{}) | :hardcoded_cards) :: %Game{}
+  @spec new(String.t(), nonempty_list(%Card{}) | :hardcoded_cards) :: %Game{}
   @doc """
-  new/1: Create a new game with cards specified.  Provide a list of
-  5 cards.  They will be assigned in this order:
+  new/2: Create a new game with cards specified.  Provide a name and
+  a list of 5 cards.  They will be assigned in this order:
   [WHITE, WHITE, BLACK, BLACK, SIDE].
 
+  Input: game_name: String. Can be anything.
   Input: cards: [%Cards{}].  List should be length 5
   Output: %Game{}
   """
-  def new(cards) when is_list(cards) and length(cards) == 5, do: _new(cards)
+  def new(game_name, cards) when is_list(cards) and length(cards) == 5, do: _new(cards, game_name)
 
   @doc """
-  new/1 new(:hardcoded_cards): Create a new game with a set of cards that will
-  always be the same.  Useful for removing the RNG when building a test case.
+  new/2 new(game_name, :hardcoded_cards): Create a new game with a set of cards 
+  that will always be the same.  Useful for removing the RNG when building a test case.
+
+  Input: game_name: String. Can be anything.
+  Input: :hardcoded_cards (Atom)
+  Output: %Game{}
   """
-  def new(:hardcoded_cards) do
+  def new(game_name, :hardcoded_cards) do
     ["Wild Pig", "Python", "Crustacean", "Heron", "Drake"]
     |> Enum.map(fn name ->
       {:ok, card} = Card.by_name(name)
       card
     end)
-    |> _new()
+    |> _new(game_name)
   end
 
   _ = """
-  _new/1 (private): Create a new game with cards specified.
+  _new/2 (private): Create a new game with cards specified.
   Used to deduplicate the repeated logic between new/0, new/1.
   """
 
-  defp _new(cards) when is_list(cards) and length(cards) == 5 do
+  defp _new(cards, game_name) when is_list(cards) and length(cards) == 5 do
     %Game{
       board: initial_board(),
       cards: %{
         white: cards |> Enum.slice(0, 2),
         black: cards |> Enum.slice(2, 2),
         side: cards |> Enum.at(4)
-      }
+      },
+      game_name: game_name
     }
   end
 
@@ -244,7 +250,7 @@ defmodule DemonSpiritGame.Game do
     list of {x, y} tuples containing integers: All coordinates of peices belonging to the player
     whose turn it currently is.
 
-    iex> DemonSpiritGame.Game.new |> active_piece_coords
+    iex> DemonSpiritGame.Game.new("name") |> active_piece_coords
     [{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}]
   """
   @spec active_piece_coords(%Game{}) :: list({integer(), integer()})

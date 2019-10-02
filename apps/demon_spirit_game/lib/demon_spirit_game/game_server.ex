@@ -98,14 +98,12 @@ defmodule DemonSpiritGame.GameServer do
 
   def init({game_name, :hardcoded_cards}) do
     Logger.info("GameServer: Starting a server for game named [#{game_name}] (hardcoded cards).")
-    # TODO: Consider changing Game.new to take a name.
-    _init(game_name, Game.new(:hardcoded_cards) |> Map.put(:game_name, game_name))
+    _init(game_name, Game.new(game_name, :hardcoded_cards))
   end
 
   def init({game_name}) do
     Logger.info("GameServer: Starting a server for game named [#{game_name}].")
-    # TODO: Consider changing Game.new to take a name.
-    _init(game_name, Game.new() |> Map.put(:game_name, game_name))
+    _init(game_name, Game.new(game_name))
   end
 
   defp _init(game_name, new_game) do

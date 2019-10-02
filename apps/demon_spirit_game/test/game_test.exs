@@ -13,7 +13,7 @@ defmodule GameTest do
         card
       end)
 
-    game = Game.new(cards)
+    game = Game.new("name", cards)
     game_black = %{game | turn: :black}
     {:ok, boar} = Card.by_name("Wild Pig")
     {:ok, python} = Card.by_name("Python")
@@ -37,7 +37,7 @@ defmodule GameTest do
 
   describe "new/0" do
     test "returns a game" do
-      game = Game.new()
+      game = Game.new("asdf")
       # Basic sanity check
       assert game.board
       assert game.board[{0, 0}]
@@ -63,7 +63,7 @@ defmodule GameTest do
 
   describe "new/1" do
     test "returns a game", %{cards: cards} do
-      game = Game.new(cards)
+      game = Game.new("GameName", cards)
       # Basic sanity check
       assert game.board
       assert game.board[{0, 0}]
