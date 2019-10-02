@@ -361,7 +361,6 @@ defmodule DemonSpiritWeb.GameUIServer do
     Logger.info("Terminate (Timeout) running for #{state.game_name}")
     GameSupervisor.stop_game(state.game_name)
     GameRegistry.remove(state.game_name)
-    # TODO: Double check that GameSupervisor is killing the ETS table
     :ok
   end
 
