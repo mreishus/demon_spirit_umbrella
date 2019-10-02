@@ -141,12 +141,16 @@ defmodule DemonSpiritGame.Game do
   defp _rotate_card(game, %Move{card: card}) do
     old_side_card = game.cards.side
 
+    # Find the index of the currently played card
+    played_index =
+      game.cards[game.turn]
+      |> Enum.find_index(fn x -> x == card end)
+
     # Player cards: Remove played card, add old side card
-    # TODO: Could insert at the correct position instead of 0.
     player_cards =
       game.cards[game.turn]
       |> List.delete(card)
-      |> List.insert_at(0, old_side_card)
+      |> List.insert_at(played_index, old_side_card)
 
     cards =
       game.cards
