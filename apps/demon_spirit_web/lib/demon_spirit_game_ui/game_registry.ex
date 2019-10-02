@@ -1,4 +1,3 @@
-########## TODO NEEDS TESTS ###############
 defmodule DemonSpiritWeb.GameRegistry do
   @moduledoc """
     GameRegistry: A centralized list of all games going on, and a little information about them.
@@ -37,10 +36,18 @@ defmodule DemonSpiritWeb.GameRegistry do
   def list() do
     :ets.match(__MODULE__, :"$1")
     |> Enum.map(fn [{_k, v}] -> v end)
-    |> Enum.sort_by(fn gi -> DateTime.to_iso8601(gi.created_at) end, &>=/2)
+    |> Enum.sort_by(
+      fn gi ->
+        if datetime?(gi.created_at), do: DateTime.to_iso8601(gi.created_at), else: nil
+      end,
+      &>=/2
+    )
   end
 
   ###### Private Implementation Helpers
+
+  def datetime?(%DateTime{}), do: true
+  def datetime?(_), do: false
 
   def init(_) do
     :ets.new(
