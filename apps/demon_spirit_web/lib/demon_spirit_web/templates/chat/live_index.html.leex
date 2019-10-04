@@ -1,5 +1,7 @@
+
 <div class="h-64 border rounded-lg w-full mt-4 p-4 text-sm bg-orange-100 overflow-y-scroll"
      phx-hook="ChatScroll"
+     data-chat-id="<%= @chat_name %>"
   >
   <%= for msg <- @messages do %>
     <div>
