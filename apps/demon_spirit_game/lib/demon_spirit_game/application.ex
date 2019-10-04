@@ -8,7 +8,9 @@ defmodule DemonSpiritGame.Application do
   def start(_type, _args) do
     children = [
       {Registry, keys: :unique, name: DemonSpiritGame.GameRegistry},
-      DemonSpiritGame.GameSupervisor
+      {Registry, keys: :unique, name: DemonSpiritGame.ChatRegistry},
+      DemonSpiritGame.GameSupervisor,
+      DemonSpiritGame.ChatSupervisor
       # Starts a worker by calling: DemonSpiritGame.Worker.start_link(arg)
       # {DemonSpiritGame.Worker, arg}
     ]

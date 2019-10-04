@@ -1,5 +1,5 @@
 defmodule DemonSpirit do
-  alias DemonSpirit.{Guest}
+  alias DemonSpirit.{Guest, ChatMessage}
   alias Ecto.Changeset
 
   @moduledoc """
@@ -15,6 +15,16 @@ defmodule DemonSpirit do
   def fake_insert_guest(params) do
     %Guest{}
     |> Guest.changeset(params)
+    |> Changeset.apply_action(:insert)
+  end
+
+  def new_chat_message, do: ChatMessage.changeset(%ChatMessage{})
+
+  def fake_insert_chat_message(params) do
+    params = params |> Map.put("created", DateTime.utc_now())
+
+    %ChatMessage{}
+    |> ChatMessage.changeset(params)
     |> Changeset.apply_action(:insert)
   end
 end

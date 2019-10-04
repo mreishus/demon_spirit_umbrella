@@ -23,6 +23,7 @@ defmodule DemonSpiritWeb.Router do
     get("/game/live_test", GameController, :live_test)
     resources("/game", GameController, only: [:new, :create, :show, :index])
     resources("/session", SessionController, only: [:new, :create, :delete], singleton: true)
+    resources("/chat", ChatController, only: [:index])
   end
 
   # Other scopes may use custom stacks.

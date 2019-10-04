@@ -14,7 +14,8 @@ defmodule DemonSpiritWeb.GameController do
   plug(:require_logged_in)
 
   def index(conn, _params) do
-    LiveView.Controller.live_render(conn, LiveGameIndex, session: %{})
+    guest = conn.assigns.current_guest
+    LiveView.Controller.live_render(conn, LiveGameIndex, session: %{guest: guest})
   end
 
   def new(conn, _params) do

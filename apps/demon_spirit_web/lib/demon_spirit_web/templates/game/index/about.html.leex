@@ -1,0 +1,40 @@
+<div class="max-w-lg">
+  <h3 class="text-lg font-semibold mt-6">About</h3>
+  <p class="mt-2">
+    Demon Spirit is an abstract strategy game, something like chess with different rules, smaller board, and random starting conditions.
+  </p>
+  <p class="mt-2">
+    Play against a friend or the computer AI.
+  </p>
+  <p class="mt-2">
+    <span class="underline text-blue-700 cursor-pointer" id="show_rules">Show text rules</span>.
+  </p>
+
+  <div class="hidden mt-6" id="rules">
+    <h2 class="text-xl font-semibold">Rules</h2>
+    <ul class="list-disc ml-4 mt-2 mb-2">
+      <li>The pieces move according to 2 <span class="italic text-green-600">move cards</span> you have.</li>
+      <li>The king and pawns move the same.</li>
+      <li>Using a <span class="italic text-green-600">move card</span> places that card on the side, where your opponent will get it next turn.</li>
+    </ul>
+    There are two ways to win:
+    <ul class="list-disc ml-4 mt-2 mb-2">
+      <li>Capture your opponent's king.</li>
+      <li>Move your king to the square where your opponent's king started.</li>
+    </ul>
+  </div>
+
+  <div class="mt-6 text-sm text-gray-600">
+    <h2 class="text-lg font-semibold">Development</h2>
+    <p class="mt-2">
+      The site is a work in progress.
+      <%= link "Check out the GitHub", to: "https://github.com/mreishus/demon_spirit_umbrella", class: "underline text-blue-700" %>.
+    </p>
+    <p class="mt-2">
+      Made with: Elixir, Phoenix, LiveView, Tailwind CSS, Docker, Kubernetes, Caddy, Proxmox, Cloudflare.
+    </p>
+    <p class="mt-2">
+      By: <%= link "Matthew Reishus", to: "https://matthewreishus.com", class: "underline text-blue-700" %>
+    </p>
+  </div>
+</div>

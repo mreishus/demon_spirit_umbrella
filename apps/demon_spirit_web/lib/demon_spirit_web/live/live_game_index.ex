@@ -14,10 +14,15 @@ defmodule DemonSpiritWeb.LiveGameIndex do
     GameView.render("live_index.html", assigns)
   end
 
-  def mount(_params, socket) do
+  def mount(%{guest: guest}, socket) do
     if connected?(socket), do: Endpoint.subscribe(@topic)
     games = GameRegistry.list()
-    {:ok, assign(socket, games: games)}
+
+    {:ok,
+     assign(socket,
+       games: games,
+       guest: guest
+     )}
   end
 
   # Interestingly, the message format I get here is different

@@ -35,7 +35,7 @@
         </div>
       </div>
     </header>
-    <main role="main" class="container mx-auto px-4 pt-2">
+    <main role="main" class="container mx-auto px-2 pt-2">
       <%= if get_flash(@conn, :info) != nil do %>
         <p class="alert alert-info mt-2" role="alert"><%= get_flash(@conn, :info) %></p>
       <% end %>
