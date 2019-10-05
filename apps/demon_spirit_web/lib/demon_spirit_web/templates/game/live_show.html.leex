@@ -91,83 +91,90 @@ td .content {
   <%= @state.game.moves %>
 </div>
 
-<div class="flex flex-wrap">
-  <div class="w-full p-4 text-center text-gray-800">
-    <%# Main %>
+<div class="w-full p-4 text-center text-gray-800">
+  <%# Main %>
 
-    <div class="flex items-center justify-center">
+  <div class="flex items-center justify-center">
 
-      <%# Main - Board %>
-      <div class=" w-64  md:w-96  xl:w-112 relative">
+    <%# Left - Chat %>
+    <div class="h-64 md:h-96 xl:h-112   mr-2 md:mr-4">
+      <%= live_render(@socket, DemonSpiritWeb.LiveChatIndex, 
+            session: %{chat_name: @game_name, guest: @guest}, 
+            id: @game_name, 
+            container: {:div, class: "h-full"}
+      ) %>
+    </div>
 
-        <%# Top cards, hide while staging %>
-        <%= if staging?(@state) do %>
-          <div class="w-full h-32 mb-4"></div>
-        <% else %>
-          <div class="w-full h-auto flex items-center justify-center mb-4">
-            <%# Top Bar  %>
-            <%= for card <- top_cards do %>
-              <%= render "show/card.html", card: card, flip: true, class: "mx-4" %>
-            <% end %>
-          </div>
-        <% end %>
+    <%# Main - Board %>
+    <div class=" w-64  md:w-96  xl:w-112 relative">
 
-        <div class="h-64 w-64 md:h-96 md:w-96 xl:h-112 xl:w-112 relative">
-          <%= render "show/board.html", state: @state, flip_per: @flip_per, guest: @guest, socket: @socket %>
+      <%# Top cards, hide while staging %>
+      <%= if staging?(@state) do %>
+        <div class="w-full h-32 mb-4"></div>
+      <% else %>
+        <div class="w-full h-auto flex items-center justify-center mb-4">
+          <%# Top Bar  %>
+          <%= for card <- top_cards do %>
+            <%= render "show/card.html", card: card, flip: true, class: "mx-4" %>
+          <% end %>
         </div>
+      <% end %>
 
-        <%# Bottom cards, hide while staging %>
-        <%= if staging?(@state) do %>
-          <div class="w-full h-32 mb-4"></div>
-        <% else %>
-          <div class="w-full h-auto flex items-center justify-center mt-4 relative">
-            <%# Bottom Bar %>
-            <%= for card <- bottom_cards do %>
-              <%= render "show/card.html", card: card, flip: false, class: "mx-4" %>
-            <% end %>
-          </div>
-        <% end %>
-
+      <div class="h-64 w-64 md:h-96 md:w-96 xl:h-112 xl:w-112 relative">
+        <%= render "show/board.html", state: @state, flip_per: @flip_per, guest: @guest, socket: @socket %>
       </div>
 
-      <%# Main - Side %>
-      <%= if not staging?(@state) do %>
-      <div class="h-64 md:h-96 xl:h-112 flex flex-col justify-between ml-2 md:ml-4">
-          <div>
-            <%= if top_next do %>
-              <div class="bg-blue-200 text-blue-600 font-semibold rounded">
-                Next Move<br />
-              </div>
-            <% end %>
-            <%= render "show/player.html", player: top_player %>
-          </div>
-
-          <div>
-            <%= render "show/card.html",
-                card: game.cards.side,
-                flip: (game.turn == :black and not @flip_per) || (@flip_per and game.turn == :white),
-                class: "mx-4"
-            %>
-            <%= if game.winner == nil do %>
-              <p style="margin-top: 10px; font-size: 24px">
-                <%= game.turn %>'s turn
-              </p>
-            <% end %>
-          </div>
-
-          <div>
-            <%= if bottom_next do %>
-              <div class="bg-blue-200 text-blue-600 font-semibold rounded">
-                Next Move<br />
-              </div>
-            <% end %>
-            <%= render "show/player.html", player: bottom_player %>
-          </div>
-
-      </div>
+      <%# Bottom cards, hide while staging %>
+      <%= if staging?(@state) do %>
+        <div class="w-full h-32 mb-4"></div>
+      <% else %>
+        <div class="w-full h-auto flex items-center justify-center mt-4 relative">
+          <%# Bottom Bar %>
+          <%= for card <- bottom_cards do %>
+            <%= render "show/card.html", card: card, flip: false, class: "mx-4" %>
+          <% end %>
+        </div>
       <% end %>
 
     </div>
 
+    <%# Right - Side card and Players%>
+    <%= if not staging?(@state) do %>
+    <div class="h-64 md:h-96 xl:h-112 flex flex-col justify-between ml-2 md:ml-4">
+        <div>
+          <%= if top_next do %>
+            <div class="bg-blue-200 text-blue-600 font-semibold rounded">
+              Next Move<br />
+            </div>
+          <% end %>
+          <%= render "show/player.html", player: top_player %>
+        </div>
+
+        <div>
+          <%= render "show/card.html",
+              card: game.cards.side,
+              flip: (game.turn == :black and not @flip_per) || (@flip_per and game.turn == :white),
+              class: "mx-4"
+          %>
+          <%= if game.winner == nil do %>
+            <p style="margin-top: 10px; font-size: 24px">
+              <%= game.turn %>'s turn
+            </p>
+          <% end %>
+        </div>
+
+        <div>
+          <%= if bottom_next do %>
+            <div class="bg-blue-200 text-blue-600 font-semibold rounded">
+              Next Move<br />
+            </div>
+          <% end %>
+          <%= render "show/player.html", player: bottom_player %>
+        </div>
+
+    </div>
+    <% end %>
+
   </div>
+
 </div>

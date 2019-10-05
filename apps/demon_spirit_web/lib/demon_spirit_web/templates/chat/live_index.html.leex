@@ -1,23 +1,26 @@
+<div class="h-full flex flex-col">
+  <div class="flex-grow border rounded-lg w-full p-2 text-sm bg-orange-100 overflow-y-scroll text-left"
+      phx-hook="ChatScroll"
+      data-chat-id="<%= @chat_name %>"
+    >
+    <%= for msg <- @messages do %>
+      <div>
+        <span class="text-gray-600 text-xs tracking-tight"><%= date_to_hms(msg.created) %></span>
+        <span class="font-semibold">
+          <%= msg.name %>:
+        </span>
+        <%= msg.message %>
+      </div>
+    <% end %>
+  </div>
 
-<div class="h-64 border rounded-lg w-full mt-4 p-4 text-sm bg-orange-100 overflow-y-scroll"
-     phx-hook="ChatScroll"
-     data-chat-id="<%= @chat_name %>"
-  >
-  <%= for msg <- @messages do %>
-    <div>
-      <span class="text-gray-600 text-xs tracking-tight">[<%= date_to_hms(msg.created) %>]</span>
-      <span class="font-semibold">
-        <%= msg.name %>:
-      </span>
-      <%= msg.message %>
-    </div>
-  <% end %>
+  <div class="flex-grow-0">
+    <%= f = form_for @chat_message, "#", [phx_submit: :message] %>
+    <%= text_input f, :message, 
+      placeholder: "your message..",
+      class: "form-control mt-2 mx-0 bg-orange-200 w-full text-sm" ,
+      autofocus: true
+    %>
+    </form>
+  </div>
 </div>
-
-<%= f = form_for @chat_message, "#", [phx_submit: :message] %>
-<%= text_input f, :message, 
-  placeholder: "your message..",
-  class: "form-control mt-2 mx-0 bg-orange-200 w-full text-sm" ,
-  autofocus: true
-%>
-</form>

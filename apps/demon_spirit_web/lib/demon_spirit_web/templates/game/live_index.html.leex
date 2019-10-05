@@ -18,9 +18,13 @@
 
     <div class="w-full ml-2">
       <h3 class="text-lg font-semibold">Lobby Chat</h3>
-      <%= live_render(@socket, DemonSpiritWeb.LiveChatIndex, 
-            session: %{chat_name: "lobby", guest: @guest}, 
-            id: "lobby") %>
+      <div class="h-96">
+        <%= live_render(@socket, DemonSpiritWeb.LiveChatIndex, 
+              session: %{chat_name: "lobby", guest: @guest}, 
+              id: "lobby",
+              container: {:div, class: "h-full mt-4"}
+        ) %>
+      </div>
     </div>
 
   </div>
