@@ -1,5 +1,14 @@
 <div class="h-full flex flex-col">
-  <div class="flex-grow border rounded-lg w-full p-2 text-sm bg-orange-100 overflow-y-scroll text-left"
+
+  <div class="p-1 border rounded flex flex-wrap h-12 overflow-y-scroll bg-gray-100">
+    <%= for user <- @users do %>
+      <div class="mx-1">
+        <%= user.name %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-2 flex-grow border rounded-lg w-full p-2 text-sm bg-orange-100 overflow-y-scroll text-left"
       phx-hook="ChatScroll"
       data-chat-id="<%= @chat_name %>"
     >
