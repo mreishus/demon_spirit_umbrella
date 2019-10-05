@@ -2,6 +2,7 @@
 <p class="mb-4">
   Please log in as a guest account.
 </p>
+
 <%= form_for @guest, Routes.session_path(@conn, :create), fn f -> %>
   <%= label f, :name, class: "block font-semibold mb-2" %>
   <%= text_input f, :name, placeholder: "Name", autofocus: true, required: true, class: 'form-control ml-0' %>
@@ -10,3 +11,15 @@
     <%= submit "Log In As Guest", class: "btn btn-primary" %>
   </div>
 <% end %>
+
+<div class="alert alert-info mt-10 w-full md:w-3/4 lg:w-1/2">
+  <h3 class="text-lg font-semibold">What's this site?</h3>
+  <p class="mt-2">
+    <span class="font-semibold">Demon Spirit</span> is an 
+    <span class="font-semibold">abstract strategy game</span>, something like chess with different rules, a smaller board, and random starting conditions.
+  </p>
+  <p class="mt-2">
+    Play against a friend or the computer AI.
+  </p>
+  <img class="m-4 h-64 object-cover" src="/images/example_screenshot.png" alt="Example screenshot" />
+</div>
