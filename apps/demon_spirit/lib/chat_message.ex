@@ -16,5 +16,6 @@ defmodule DemonSpirit.ChatMessage do
     base
     |> cast(params, [:name, :message, :created])
     |> validate_required([:name, :message, :created])
+    |> validate_length(:message, max: 256)
   end
 end
