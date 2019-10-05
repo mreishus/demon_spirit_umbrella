@@ -31,20 +31,27 @@ defmodule DemonSpiritWeb.LiveChatIndex do
         %{"chat_message" => params},
         socket = %{assigns: %{chat_name: chat_name, guest: guest}}
       ) do
-    {:ok, this_msg} =
+    msg_tuple =
       params
       |> Map.put("name", guest.name)
       |> DemonSpirit.fake_insert_chat_message()
 
-    ChatServer.add_message(chat_name, this_msg)
+    case msg_tuple do
+      {:ok, this_msg} ->
+        ChatServer.add_message(chat_name, this_msg)
 
-    notify(socket.assigns.topic)
+        notify(socket.assigns.topic)
 
-    {:noreply,
-     assign(socket,
-       chat_message: DemonSpirit.new_chat_message(),
-       messages: ChatServer.messages(chat_name)
-     )}
+        {:noreply,
+         assign(socket,
+           chat_message: DemonSpirit.new_chat_message(),
+           messages: ChatServer.messages(chat_name)
+         )}
+
+      _ ->
+        # Silent failure if e.g. blank message
+        {:noreply, socket}
+    end
   end
 
   def handle_info(
