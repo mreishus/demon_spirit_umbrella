@@ -38,3 +38,15 @@
     </p>
   </div>
 </div>
+
+<script>
+let $ = (f) => document.querySelector(f);
+$('#show_rules').onclick = function() {
+  $('#rules').classList.toggle('hidden');
+  if ($('#rules').classList.contains('hidden')) {
+    $('#show_rules').innerHTML = $('#show_rules').innerHTML.replace('Hide', 'Show');
+  } else {
+    $('#show_rules').innerHTML = $('#show_rules').innerHTML.replace('Show', 'Hide');
+  }
+};
+</script>
