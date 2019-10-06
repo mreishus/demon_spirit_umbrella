@@ -177,12 +177,12 @@ defmodule DemonSpiritGame.Card do
         moves: [{-2, 0}, {2, 0}, {-1, 1}, {1, 1}],
         color: :green
       },
-      %Card{
-        id: 21,
-        name: "Vulpa",
-        moves: [{1, 1}, {1, 0}, {1, -1}],
-        color: :red
-      },
+      # %Card{
+      #   id: 21,
+      #   name: "Vulpa",
+      #   moves: [{1, 1}, {1, 0}, {1, -1}],
+      #   color: :red
+      # },
       %Card{
         id: 22,
         name: "Bao Bao",
@@ -213,12 +213,12 @@ defmodule DemonSpiritGame.Card do
         moves: [{1, 1}, {-2, 0}, {-1, -1}],
         color: :red
       },
-      %Card{
-        id: 27,
-        name: "Canine",
-        moves: [{-1, 0}, {-1, 1}, {-1, -1}],
-        color: :blue
-      },
+      # %Card{
+      #   id: 27,
+      #   name: "Canine",
+      #   moves: [{-1, 0}, {-1, 1}, {-1, -1}],
+      #   color: :blue
+      # },
       %Card{
         id: 28,
         name: "Ursidae",
@@ -270,18 +270,18 @@ defmodule DemonSpiritGame.Card do
         moves: [{1, 1}, {1, -1}, {-1, 2}, {-1, -2}],
         color: :blue
       },
-      %Card{
-        id: 35,
-        name: "Mole",
-        moves: [{2, 0}, {2, -1}, {2, 1}],
-        color: :red
-      },
-      %Card{
-        id: 36,
-        name: "Gopher",
-        moves: [{-2, 0}, {-2, -1}, {-2, 1}],
-        color: :blue
-      },
+      # %Card{
+      #   id: 35,
+      #   name: "Mole",
+      #   moves: [{2, 0}, {2, -1}, {2, 1}],
+      #   color: :red
+      # },
+      # %Card{
+      #   id: 36,
+      #   name: "Gopher",
+      #   moves: [{-2, 0}, {-2, -1}, {-2, 1}],
+      #   color: :blue
+      # },
       %Card{
         id: 37,
         name: "Duck",
@@ -316,6 +316,18 @@ defmodule DemonSpiritGame.Card do
         id: 42,
         name: "Eagle",
         moves: [{2, 2}, {-2, 2}, {0, -1}],
+        color: :green
+      },
+      %Card{
+        id: 43,
+        name: "Piglet",
+        moves: [{0, 1}, {-1, 0}, {1, 0}],
+        color: :green
+      },
+      %Card{
+        id: 44,
+        name: "Warthog",
+        moves: [{0, 1}, {0, -1}, {-1, 0}, {1, 0}],
         color: :green
       }
     ]
