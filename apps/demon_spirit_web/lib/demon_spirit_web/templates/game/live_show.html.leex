@@ -159,6 +159,8 @@ td .content {
           <%= if game.winner == nil do %>
             <p style="margin-top: 10px; font-size: 24px">
               <%= game.turn %>'s turn
+              <%= display_ms(@state.timer.white_time_current) %> White <br/>
+              <%= display_ms(@state.timer.black_time_current) %> Black <br/>
             </p>
           <% end %>
         </div>

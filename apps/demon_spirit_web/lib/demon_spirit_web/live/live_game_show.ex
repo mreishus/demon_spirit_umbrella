@@ -19,6 +19,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:ok, _} = Presence.track(self(), topic, guest.id, guest)
 
     state = GameUIServer.sit_down_if_possible(game_name, guest)
+    tick_ref = create_tick_interval(socket, state)
 
     notify(topic)
 
@@ -29,10 +30,22 @@ defmodule DemonSpiritWeb.LiveGameShow do
         state: state,
         guest: guest,
         users: [],
-        flip_per: guest == state.black
+        flip_per: guest == state.black,
+        tick_ref: tick_ref
       )
 
     {:ok, socket}
+  end
+
+  defp create_tick_interval(socket, state) do
+    {:ok, tick_ref} =
+      if connected?(socket) do
+        :timer.send_interval(1000, self(), :tick)
+      else
+        {:ok, nil}
+      end
+
+    tick_ref
   end
 
   ## Event: "click-square-3-3" (Someone clicked on square (3,3))
@@ -172,5 +185,29 @@ defmodule DemonSpiritWeb.LiveGameShow do
       end)
 
     {:noreply, assign(socket, users: users)}
+  end
+
+  # Handle ":tick", a request to update game state on a timer
+  def handle_info(
+        :tick,
+        socket = %{assigns: %{game_name: game_name, tick_ref: tick_ref}}
+      ) do
+    state = GameUIServer.state(game_name)
+
+    if tick_ref != nil and stop_ticking?(state) do
+      :timer.cancel(tick_ref)
+    end
+
+    {:noreply, assign(socket, state: state)}
+  end
+
+  # There's a winner or game has been alive for a long time
+  defp stop_ticking?(state) do
+    state.game.winner != nil or game_alive_too_long?(state)
+  end
+
+  # Game alive more than 4 hours
+  defp game_alive_too_long?(game_state) do
+    DateTime.diff(DateTime.utc_now(), game_state.created_at) > 60 * 60 * 4
   end
 end

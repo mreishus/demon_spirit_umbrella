@@ -28,7 +28,7 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   require Logger
   alias DemonSpiritGame.{GameSupervisor, AI}
-  alias DemonSpiritWeb.{GameRegistry, GameUI, GameUIOptions, GameInfo, LiveGameShow}
+  alias DemonSpiritWeb.{GameRegistry, GameUI, GameUIOptions, GameInfo, LiveGameShow, GameTimer}
 
   @doc """
   start_link/2: Generates a new game server under a provided name.
@@ -220,7 +220,7 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   def handle_call({:click, coords = {x, y}, person}, _from, gameui)
       when is_integer(x) and is_integer(y) do
-    new_gameui = GameUI.click(gameui, coords, person)
+    new_gameui = GameUI.click(gameui, coords, person) |> ctime()
     GameRegistry.update(new_gameui.game_name, game_info(new_gameui))
 
     trigger_ai_move(gameui, new_gameui)
@@ -230,38 +230,39 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   def handle_call({:drag_start, source = {sx, sy}, person}, _from, gameui)
       when is_integer(sx) and is_integer(sy) do
-    new_gameui = GameUI.drag_start(gameui, source, person)
+    new_gameui = GameUI.drag_start(gameui, source, person) |> ctime()
     {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
 
   def handle_call({:drag_end, person}, _from, gameui) do
-    new_gameui = GameUI.drag_end(gameui, person)
+    new_gameui = GameUI.drag_end(gameui, person) |> ctime()
     {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
 
   def handle_call({:drag_drop, source = {sx, sy}, target = {tx, ty}, person}, _from, gameui)
       when is_integer(sx) and is_integer(sy) and
              is_integer(tx) and is_integer(ty) do
-    new_gameui = GameUI.drag_drop(gameui, source, target, person)
+    new_gameui = GameUI.drag_drop(gameui, source, target, person) |> ctime()
     GameRegistry.update(new_gameui.game_name, game_info(new_gameui))
     trigger_ai_move(gameui, new_gameui)
     {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
 
   def handle_call({:clarify_move, i, person}, _from, gameui) when is_integer(i) do
-    new_gameui = GameUI.clarify_move(gameui, i, person)
+    new_gameui = GameUI.clarify_move(gameui, i, person) |> ctime()
     GameRegistry.update(new_gameui.game_name, game_info(new_gameui))
     trigger_ai_move(gameui, new_gameui)
     {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
 
   def handle_call({:clarify_cancel, person}, _from, gameui) do
-    new_gameui = GameUI.clarify_cancel(gameui, person)
+    new_gameui = GameUI.clarify_cancel(gameui, person) |> ctime()
     {:reply, new_gameui, new_gameui, timeout(new_gameui)}
   end
 
   def handle_call(:state, _from, state) do
-    {:reply, state, state, timeout(state)}
+    new_state = ctime(state)
+    {:reply, new_state, new_state, timeout(new_state)}
   end
 
   def handle_call(:ai_move, _from, state) do
@@ -350,6 +351,13 @@ defmodule DemonSpiritWeb.GameUIServer do
       _ ->
         @timeout_unknown
     end
+  end
+
+  defp ctime(state = %GameUI{}) do
+    %{
+      state
+      | timer: GameTimer.get_current_time(state.timer, state.game)
+    }
   end
 
   # When timing out, the order is handle_info(:timeout, _) -> terminate({:shutdown, :timeout}, _)

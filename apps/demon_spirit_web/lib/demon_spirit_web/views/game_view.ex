@@ -92,4 +92,12 @@ defmodule DemonSpiritWeb.GameView do
     |> Integer.to_string()
     |> String.pad_leading(amount, "0")
   end
+
+  def display_ms(ms) do
+    seconds = ms / 1000
+    seconds_int = trunc(seconds)
+    # seconds_leftover = seconds - seconds_int
+    {minutes_int, seconds_int_rem} = {div(seconds_int, 60), rem(seconds_int, 60)}
+    "#{minutes_int}:#{zero_pad(seconds_int_rem, 2)}"
+  end
 end

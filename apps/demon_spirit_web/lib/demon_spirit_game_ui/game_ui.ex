@@ -1,6 +1,6 @@
 defmodule DemonSpiritWeb.GameUI do
   alias DemonSpiritGame.{GameServer, GameSupervisor, Move, Game}
-  alias DemonSpiritWeb.{GameUI, GameUIOptions}
+  alias DemonSpiritWeb.{GameUI, GameUIOptions, GameTimer}
 
   @moduledoc """
   Holds the state for DemonSpiritGame.GameUIServer
@@ -34,7 +34,8 @@ defmodule DemonSpiritWeb.GameUI do
             move_dest: [],
             last_move: nil,
             options: nil,
-            created_at: nil
+            created_at: nil,
+            timer: nil
 
   use Accessible
 
@@ -92,7 +93,8 @@ defmodule DemonSpiritWeb.GameUI do
       selected: nil,
       move_dest: [],
       created_at: DateTime.utc_now(),
-      options: game_opts
+      options: game_opts,
+      timer: GameTimer.new()
     }
   end
 
@@ -352,6 +354,7 @@ defmodule DemonSpiritWeb.GameUI do
 
     case response do
       {:ok, new_game} ->
+        timer = GameTimer.apply_move(state.timer, state.game)
         all_valid_moves = GameServer.all_valid_moves(state.game_name)
 
         %{
@@ -361,7 +364,8 @@ defmodule DemonSpiritWeb.GameUI do
             selected: nil,
             move_dest: [],
             last_move: move,
-            moves_need_clarify: nil
+            moves_need_clarify: nil,
+            timer: timer
         }
         |> check_status_advance()
 
