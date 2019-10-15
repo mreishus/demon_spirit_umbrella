@@ -42,14 +42,15 @@ COPY apps/demon_spirit_web/assets apps/demon_spirit_web/assets
 ## Umbrella Version
 COPY ./apps/demon_spirit_web/priv ./apps/demon_spirit_web/priv
 
-RUN cd apps/demon_spirit_web/assets && yarn install && yarn run deploy
-RUN mix phx.digest
-
 #COPY lib lib
 ## Umbrella Version
 COPY apps/demon_spirit_game/lib/ apps/demon_spirit_game/lib/
 COPY apps/demon_spirit/lib/ apps/demon_spirit/lib/
 COPY apps/demon_spirit_web/lib/ apps/demon_spirit_web/lib/
+
+RUN cd apps/demon_spirit_web/assets && yarn install && yarn run deploy
+RUN mix phx.digest
+
 
 RUN mix compile
 

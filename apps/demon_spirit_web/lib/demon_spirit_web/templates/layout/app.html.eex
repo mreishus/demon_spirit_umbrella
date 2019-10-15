@@ -15,7 +15,7 @@
             <div class="flex items-center justify-between py-1">
               <!-- Left Side -->
               <div class="flex items-center">
-                <%= link "Demon Spirit", to: Routes.game_path(@conn, :index), class: "underline hover:text-blue-300" %> <span class="text-xs ml-1 text-gray-300">(0.4.6)</span>
+                <%= link "Demon Spirit", to: Routes.game_path(@conn, :index), class: "underline hover:text-blue-300" %> <span class="text-xs ml-1 text-gray-300">(0.5.0)</span>
               </div>
 
               <!-- Right Side -->
