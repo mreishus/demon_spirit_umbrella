@@ -35,6 +35,6 @@ defmodule DemonSpirit.Metrics do
   end
 
   defp env do
-    Application.get_env(:sbin, :env)
+    Application.get_env(:demon_spirit, :env)
   end
 end

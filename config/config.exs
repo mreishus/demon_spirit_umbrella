@@ -9,7 +9,7 @@
 # move said applications out of the umbrella.
 use Mix.Config
 
-config :sbin, env: Mix.env()
+config :demon_spirit, env: Mix.env()
 
 # Configure Mix tasks and generators
 config :demon_spirit,
