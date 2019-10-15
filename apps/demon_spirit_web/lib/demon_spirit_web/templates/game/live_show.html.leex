@@ -2,10 +2,15 @@
 
 <% top_cards   = if @flip_per, do: game.cards.white, else: game.cards.black %>
 <% top_player  = if @flip_per, do: @state.white, else: @state.black %>
+
 <% bottom_cards   = if @flip_per, do: game.cards.black, else: game.cards.white %>
 <% bottom_player  = if @flip_per, do: @state.black, else: @state.white %>
+
 <% bottom_next = game.winner == nil and if @flip_per, do: game.turn == :black, else: game.turn == :white %>
 <% top_next = game.winner == nil and if @flip_per, do: game.turn == :white, else: game.turn == :black %>
+
+<% top_timer = if @flip_per, do: @state.timer.white_time_current, else: @state.timer.black_time_current %>
+<% bottom_timer = if @flip_per, do: @state.timer.black_time_current, else: @state.timer.white_time_current %>
 
 <style>
 
@@ -142,8 +147,9 @@ td .content {
     <%= if not staging?(@state) do %>
     <div class="h-64 md:h-96 xl:h-112 flex flex-col justify-between ml-2 md:ml-4">
         <div>
+          <%= render "show/timer.html", timer: top_timer, active: top_next %>
           <%= if top_next do %>
-            <div class="bg-blue-200 text-blue-600 font-semibold rounded">
+            <div class="bg-blue-200 text-blue-600 font-semibold rounded mt-1">
               Next Move<br />
             </div>
           <% end %>
@@ -159,19 +165,18 @@ td .content {
           <%= if game.winner == nil do %>
             <p style="margin-top: 10px; font-size: 24px">
               <%= game.turn %>'s turn
-              <%= display_ms(@state.timer.white_time_current) %> White <br/>
-              <%= display_ms(@state.timer.black_time_current) %> Black <br/>
             </p>
           <% end %>
         </div>
 
         <div>
+          <%= render "show/player.html", player: bottom_player %>
           <%= if bottom_next do %>
-            <div class="bg-blue-200 text-blue-600 font-semibold rounded">
+            <div class="bg-blue-200 text-blue-600 font-semibold rounded mb-1">
               Next Move<br />
             </div>
           <% end %>
-          <%= render "show/player.html", player: bottom_player %>
+          <%= render "show/timer.html", timer: bottom_timer, active: bottom_next %>
         </div>
 
     </div>

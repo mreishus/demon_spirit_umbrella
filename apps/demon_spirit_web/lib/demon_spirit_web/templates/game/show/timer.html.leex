@@ -1,0 +1,9 @@
+<%= if @active do %>
+  <div class="text-white bg-purple-700 text-xl font-semibold rounded">
+    <%= display_ms(@timer) %> <br/>
+  </div>
+<% else %>
+  <div class="text-white bg-gray-600 text-xl font-semibold rounded">
+    <%= display_ms(@timer) %> <br/>
+  </div>
+<% end %>

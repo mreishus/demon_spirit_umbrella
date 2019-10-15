@@ -14,6 +14,8 @@ defmodule DemonSpiritWeb.GameTimer do
     %GameTimer{
       white_time: 5 * 60 * 1000,
       black_time: 5 * 60 * 1000,
+      white_time_current: 5 * 60 * 1000,
+      black_time_current: 5 * 60 * 1000,
       last_move: nil,
       started: false
     }
