@@ -2,6 +2,22 @@
 
 *Demon Spirit*, an abstract board game on a 5x5 grid.
 
+# Running the project (Development)
+
+```
+mix deps.get
+cd ./apps/demon_spirit_web/assets
+yarn install
+cd ../../../
+mix phx.server
+```
+
+Visit localhost:4000 in web browser
+
+# Running the project (Production)
+
+WIP
+
 # Status
 
 ** Alpha version is deployed at [https://demonspirit.xyz/](https://demonspirit.xyz/). **
