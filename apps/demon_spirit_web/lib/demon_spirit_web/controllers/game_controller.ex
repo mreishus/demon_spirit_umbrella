@@ -9,6 +9,7 @@ defmodule DemonSpiritWeb.GameController do
     NameGenerator
   }
 
+  alias DemonSpirit.Metrics
   alias Phoenix.LiveView
 
   plug(:require_logged_in)
@@ -28,6 +29,7 @@ defmodule DemonSpiritWeb.GameController do
 
     case GameUISupervisor.start_game(game_name, game_opts) do
       {:ok, _pid} ->
+        Metrics.game_created()
         redirect(conn, to: Routes.game_path(conn, :show, game_name))
 
       {:error, _} ->

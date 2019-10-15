@@ -61,3 +61,17 @@ WIP
 Current view:
 
 ![Early Screenshot](/screenshot.png?raw=true&i=0 "Screenshot")
+
+## Optional Honeycomb Configuration
+
+To report metrics to honeycomb.io, set these environment variables when running:
+
+* HONEYCOMB_APIKEY
+* HONEYCOMB_DATASET
+
+Example:
+
+```bash
+export HONEYCOMB_APIKEY="012345678912345678abcde123456789"
+export HONEYCOMB_DATASET="demonspirit-elixir"
+```
