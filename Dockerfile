@@ -14,10 +14,6 @@ RUN mix local.hex --force && \
 # set build ENV
 ENV MIX_ENV=prod
 
-# XXX TODO FIXME Hardcoded Secret key set a compile time -
-# should be fixed to runtime and secret
-ENV SECRET_KEY_BASE bv+H/Q06nr5psmLXAOWQwORe/brRsMHNhGvS7HgjetFrdcn84XJWolIgjNoM12gb
-
 # install mix dependencies
 COPY mix.exs mix.lock ./
 ## Umbrella Version
@@ -73,7 +69,6 @@ USER nobody
 ENV HOME=/app
 
 ## Set on runtime (Preferably this is done out of container)
-#ENV SECRET_KEY_BASE bv+H/Q06nr5psmLXAOWQwORe/brRsMHNhGvS7HgjetFrdcn84XJWolIgjNoM12gb
-#ENV DATABASE_URL ecto://postgres:postgres@filecab.local.p/demon_spirit_umbrella_prod
+#ENV SECRET_KEY_BASE ...secret here...
 
 CMD ["bin/demon_spirit_umbrella","start"]

@@ -60,6 +60,5 @@ config :demon_spirit_web, DemonSpiritWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
-# Finally import the config/prod.secret.exs which loads secrets
-# and configuration from environment variables.
-import_config "prod.secret.exs"
+# No longer using prod.secret.exs - Letting
+# the release system check releases.exs at runtime
