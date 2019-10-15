@@ -1,4 +1,8 @@
 defmodule DemonSpiritWeb.GameTimer do
+  @moduledoc """
+  GameTimer: Represents a chess timer containing a "time left" for both
+  white and black players.
+  """
   alias DemonSpiritGame.{Game}
   alias DemonSpiritWeb.GameTimer
   require Logger

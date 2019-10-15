@@ -37,7 +37,9 @@ defmodule DemonSpiritWeb.LiveGameShow do
     {:ok, socket}
   end
 
-  defp create_tick_interval(socket, state) do
+  # Update state every 1 second.  This is so we can
+  # see the chess timers counting down.
+  defp create_tick_interval(socket, _state) do
     {:ok, tick_ref} =
       if connected?(socket) do
         :timer.send_interval(1000, self(), :tick)
