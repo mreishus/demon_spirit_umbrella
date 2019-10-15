@@ -358,6 +358,7 @@ defmodule DemonSpiritWeb.GameUIServer do
       state
       | timer: GameTimer.get_current_time(state.timer, state.game)
     }
+    |> GameUI.check_time_winner()
   end
 
   # When timing out, the order is handle_info(:timeout, _) -> terminate({:shutdown, :timeout}, _)

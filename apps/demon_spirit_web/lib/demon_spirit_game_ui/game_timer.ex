@@ -10,12 +10,14 @@ defmodule DemonSpiritWeb.GameTimer do
             last_move: nil,
             started: false
 
+  @initial_time 5 * 60 * 1000
+
   def new do
     %GameTimer{
-      white_time: 5 * 60 * 1000,
-      black_time: 5 * 60 * 1000,
-      white_time_current: 5 * 60 * 1000,
-      black_time_current: 5 * 60 * 1000,
+      white_time: @initial_time,
+      black_time: @initial_time,
+      white_time_current: @initial_time,
+      black_time_current: @initial_time,
       last_move: nil,
       started: false
     }
@@ -70,6 +72,14 @@ defmodule DemonSpiritWeb.GameTimer do
       _ ->
         Logger.warn("GameTimer: Don't know whose turn it is [2].")
         timer
+    end
+  end
+
+  def check_winner(timer = %GameTimer{}) do
+    cond do
+      timer.white_time_current < 0 -> :black
+      timer.black_time_current < 0 -> :white
+      true -> nil
     end
   end
 end

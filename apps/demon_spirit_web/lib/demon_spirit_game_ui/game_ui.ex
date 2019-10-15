@@ -394,4 +394,22 @@ defmodule DemonSpiritWeb.GameUI do
   def staging?(gameui) do
     gameui.status == :staging
   end
+
+  ## check_time_winner/1:  Mark a winner if 
+  ## there is not a winner and someone's time ran out.
+  ## If there is already a winner, do nothing
+  def check_time_winner(gameui = %GameUI{game: %Game{winner: winner}}) when not is_nil(winner) do
+    gameui
+  end
+
+  def check_time_winner(gameui = %GameUI{timer: timer, game: game = %Game{}}) do
+    winner = GameTimer.check_winner(timer)
+
+    if winner == :white or winner == :black do
+      new_game = %Game{game | winner: winner}
+      %GameUI{gameui | game: new_game}
+    else
+      gameui
+    end
+  end
 end
