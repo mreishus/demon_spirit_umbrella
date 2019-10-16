@@ -40,7 +40,8 @@ defmodule DemonSpirit.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.0"},
       {:poison, "~> 4.0"},
-      {:httpoison, "~> 1.6"}
+      {:httpoison, "~> 1.6"},
+      {:plug_logger_json, "~> 0.7.0"}
     ]
   end
 

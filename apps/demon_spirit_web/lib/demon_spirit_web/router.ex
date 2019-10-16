@@ -1,5 +1,6 @@
 defmodule DemonSpiritWeb.Router do
   use DemonSpiritWeb, :router
+  require Logger
 
   pipeline :browser do
     plug(:accepts, ["html"])
@@ -9,6 +10,7 @@ defmodule DemonSpiritWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(DemonSpiritWeb.Authenticator)
+    plug(Plug.LoggerJSON, log: Logger.level())
   end
 
   pipeline :api do

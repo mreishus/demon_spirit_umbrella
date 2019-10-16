@@ -30,8 +30,11 @@ config :demon_spirit_web, DemonSpiritWeb.Endpoint,
   ]
 
 # Configures Elixir's Logger
+# config :logger, :console,
+#   format: "$time $metadata[$level] $message\n",
+#   metadata: [:request_id]
 config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
+  format: "zzz $message\n",
   metadata: [:request_id]
 
 # Use Jason for JSON parsing in Phoenix
