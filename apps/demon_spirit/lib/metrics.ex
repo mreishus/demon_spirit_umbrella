@@ -1,6 +1,6 @@
 defmodule DemonSpirit.Metrics do
   @moduledoc """
-
+  Send Data to honeycomb when certain events occur.
   """
   def game_created() do
     Task.async(fn ->

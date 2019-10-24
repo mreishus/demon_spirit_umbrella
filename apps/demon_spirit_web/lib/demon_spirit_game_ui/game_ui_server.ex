@@ -275,7 +275,7 @@ defmodule DemonSpiritWeb.GameUIServer do
       GenServer.call(pid, {:apply_move, move})
 
       ## Tell the LiveView controller that a move has been made.
-      ## This is a little bit of tight coupling, but it 
+      ## This is a little bit of tight coupling, but it
       ## beats my earlier polling solution.
       state.game_name |> LiveGameShow.topic_for() |> LiveGameShow.notify()
     end)
