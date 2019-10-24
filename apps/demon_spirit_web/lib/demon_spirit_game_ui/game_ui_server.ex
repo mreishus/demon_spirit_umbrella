@@ -44,7 +44,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   start_link/2: Generates a new game server under a provided name.
   """
   # Using type specs in genserver causes my app to not compile..??
-  # @spec start_link(t.String, %GameUIOptions{}) :: {:ok, pid} | {:error, any}
+  @spec start_link(String.t(), %GameUIOptions{}) :: {:ok, pid} | {:error, any}
   def start_link(game_name, game_opts = %GameUIOptions{}) do
     GenServer.start_link(__MODULE__, {game_name, game_opts}, name: via_tuple(game_name))
   end
@@ -68,7 +68,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   @doc """
   state/1:  Retrieves the game state for the game under a provided name.
   """
-  # @spec state(t.String) :: %Game{}
+  @spec state(String.t()) :: %GameUI{} | nil
   def state(game_name) do
     case gameui_pid(game_name) do
       nil -> nil
@@ -82,7 +82,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   otherwise assigns to black if black is empty, otherwise does nothing.
   Returns state.
   """
-  # @spec sit_down_if_possible(any) :: %Game{}
+  @spec sit_down_if_possible(String.t(), any) :: %GameUI{}
   def sit_down_if_possible(game_name, person) do
     GenServer.call(via_tuple(game_name), {:sit_down_if_possible, person})
   end
@@ -91,7 +91,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   stand_up_if_possible/2: Stand up from a seat if the game hasn't started yet.
   Returns state.
   """
-  # @spec stand_up_if_possible(any) :: %Game{}
+  @spec stand_up_if_possible(String.t(), any) :: %GameUI{}
   def stand_up_if_possible(game_name, person) do
     GenServer.call(via_tuple(game_name), {:stand_up_if_possible, person})
   end
@@ -99,7 +99,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   @doc """
   ready/2: Person clicked ready.
   """
-  # @spec ready(any) :: %Game{}
+  @spec ready(String.t(), any) :: %GameUI{}
   def ready(game_name, person) do
     GenServer.call(via_tuple(game_name), {:ready, person})
   end
@@ -107,7 +107,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   @doc """
   not_ready/2: Person clicked not_ready.
   """
-  # @spec not_ready(any) :: %Game{}
+  @spec not_ready(String.t(), any) :: %GameUI{}
   def not_ready(game_name, person) do
     GenServer.call(via_tuple(game_name), {:not_ready, person})
   end

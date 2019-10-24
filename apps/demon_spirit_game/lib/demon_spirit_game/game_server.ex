@@ -15,8 +15,7 @@ defmodule DemonSpiritGame.GameServer do
   @doc """
   start_link/1: Generates a new game server under a provided name.
   """
-  # Using type specs in genserver causes my app to not compile..??
-  # @spec start_link(t.String) :: {:ok, pid} | {:error, any}
+  @spec start_link(String.t()) :: {:ok, pid} | {:error, any}
   def start_link(game_name) do
     GenServer.start_link(__MODULE__, {game_name}, name: via_tuple(game_name))
   end
@@ -27,6 +26,7 @@ defmodule DemonSpiritGame.GameServer do
   and simply picks the first 5 cards in alphabetical order.
   This should only be used for testing.
   """
+  @spec start_link(String.t(), :hardcoded_cards) :: {:ok, pid} | {:error, any}
   def start_link(game_name, :hardcoded_cards) do
     GenServer.start_link(__MODULE__, {game_name, :hardcoded_cards}, name: via_tuple(game_name))
   end
@@ -50,7 +50,7 @@ defmodule DemonSpiritGame.GameServer do
   @doc """
   state/1:  Retrieves the game state for the game under a provided name.
   """
-  # @spec state(t.String) :: %Game{}
+  @spec state(String.t()) :: %Game{} | nil
   def state(game_name) do
     case game_pid(game_name) do
       nil -> nil
@@ -61,7 +61,7 @@ defmodule DemonSpiritGame.GameServer do
   @doc """
   move/2: Applies the given move to a game and returns the new game state.
   """
-  # @spec move(t.String, %Move{}) :: {:ok, %Game{}} | {:error, :invalid_move}
+  @spec move(String.t(), %Move{}) :: {:ok, %Game{}} | {:error, :invalid_move}
   def move(game_name, move = %Move{}) do
     GenServer.call(via_tuple(game_name), {:move, move})
   end
