@@ -43,7 +43,6 @@ defmodule DemonSpiritWeb.GameUIServer do
   @doc """
   start_link/2: Generates a new game server under a provided name.
   """
-  # Using type specs in genserver causes my app to not compile..??
   @spec start_link(String.t(), %GameUIOptions{}) :: {:ok, pid} | {:error, any}
   def start_link(game_name, game_opts = %GameUIOptions{}) do
     GenServer.start_link(__MODULE__, {game_name, game_opts}, name: via_tuple(game_name))
@@ -125,7 +124,7 @@ defmodule DemonSpiritWeb.GameUIServer do
   end
 
   @doc """
-  drag_start/3: A person has started dragging a piece. Updates the UI to 
+  drag_start/3: A person has started dragging a piece. Updates the UI to
   have that piece selected and destination squares highlighted.
   Input: game_name (string)
   Input: source: {integer, integer} coordinates of square dragged
