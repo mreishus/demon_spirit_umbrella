@@ -1,6 +1,6 @@
 # DemonSpirit.Umbrella
 
-*Demon Spirit*, an abstract board game on a 5x5 grid.
+*Demon Spirit*, an abstract board game on a 5x5 grid served over the web.  You can play against other players or a computer AI with programmable difficulty.  Built in Elixir, Phoenix, and Phoenix Live View.
 
 # Running the project (Development)
 
@@ -16,11 +16,21 @@ Visit localhost:4000 in web browser
 
 # Running the project (Production)
 
-WIP
+Create a Docker Image:
+```
+edit build.sh with your favorite text editor - change docker tag to your namespace
+./build.sh
+```
+
+Run the docker image via your favorite method.  Expose port 4000 to anywhere you want, typically 80. Since it doesn't require a database, that's all you need.
+
+# Linting / Tests / Etc
+
+Run `mix check` to run all tests and linting.
 
 # Status
 
-** Alpha version is deployed at [https://demonspirit.xyz/](https://demonspirit.xyz/). **
+** Newest version is deployed at [https://demonspirit.xyz/](https://demonspirit.xyz/). **
 
 # Most Important Issues
 
