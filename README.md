@@ -28,7 +28,7 @@ Run the docker image via your favorite method.  Expose port 4000 to anywhere you
 
 Run `mix check` to run all tests and linting.
 
-# Status
+# Online Version
 
 ** Newest version is deployed at [https://demonspirit.xyz/](https://demonspirit.xyz/). **
 
