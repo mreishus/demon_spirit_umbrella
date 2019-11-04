@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=0.5.7 # Bump in layout/app.html.eex too
+VERSION=1.0.0 # Bump in layout/app.html.eex too
 # ^ Todo: Make this one source of truth
 
 # exit when any command fails
