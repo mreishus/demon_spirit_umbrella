@@ -92,7 +92,7 @@ td .content {
   <%= render "show/ready.html", state: @state, socket: @socket, guest: @guest %>
 <% end %>
 
-<div phx-hook="UpdateDing" class="hidden">
+<div phx-hook="UpdateDing" class="hidden" data-moves=<%= @state.game.moves %>>
   <%= @state.game.moves %>
 </div>
 
@@ -103,9 +103,9 @@ td .content {
 
     <%# Left - Chat %>
     <div class="h-64 md:h-96 xl:h-112   mr-2 md:mr-4">
-      <%= live_render(@socket, DemonSpiritWeb.LiveChatIndex, 
-            session: %{chat_name: @game_name, guest: @guest}, 
-            id: @game_name, 
+      <%= live_render(@socket, DemonSpiritWeb.LiveChatIndex,
+            session: %{chat_name: @game_name, guest: @guest},
+            id: @game_name,
             container: {:div, class: "h-full"}
       ) %>
     </div>
