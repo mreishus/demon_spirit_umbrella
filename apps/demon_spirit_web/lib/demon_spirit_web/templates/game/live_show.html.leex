@@ -102,22 +102,22 @@ td .content {
   <div class="flex items-center justify-center">
 
     <%# Left - Chat %>
-    <div class="h-64 md:h-96 xl:h-112   mr-2 md:mr-4">
+    <div class="h-64 mr-2 md:h-96 xl:h-112 md:mr-4">
       <%= live_render(@socket, DemonSpiritWeb.LiveChatIndex,
-            session: %{chat_name: @game_name, guest: @guest},
+            session: %{"chat_name" => @game_name, "guest" => @guest},
             id: @game_name,
             container: {:div, class: "h-full"}
       ) %>
     </div>
 
     <%# Main - Board %>
-    <div class=" w-64  md:w-96  xl:w-112 relative">
+    <div class="relative w-64  md:w-96 xl:w-112">
 
       <%# Top cards, hide while staging %>
       <%= if staging?(@state) do %>
         <div class="w-full h-32 mb-4"></div>
       <% else %>
-        <div class="w-full h-auto flex items-center justify-center mb-4">
+        <div class="flex items-center justify-center w-full h-auto mb-4">
           <%# Top Bar  %>
           <%= for card <- top_cards do %>
             <%= render "show/card.html", card: card, flip: true, class: "mx-4" %>
@@ -125,7 +125,7 @@ td .content {
         </div>
       <% end %>
 
-      <div class="h-64 w-64 md:h-96 md:w-96 xl:h-112 xl:w-112 relative">
+      <div class="relative w-64 h-64 md:h-96 md:w-96 xl:h-112 xl:w-112">
         <%= render "show/board.html", state: @state, flip_per: @flip_per, guest: @guest, socket: @socket %>
       </div>
 
@@ -133,7 +133,7 @@ td .content {
       <%= if staging?(@state) do %>
         <div class="w-full h-32 mb-4"></div>
       <% else %>
-        <div class="w-full h-auto flex items-center justify-center mt-4 relative">
+        <div class="relative flex items-center justify-center w-full h-auto mt-4">
           <%# Bottom Bar %>
           <%= for card <- bottom_cards do %>
             <%= render "show/card.html", card: card, flip: false, class: "mx-4" %>
@@ -145,11 +145,11 @@ td .content {
 
     <%# Right - Side card and Players%>
     <%= if not staging?(@state) do %>
-    <div class="h-64 md:h-96 xl:h-112 flex flex-col justify-between ml-2 md:ml-4">
+    <div class="flex flex-col justify-between h-64 ml-2 md:h-96 xl:h-112 md:ml-4">
         <div>
           <%= render "show/timer.html", timer: top_timer, active: top_next %>
           <%= if top_next do %>
-            <div class="bg-blue-200 text-blue-600 font-semibold rounded mt-1">
+            <div class="mt-1 font-semibold text-blue-600 bg-blue-200 rounded">
               Next Move<br />
             </div>
           <% end %>
@@ -172,7 +172,7 @@ td .content {
         <div>
           <%= render "show/player.html", player: bottom_player %>
           <%= if bottom_next do %>
-            <div class="bg-blue-200 text-blue-600 font-semibold rounded mb-1">
+            <div class="mb-1 font-semibold text-blue-600 bg-blue-200 rounded">
               Next Move<br />
             </div>
           <% end %>

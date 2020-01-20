@@ -12,7 +12,7 @@ defmodule DemonSpiritWeb.LiveGameShow do
     GameView.render("live_show.html", assigns)
   end
 
-  def mount(%{game_name: game_name, guest: guest}, socket) do
+  def mount(%{"game_name" => game_name, "guest" => guest}, socket) do
     topic = topic_for(game_name)
 
     if connected?(socket), do: Endpoint.subscribe(topic)

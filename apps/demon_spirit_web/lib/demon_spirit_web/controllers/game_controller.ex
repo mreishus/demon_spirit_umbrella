@@ -16,7 +16,7 @@ defmodule DemonSpiritWeb.GameController do
 
   def index(conn, _params) do
     guest = conn.assigns.current_guest
-    LiveView.Controller.live_render(conn, LiveGameIndex, session: %{guest: guest})
+    LiveView.Controller.live_render(conn, LiveGameIndex, session: %{"guest" => guest})
   end
 
   def new(conn, _params) do
@@ -51,7 +51,7 @@ defmodule DemonSpiritWeb.GameController do
 
       _ ->
         LiveView.Controller.live_render(conn, LiveGameShow,
-          session: %{game_name: game_name, guest: guest}
+          session: %{"game_name" => game_name, "guest" => guest}
         )
     end
   end

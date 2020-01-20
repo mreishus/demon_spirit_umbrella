@@ -9,13 +9,13 @@
   </head>
   <body class="antialiased text-gray-900">
     <header>
-      <div class="bg-gray-100 font-sans w-full m-0 mb-2 shadow">
-        <div class="bg-blue-700 text-white shadow">
-          <div class="container mx-auto px-4">
+      <div class="w-full m-0 mb-2 font-sans bg-gray-100 shadow">
+        <div class="text-white bg-blue-700 shadow">
+          <div class="container px-4 mx-auto">
             <div class="flex items-center justify-between py-1">
               <!-- Left Side -->
               <div class="flex items-center">
-                <%= link "Demon Spirit", to: Routes.game_path(@conn, :index), class: "underline hover:text-blue-300" %> <span class="text-xs ml-1 text-gray-300">(1.1.4)</span>
+                <%= link "Demon Spirit", to: Routes.game_path(@conn, :index), class: "underline hover:text-blue-300" %> <span class="ml-1 text-xs text-gray-300">(1.1.4)</span>
               </div>
 
               <!-- Right Side -->
@@ -35,15 +35,16 @@
         </div>
       </div>
     </header>
-    <main role="main" class="container mx-auto px-2 pt-2">
+    <main role="main" class="container px-2 pt-2 mx-auto">
       <%= if get_flash(@conn, :info) != nil do %>
-        <p class="alert alert-info mt-2" role="alert"><%= get_flash(@conn, :info) %></p>
+        <p class="mt-2 alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <% end %>
       <%= if get_flash(@conn, :error) != nil do %>
-        <p class="alert alert-error mt-2" role="alert"><%= get_flash(@conn, :error) %></p>
+        <p class="mt-2 alert alert-error" role="alert"><%= get_flash(@conn, :error) %></p>
       <% end %>
       <%= render @view_module, @view_template, assigns %>
     </main>
+    <%= csrf_meta_tag() %>
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

@@ -1,7 +1,13 @@
 defmodule DemonSpiritWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :demon_spirit_web
 
-  socket("/live", Phoenix.LiveView.Socket)
+  @session_options [
+    store: :cookie,
+    key: "_demon_spirit_web_key",
+    signing_salt: "xh+R/LzW"
+  ]
+
+  socket("/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]])
 
   socket("/socket", DemonSpiritWeb.UserSocket,
     websocket: true,
@@ -42,11 +48,7 @@ defmodule DemonSpiritWeb.Endpoint do
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
-  plug(Plug.Session,
-    store: :cookie,
-    key: "_demon_spirit_web_key",
-    signing_salt: "xh+R/LzW"
-  )
+  plug(Plug.Session, @session_options)
 
   plug(DemonSpiritWeb.Router)
 end

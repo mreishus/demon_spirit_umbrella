@@ -1,26 +1,26 @@
 <div class="flex flex-wrap">
-  <div class="w-full sm:w-1/2 md:w-2/3 lg:w-3/4 xl:w-4/6 mb-4">
+  <div class="w-full mb-4 sm:w-1/2 md:w-2/3 lg:w-3/4 xl:w-4/6">
 
-      <h3 class="text-lg font-semibold mt-2">New Game</h3>
-      <div class="mx-auto w-1/2 text-center">
+      <h3 class="mt-2 text-lg font-semibold">New Game</h3>
+      <div class="w-1/2 mx-auto text-center">
         <%= link "Create a new game", to: Routes.game_path(@socket, :new),
           class: "btn btn-primary mt-4 text-xl shadow-md" %>
       </div>
 
-      <h3 class="text-lg font-semibold mt-6">Current Games</h3>
+      <h3 class="mt-6 text-lg font-semibold">Current Games</h3>
       <%= render "index/game_table.html", socket: @socket, games: @games %>
 
 
       <%= render "index/about.html", socket: @socket %>
 
   </div>
-  <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-2/6 mb-4 flex items-center">
+  <div class="flex items-center w-full mb-4 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-2/6">
 
     <div class="w-full ml-2">
       <h3 class="text-lg font-semibold">Lobby Chat</h3>
       <div class="h-96">
-        <%= live_render(@socket, DemonSpiritWeb.LiveChatIndex, 
-              session: %{chat_name: "lobby", guest: @guest}, 
+        <%= live_render(@socket, DemonSpiritWeb.LiveChatIndex,
+              session: %{"chat_name" => "lobby", "guest" => @guest},
               id: "lobby",
               container: {:div, class: "h-full mt-4"}
         ) %>
