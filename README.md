@@ -16,6 +16,16 @@ mix phx.server
 
 Visit [http://localhost:4000](http://localhost:4000) in web browser
 
+## Running the project (Production Test)
+
+```
+./test_prod.sh
+# Visit http://localhost:4000 in your browser
+```
+
+This will create a new docker image named `demon-spirit:test`, and run it,
+published to port 4000 on localhost.
+
 ## Running the project (Production)
 
 Create a Docker Image:
