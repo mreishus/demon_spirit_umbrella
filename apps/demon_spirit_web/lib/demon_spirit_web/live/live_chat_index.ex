@@ -11,7 +11,7 @@ defmodule DemonSpiritWeb.LiveChatIndex do
     ChatView.render("live_index.html", assigns)
   end
 
-  def mount(%{"chat_name" => chat_name, "guest" => guest}, socket) do
+  def mount(_params, %{"chat_name" => chat_name, "guest" => guest}, socket) do
     topic = topic_for(chat_name)
     if connected?(socket), do: Endpoint.subscribe(topic)
     {:ok, _} = Presence.track(self(), topic, guest.id, guest)

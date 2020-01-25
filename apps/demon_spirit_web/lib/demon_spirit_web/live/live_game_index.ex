@@ -14,7 +14,7 @@ defmodule DemonSpiritWeb.LiveGameIndex do
     GameView.render("live_index.html", assigns)
   end
 
-  def mount(%{"guest" => guest}, socket) do
+  def mount(_params, %{"guest" => guest}, socket) do
     if connected?(socket), do: Endpoint.subscribe(@topic)
     games = GameRegistry.list()
 
