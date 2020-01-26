@@ -1,7 +1,7 @@
 FROM elixir:1.9.4-alpine as build
 
 # install build dependencies
-RUN apk add --update git build-base nodejs yarn python npm
+RUN apk add --update git build-base nodejs python npm
 
 # prepare build dir
 RUN mkdir /app
@@ -44,7 +44,7 @@ COPY apps/demon_spirit_game/lib/ apps/demon_spirit_game/lib/
 COPY apps/demon_spirit/lib/ apps/demon_spirit/lib/
 COPY apps/demon_spirit_web/lib/ apps/demon_spirit_web/lib/
 
-RUN cd apps/demon_spirit_web/assets && yarn install && yarn run deploy
+RUN cd apps/demon_spirit_web/assets && npm install && npm run deploy
 RUN mix phx.digest
 
 

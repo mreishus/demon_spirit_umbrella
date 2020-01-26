@@ -9,7 +9,7 @@ Built in Elixir, Phoenix, and Phoenix Live View.
 ```
 mix deps.get
 cd ./apps/demon_spirit_web/assets
-yarn install
+npm install
 cd ../../../
 mix phx.server
 ```
