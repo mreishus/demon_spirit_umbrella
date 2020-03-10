@@ -40,14 +40,14 @@ defmodule DemonSpiritWeb.MixProject do
       {:phoenix, "~> 1.4.15"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
-      {:phoenix_html, "~> 2.13.2"},
+      {:phoenix_html, "~> 2.14"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
       {:demon_spirit, in_umbrella: true},
       {:demon_spirit_game, in_umbrella: true},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:phoenix_live_view, "~> 0.6.0"},
+      {:phoenix_live_view, "~> 0.7.1"},
       {:accessible, "~> 0.2.1"},
       {:sobelow, ">= 0.0.0", only: :dev, runtime: false}
     ]
