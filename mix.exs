@@ -34,8 +34,8 @@ defmodule DemonSpirit.Umbrella.MixProject do
   defp deps do
     [
       {:ex_check, ">= 0.0.0", only: :dev, runtime: false},
-      {:credo, "~> 1.3.0", only: [:dev, :test], runtime: false},
-      {:dialyxir, ">= 0.0.0", only: :dev, runtime: false}
+      {:credo, "~> 1.3.1", only: [:dev, :test], runtime: false},
+      {:dialyxir, ">= 1.0.0", only: :dev, runtime: false}
     ]
   end
 end
