@@ -1,8 +1,7 @@
 /* This file is for your main application css. */
 
 /* Removed Default phoenix CSS: @import "./phoenix.css"; */
-/* Live View Animations */
-@import "../../../../deps/phoenix_live_view/assets/css/live_view.css";
+/* Live View Animations - Now Removed.  Not sure if needed? Check docs for replacement. */
 
 /* Tailwind + Customizations */
 @import "tailwindcss/base";
