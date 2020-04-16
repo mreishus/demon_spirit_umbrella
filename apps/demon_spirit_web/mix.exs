@@ -48,6 +48,7 @@ defmodule DemonSpiritWeb.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:phoenix_live_view, "~> 0.12.0"},
+      {:phoenix_live_dashboard, "~> 0.1"},
       {:accessible, "~> 0.2.1"},
       {:sobelow, ">= 0.0.0", only: :dev, runtime: false}
     ]

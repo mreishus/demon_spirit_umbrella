@@ -37,6 +37,11 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Basic Auth for /dashboard - :dash_basic_auth - set during runtime in releases.exs
+config :demon_spirit_web, :dash_basic_auth,
+  username: "admin",
+  password: "EyAU6Ax8cyDkVcNA"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

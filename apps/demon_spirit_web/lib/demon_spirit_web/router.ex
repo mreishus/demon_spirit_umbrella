@@ -1,5 +1,7 @@
 defmodule DemonSpiritWeb.Router do
   use DemonSpiritWeb, :router
+  import Plug.BasicAuth
+  import Phoenix.LiveDashboard.Router
 
   pipeline :browser do
     plug(:accepts, ["html"])
@@ -13,6 +15,23 @@ defmodule DemonSpiritWeb.Router do
   pipeline :api do
     plug(:accepts, ["json"])
   end
+
+  ## BEGIN Phoenix LiveDashboard ###
+  scope "/" do
+    if Mix.env() == :dev do
+      pipe_through([:browser])
+    else
+      pipe_through([:browser, :dash_admins_only])
+    end
+
+    live_dashboard("/dashboard")
+  end
+
+  pipeline :dash_admins_only do
+    plug(:basic_auth, Application.get_env(:demon_spirit_web, :dash_basic_auth))
+  end
+
+  ## END Phoenix LiveDashboard ###
 
   scope "/", DemonSpiritWeb do
     pipe_through(:browser)

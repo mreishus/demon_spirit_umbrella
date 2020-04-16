@@ -32,6 +32,28 @@ config :demon_spirit_web, DemonSpiritWeb.Endpoint,
   http: [:inet6, port: String.to_integer(System.get_env("PORT") || "4000")],
   secret_key_base: secret_key_base
 
+### Begin Dashboard Auth ###
+# Set Username/Password for Dashboard Basic Auth (/dashboard)
+#
+# Read from env variables DASH_BASIC_USER and DASH_BASIC_PASS
+# If none is set, instead of refusing to run, simply set to random strings.
+defmodule ReleaseUtil do
+  def random_string(length) do
+    :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
+  end
+end
+
+# Note: This doesn't actually work.
+# Spent a lot of time on it and I'm stuck..
+dash_basic_username = System.get_env("DASH_BASIC_USER") || ReleaseUtil.random_string(32)
+dash_basic_password = System.get_env("DASH_BASIC_PASS") || ReleaseUtil.random_string(32)
+
+config :demon_spirit_web, :dash_basic_auth,
+  username: dash_basic_username,
+  password: dash_basic_password
+
+### End Dashboard Auth ###
+
 # ## Using releases (Elixir v1.9+)
 #
 # If you are doing OTP releases, you need to instruct Phoenix
