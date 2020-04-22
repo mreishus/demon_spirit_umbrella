@@ -42,7 +42,7 @@
       <%= if get_flash(@conn, :error) != nil do %>
         <p class="mt-2 alert alert-error" role="alert"><%= get_flash(@conn, :error) %></p>
       <% end %>
-      <%= render @view_module, @view_template, assigns %>
+      <%= @inner_content %>
     </main>
     <%= csrf_meta_tag() %>
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
