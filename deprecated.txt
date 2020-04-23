@@ -1,0 +1,14 @@
+warning: DemonSpiritWeb.Endpoint.subscribe/1 is deprecated.
+DemonSpiritWeb.Endpoint.subscribe/2 is deprecated, please call Phoenix.PubSub
+directly instead lib/demon_spirit_web/live/live_game_index.ex:18:
+DemonSpiritWeb.LiveGameIndex.mount/3
+
+warning: DemonSpiritWeb.Endpoint.subscribe/1 is deprecated.
+DemonSpiritWeb.Endpoint.subscribe/2 is deprecated, please call Phoenix.PubSub
+directly instead lib/demon_spirit_web/live/live_chat_index.ex:16:
+DemonSpiritWeb.LiveChatIndex.mount/3
+
+warning: DemonSpiritWeb.Endpoint.subscribe/1 is deprecated.
+DemonSpiritWeb.Endpoint.subscribe/2 is deprecated, please call Phoenix.PubSub
+directly instead lib/demon_spirit_web/live/live_game_show.ex:18:
+DemonSpiritWeb.LiveGameShow.mount/3
