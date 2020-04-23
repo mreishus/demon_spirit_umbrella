@@ -8,6 +8,7 @@ defmodule DemonSpiritWeb.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
+      {Phoenix.PubSub, name: DemonSpiritWeb.PubSub},
       # Start the endpoint when the application starts
       DemonSpiritWeb.Endpoint,
       # Starts a worker by calling: DemonSpiritWeb.Worker.start_link(arg)
