@@ -55,7 +55,7 @@ RUN mix release
 #COPY rel rel
 
 # prepare release image
-FROM alpine:3.11.5 AS app
+FROM alpine:3.11.6 AS app
 RUN apk add --update bash openssl
 
 RUN mkdir /app
