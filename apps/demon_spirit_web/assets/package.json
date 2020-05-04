@@ -13,7 +13,7 @@
     "phoenix_live_view": "file:../../../deps/phoenix_live_view",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
-    "tailwindcss": "^1.3.5"
+    "tailwindcss": "^1.4.4"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
