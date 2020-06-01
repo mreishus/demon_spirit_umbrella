@@ -16,7 +16,7 @@
     "tailwindcss": "^1.4.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.6",
+    "@babel/core": "^7.10.2",
     "@babel/preset-env": "^7.9.6",
     "babel-loader": "^8.1.0",
     "copy-webpack-plugin": "^6.0.1",
