@@ -28,7 +28,7 @@ defmodule DemonSpiritWeb.Router do
   end
 
   pipeline :dash_admins_only do
-    plug(:basic_auth, Application.get_env(:demon_spirit_web, :dash_basic_auth))
+    plug(:basic_auth, Application.compile_env(:demon_spirit_web, :dash_basic_auth, nil))
   end
 
   ## END Phoenix LiveDashboard ###
