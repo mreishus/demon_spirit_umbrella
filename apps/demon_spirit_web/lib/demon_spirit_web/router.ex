@@ -28,7 +28,9 @@ defmodule DemonSpiritWeb.Router do
   end
 
   pipeline :dash_admins_only do
-    plug(:basic_auth, Application.compile_env(:demon_spirit_web, :dash_basic_auth, nil))
+    # Compile_env here fixes a warning, but causes the docker build to not work
+    # plug(:basic_auth, Application.compile_env(:demon_spirit_web, :dash_basic_auth, nil))
+    plug(:basic_auth, Application.fetch_env!(:demon_spirit_web, :dash_basic_auth))
   end
 
   ## END Phoenix LiveDashboard ###
