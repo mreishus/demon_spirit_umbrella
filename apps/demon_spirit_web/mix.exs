@@ -49,7 +49,7 @@ defmodule DemonSpiritWeb.MixProject do
       {:demon_spirit_game, in_umbrella: true},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.1"},
-      {:accessible, "~> 0.2.1"},
+      {:accessible, "~> 0.3.0"},
       {:sobelow, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
