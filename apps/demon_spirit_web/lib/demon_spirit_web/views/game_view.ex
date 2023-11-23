@@ -100,4 +100,43 @@ defmodule DemonSpiritWeb.GameView do
     {minutes_int, seconds_int_rem} = {div(seconds_int, 60), rem(seconds_int, 60)}
     "#{minutes_int}:#{zero_pad(seconds_int_rem, 2)}"
   end
+
+  @doc """
+  game_row_class/1: Returns the appropriate CSS class for a game row based on the game's status.
+  """
+  def game_row_class(game) do
+    case game.status do
+      :playing -> "bg-blue-200"
+      :staging -> "bg-blue-100"
+      :done -> "bg-blue-200"
+      _ -> "bg-blue-300"
+    end
+  end
+
+  def phx_click_value(x, y) do
+    "click-square-#{x}-#{y}"
+  end
+
+  def piece_style(x, y, flip_per) do
+    if flip_per do
+      "transform: translate(#{(4 - x) * 100}%, #{y * 100}%);"
+    else
+      "transform: translate(#{x * 100}%, #{(4 - y) * 100}%);"
+    end
+  end
+
+  def square_class(x, y, state, my_turn) do
+    base_class = "cursor-pointer absolute square"
+    selected_class = if my_turn and {x, y} == state.selected, do: " selected", else: ""
+    move_dest_class = if my_turn and {x, y} in state.move_dest, do: " move_dest", else: ""
+    also_piece_class = if Map.has_key?(state.game.board, {x, y}), do: " also_piece", else: ""
+
+    last_move_class =
+      if state.last_move != nil and
+           (state.last_move.from == {x, y} or state.last_move.to == {x, y}),
+         do: " last_move",
+         else: ""
+
+    base_class <> selected_class <> move_dest_class <> also_piece_class <> last_move_class
+  end
 end

@@ -1,0 +1,24 @@
+<div class={DemonSpiritWeb.CardView.outer_card_class(@class, @card.color)}>
+  <div class={DemonSpiritWeb.CardView.inner_card_class(@flip)}>
+    <span class={DemonSpiritWeb.CardView.span_class(@card.name)}>
+      <%= @card.name %>
+    </span>
+
+    <table class="border-collapse mb-0 w-full">
+      <tbody>
+        <%= for i <- 0..4 do %>
+          <tr class="card_row">
+            <%= for j <- 0..4 do %>
+                <%
+                  x = j - 2
+                  y = (i * -1) + 2
+                %>
+                <td class={DemonSpiritWeb.CardView.cell_class(x, y, @card.moves)}>
+                </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

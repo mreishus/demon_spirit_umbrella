@@ -20,8 +20,8 @@
       <div class="text-lg mt-1">
         <span class="text-gray-600">Link:</span>
         <input type="text" readonly class="form-control w-4/5 inline-block"
-          value="<%= DemonSpiritWeb.Endpoint.url <> Routes.game_path(@socket, :show, @state.game_name) %>"
-        / >
+                          value={DemonSpiritWeb.Endpoint.url <> Routes.game_path(@socket, :show, @state.game_name)}
+        />
         <div class="text-sm text-gray-600">
           Send the link to a friend to have them join the game.
         </div>
