@@ -1,23 +1,6 @@
-<div class="card 
-    <%= @class %>
-    bg-gray-200
-    border shadow-md
-    rounded
-    inline-block
-    w-20 md:w-24 lg:w-32
-    <%= @card.color %>
-    text-sm
-  "
-  ><div class="p-2 pt-0
-     <%= if @flip do %> flip <% end %> 
-  ">
-    <span class="title font-semibold py-1 inline-block 
-      <%= if String.length(@card.name) > 8 do %>
-        text-md
-      <% else %>
-        text-lg
-      <% end %>
-    ">
+<div class={DemonSpiritWeb.CardView.outer_card_class(@class, @card.color)}>
+  <div class={DemonSpiritWeb.CardView.inner_card_class(@flip)}>
+    <span class={DemonSpiritWeb.CardView.span_class(@card.name)}>
       <%= @card.name %>
     </span>
 
@@ -30,15 +13,8 @@
                   x = j - 2
                   y = (i * -1) + 2
                 %>
-                <td class="card_cell border border-black w-1/5 p-0
-                  <%= if {x, y} in @card.moves do %>
-                    move
-                  <% end %>
-                  <%= if {x, y} == {0, 0} do %>
-                      center
-                  <% end %>
-                ">
-              </td>
+                <td class={DemonSpiritWeb.CardView.cell_class(x, y, @card.moves)}>
+                </td>
             <% end %>
           </tr>
         <% end %>

@@ -26,7 +26,7 @@
         <div class="text-gray-900 text-sm">
         <%= for {i, card} <- clarify_moves(@state) do %>
           <div class="relative inline-block mx-4"
-            phx-click="clarify-move" phx-value-i=<%= i %>
+               phx-click="clarify-move" phx-value-i={i}
             onclick="event.preventDefault(); return false;"
           >
             <div class="absolute inset-0 cursor-pointer hover:bg-blue-400-50">
@@ -47,18 +47,13 @@
   <%# Render Pieces %>
   <%= for {{x, y}, piece} <- game.board do %>
     <div
-      phx-click="click-square-<%= x %>-<%= y %>"
-    draggable='true' phx-hook="DraggableDroppable"
-    onclick="event.preventDefault(); return false;"
-    data-x="<%= x %>"
-    data-y="<%= y %>"
-    class="cursor-pointer absolute piece <%= piece.type %> <%= piece.color %>" style="
-    <%= if @flip_per do %>
-      transform: translate( <%= (4 - x) * 100 %>%, <%= y * 100 %>%);
-    <% else %>
-      transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
-    <% end %>
-    ">
+      phx-click={phx_click_value(x, y)}
+      draggable='true' phx-hook="DraggableDroppable"
+      onclick="event.preventDefault(); return false;"
+      data-x={x}
+      data-y={y}
+      class={"cursor-pointer absolute piece " <> Atom.to_string(piece.type) <> " " <> Atom.to_string(piece.color)}
+      style={piece_style(x, y, @flip_per)}>
     </div>
   <% end %>
 
@@ -66,31 +61,13 @@
   <%= for x <- [0, 1, 2, 3, 4] do %>
     <%= for y <- [0, 1, 2, 3, 4] do %>
       <div
-        phx-click="click-square-<%= x %>-<%= y %>"
+        phx-click={phx_click_value(x, y)}
         phx-hook="Droppable"
         onclick="event.preventDefault(); return false;"
-        data-x="<%= x %>"
-        data-y="<%= y %>"
-        class="cursor-pointer absolute square
-        <%= if my_turn and {x, y} == @state.selected do %>
-          selected
-        <% end %>
-        <%= if my_turn and {x, y} in @state.move_dest do %>
-          move_dest
-        <% end %>
-        <%= if @state.game.board |> Map.has_key?({x,y}) do %>
-          also_piece
-        <% end %>
-        <%= if @state.last_move != nil and (@state.last_move.from == {x, y} or @state.last_move.to == {x, y}) do %>
-          last_move
-        <% end %>
-        " style="
-      <%= if @flip_per do %>
-        transform: translate( <%= (4 - x) * 100 %>%, <%= y * 100 %>%);
-      <% else %>
-        transform: translate( <%= x * 100 %>%, <%= (4 - y) * 100 %>%);
-      <% end %>
-      "
+        data-x={x}
+        data-y={y}
+        class={square_class(x, y, @state, my_turn)}
+        style={piece_style(x, y, @flip_per)}
       ><!--
       Blank Square
       --></div>
