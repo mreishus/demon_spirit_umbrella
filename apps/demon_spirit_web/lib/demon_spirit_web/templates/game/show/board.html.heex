@@ -13,7 +13,6 @@
           <%= link "Back to Lobby", to: Routes.game_path(@socket, :index), class: "btn btn-primary" %>
         </div>
       </div>
-      </span>
     </div>
   </div>
 <% end %>
@@ -47,7 +46,7 @@
 <div class="chessboard w-full h-full absolute top-0 left-0">
   <%# Render Pieces %>
   <%= for {{x, y}, piece} <- game.board do %>
-    <div 
+    <div
       phx-click="click-square-<%= x %>-<%= y %>"
     draggable='true' phx-hook="DraggableDroppable"
     onclick="event.preventDefault(); return false;"
