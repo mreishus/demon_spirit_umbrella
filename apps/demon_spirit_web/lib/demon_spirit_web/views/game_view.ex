@@ -100,4 +100,16 @@ defmodule DemonSpiritWeb.GameView do
     {minutes_int, seconds_int_rem} = {div(seconds_int, 60), rem(seconds_int, 60)}
     "#{minutes_int}:#{zero_pad(seconds_int_rem, 2)}"
   end
+
+  @doc """
+  game_row_class/1: Returns the appropriate CSS class for a game row based on the game's status.
+  """
+  def game_row_class(game) do
+    case game.status do
+      :playing -> "bg-blue-200"
+      :staging -> "bg-blue-100"
+      :done -> "bg-blue-200"
+      _ -> "bg-blue-300"
+    end
+  end
 end
