@@ -1,5 +1,5 @@
 <%= case @player do %>
-  <%= nil -> %>
+  <% nil -> %>
     <span class="italic text-gray-600">(empty)</span>
   <% %DemonSpirit.Guest{} -> %>
     <%= @player.name %> <span class="italic text-gray-600">(g)</span>
