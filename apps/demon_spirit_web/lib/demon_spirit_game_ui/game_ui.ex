@@ -40,24 +40,24 @@ defmodule DemonSpiritWeb.GameUI do
   use Accessible
 
   @doc """
-  new/2: Create a new gameui + game with random cards.
+  new/2: Create a new game UI + game.
 
-  Input: game_name (string)
-  SideEffects:  GameSupervisor is asked to start a GameServer for game.
-  Output: %GameUI{}
+  There are two ways to create a new game:
+  1. With random cards: This is used for regular game play. 
+    Input: game_name (string)
+    SideEffects: GameSupervisor is asked to start a GameServer for the game.
+    Output: %GameUI{}
+
+  2. With hardcoded cards: This is used for deterministic testing.
+    Input: game_name (string), :hardcoded_cards
+    SideEffects: GameSupervisor is asked to start a GameServer for the game with hardcoded cards.
+    Output: %GameUI{}
   """
   def new(game_name, game_opts = %GameUIOptions{}) do
     game_starter = fn game_name -> GameSupervisor.start_game(game_name) end
     _new(game_name, game_opts, game_starter)
   end
 
-  @doc """
-  new/2: Create a new gameui + game with hardcoded cards, for deterministic testing.
-
-  Input: game_name (string), :hardcoded_cards
-  SideEffects:  GameSupervisor is asked to start a GameServer for game.
-  Output: %GameUI{}
-  """
   def new(game_name, :hardcoded_cards) do
     game_starter = fn game_name -> GameSupervisor.start_game(game_name, :hardcoded_cards) end
     game_opts = %GameUIOptions{vs: "human"}

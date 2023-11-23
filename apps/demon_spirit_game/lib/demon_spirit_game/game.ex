@@ -49,24 +49,23 @@ defmodule DemonSpiritGame.Game do
 
   @spec new(String.t(), nonempty_list(%Card{}) | :hardcoded_cards) :: %Game{}
   @doc """
-  new/2: Create a new game with cards specified.  Provide a name and
-  a list of 5 cards.  They will be assigned in this order:
-  [WHITE, WHITE, BLACK, BLACK, SIDE].
+  new/2: Create a new game with a specified set of cards.
 
-  Input: game_name: String. Can be anything.
-  Input: cards: [%Cards{}].  List should be length 5
-  Output: %Game{}
+  There are two ways to use this function:
+  1. With a specific list of cards:
+    Provide a game name and a list of 5 cards. The cards will be assigned in this order: [WHITE, WHITE, BLACK, BLACK, SIDE].
+    Input: game_name - a String. Can be anything.
+          cards - a list of 5 %Card{} structures.
+    Output: %Game{}
+
+  2. With hardcoded cards:
+    Create a new game with a set of predefined cards, useful for deterministic testing.
+    Input: game_name - a String. Can be anything.
+          :hardcoded_cards - An atom to indicate the use of a predefined set of cards.
+    Output: %Game{}
   """
   def new(game_name, cards) when is_list(cards) and length(cards) == 5, do: _new(cards, game_name)
 
-  @doc """
-  new/2 new(game_name, :hardcoded_cards): Create a new game with a set of cards 
-  that will always be the same.  Useful for removing the RNG when building a test case.
-
-  Input: game_name: String. Can be anything.
-  Input: :hardcoded_cards (Atom)
-  Output: %Game{}
-  """
   def new(game_name, :hardcoded_cards) do
     ["Wild Pig", "Python", "Crustacean", "Heron", "Drake"]
     |> Enum.map(fn name ->

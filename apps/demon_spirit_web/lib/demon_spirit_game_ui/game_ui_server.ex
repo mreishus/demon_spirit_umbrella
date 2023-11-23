@@ -32,17 +32,24 @@ defmodule DemonSpiritWeb.GameUIServer do
 
   @doc """
   start_link/2: Generates a new game server under a provided name.
-  Providing :hardcoded_cards removes the RNG of initial card selection
-  and simply picks the first 5 cards in alphabetical order.
-  This should only be used for testing.
+
+  There are two variants of this function:
+  1. With hardcoded cards:
+    This variant removes the RNG of initial card selection and simply picks the first 5 cards in alphabetical order.
+    This should only be used for testing.
+    Input: game_name (string), :hardcoded_cards
+    Output: {:ok, pid} | {:error, any}
+
+  2. With dynamic game options:
+    This variant uses the provided game options for game initialization.
+    Input: game_name (string), game_opts (%GameUIOptions{})
+    Output: {:ok, pid} | {:error, any}
   """
+  @spec start_link(String.t(), :hardcoded_cards) :: {:ok, pid} | {:error, any}
   def start_link(game_name, :hardcoded_cards) do
     GenServer.start_link(__MODULE__, {game_name, :hardcoded_cards}, name: via_tuple(game_name))
   end
 
-  @doc """
-  start_link/2: Generates a new game server under a provided name.
-  """
   @spec start_link(String.t(), %GameUIOptions{}) :: {:ok, pid} | {:error, any}
   def start_link(game_name, game_opts = %GameUIOptions{}) do
     GenServer.start_link(__MODULE__, {game_name, game_opts}, name: via_tuple(game_name))
