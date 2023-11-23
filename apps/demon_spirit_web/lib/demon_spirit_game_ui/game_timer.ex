@@ -48,7 +48,7 @@ defmodule DemonSpiritWeb.GameTimer do
         %{timer | black_time: t, black_time_current: t, last_move: DateTime.utc_now()}
 
       _ ->
-        Logger.warn("GameTimer: Don't know whose turn it is.")
+        Logger.warning("GameTimer: Don't know whose turn it is.", [])
         %{timer | last_move: DateTime.utc_now()}
     end
   end
@@ -74,7 +74,7 @@ defmodule DemonSpiritWeb.GameTimer do
         %{timer | black_time_current: t}
 
       _ ->
-        Logger.warn("GameTimer: Don't know whose turn it is [2].")
+        Logger.warning("GameTimer: Don't know whose turn it is [2].", [])
         timer
     end
   end
