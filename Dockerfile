@@ -1,7 +1,7 @@
-FROM elixir:1.10-alpine as build
+FROM elixir:1.15-alpine as build
 
 # install build dependencies
-RUN apk add --update git build-base nodejs python npm
+RUN apk add --update git build-base nodejs python3 npm
 
 # prepare build dir
 RUN mkdir /app
@@ -55,8 +55,8 @@ RUN mix release
 #COPY rel rel
 
 # prepare release image
-FROM alpine:3.12.0 AS app
-RUN apk add --update bash openssl
+FROM alpine:3.18.0 AS app
+RUN apk add --update bash openssl libstdc++ libgcc
 
 RUN mkdir /app
 WORKDIR /app
