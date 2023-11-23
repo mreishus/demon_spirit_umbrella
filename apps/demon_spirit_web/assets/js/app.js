@@ -17,7 +17,10 @@ import "phoenix_html";
 // import socket from "./socket"
 
 import { Socket } from "phoenix";
-import LiveSocket from "phoenix_live_view";
+
+//import LiveSocket from "phoenix_live_view";
+import * as LiveView from "phoenix_live_view";
+const { LiveSocket } = LiveView;
 
 let Hooks = {};
 
@@ -45,6 +48,6 @@ let csrfToken = document
 
 let liveSocket = new LiveSocket("/live", Socket, {
   hooks: Hooks,
-  params: { _csrf_token: csrfToken }
+  params: { _csrf_token: csrfToken },
 });
 liveSocket.connect();
