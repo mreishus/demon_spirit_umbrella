@@ -44,7 +44,7 @@ defmodule DemonSpiritWeb.MixProject do
       {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_ecto, "~> 4.2"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:gettext, "~> 0.11"},
+      {:gettext, "~> 0.23"},
       {:demon_spirit, in_umbrella: true},
       {:demon_spirit_game, in_umbrella: true},
       {:jason, "~> 1.0"},
