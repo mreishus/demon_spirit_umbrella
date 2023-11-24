@@ -8,10 +8,12 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
     "./js/**/*.ts",
     "../lib/demon_spirit_web/templates/**/*.eex",
     "../lib/demon_spirit_web/templates/**/*.leex",
-    "./css/components/*.css"
+    "../lib/demon_spirit_web/templates/**/*.heex",
+    "../lib/demon_spirit_web/views/**/*.ex",
+    "./css/components/*.css",
     // etc.
   ],
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+  defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
 });
 
 //console.log({ z: process.env.npm_lifecycle_event === "deploy" });
@@ -21,6 +23,6 @@ module.exports = {
     require("postcss-import"),
     require("tailwindcss"),
     require("autoprefixer"),
-    ...(process.env.npm_lifecycle_event === "deploy" ? [purgecss] : [])
-  ]
+    ...(process.env.npm_lifecycle_event === "deploy" ? [purgecss] : []),
+  ],
 };
