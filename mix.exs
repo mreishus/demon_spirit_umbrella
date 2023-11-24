@@ -34,7 +34,7 @@ defmodule DemonSpirit.Umbrella.MixProject do
   defp deps do
     [
       {:ex_check, ">= 0.0.0", only: :dev, runtime: false},
-      {:credo, "~> 1.4.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7.0", only: [:dev, :test], runtime: false},
       {:dialyxir, ">= 1.0.0", only: :dev, runtime: false},
       # Temporarily set the manager option for this so it compiles
       # https://elixirforum.com/t/elixir-v1-15-0-released/56584/4?u=axelson
