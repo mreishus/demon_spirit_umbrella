@@ -36,7 +36,7 @@ defmodule DemonSpirit.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:ecto_sql, "~> 3.9.2"},
+      {:ecto_sql, "~> 3.11.0"},
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.0"},
       {:poison, "~> 4.0"},
