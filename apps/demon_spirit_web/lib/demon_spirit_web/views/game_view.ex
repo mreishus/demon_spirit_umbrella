@@ -1,6 +1,7 @@
 defmodule DemonSpiritWeb.GameView do
   use DemonSpiritWeb, :view
   alias DemonSpiritWeb.GameUI
+  import Phoenix.Component, only: [live_render: 3]
 
   @doc """
   staging?/1: Given the current gameui, is it in a staging state?
