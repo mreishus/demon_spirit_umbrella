@@ -9,6 +9,7 @@
   </div>
 
   <div class="mt-2 flex-grow border rounded-lg w-full p-2 text-sm bg-orange-100 overflow-y-scroll text-left"
+      id={"chat-scroll" <> @chat_name}
       phx-hook="ChatScroll"
       data-chat-id={@chat_name}
     >

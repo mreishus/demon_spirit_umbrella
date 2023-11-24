@@ -47,8 +47,10 @@
   <%# Render Pieces %>
   <%= for {{x, y}, piece} <- game.board do %>
     <div
+      id={ "piece-" <> to_string(x) <> "-" <> to_string(y) <> "-" <> Atom.to_string(piece.type) <> "-" <> Atom.to_string(piece.color) }
       phx-click={phx_click_value(x, y)}
-      draggable='true' phx-hook="DraggableDroppable"
+      phx-hook="DraggableDroppable"
+      draggable='true'
       onclick="event.preventDefault(); return false;"
       data-x={x}
       data-y={y}
@@ -61,6 +63,7 @@
   <%= for x <- [0, 1, 2, 3, 4] do %>
     <%= for y <- [0, 1, 2, 3, 4] do %>
       <div
+        id={ "square-" <> to_string(x) <> "-" <> to_string(y) }
         phx-click={phx_click_value(x, y)}
         phx-hook="Droppable"
         onclick="event.preventDefault(); return false;"
