@@ -19,7 +19,7 @@
     "copy-webpack-plugin": "^6.0.3",
     "css-loader": "^5.2.7",
     "mini-css-extract-plugin": "^1.6.2",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "optimize-css-assets-webpack-plugin": "^6.0.0",
     "postcss": "^8.4.31",
     "postcss-import": "^14.0.0",
     "postcss-loader": "^4.3.0",
