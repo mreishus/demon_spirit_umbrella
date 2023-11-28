@@ -25,7 +25,7 @@ config :demon_spirit_web, DemonSpiritWeb.Endpoint,
       "node_modules/webpack/bin/webpack.js",
       "--mode",
       "development",
-      "--watch-stdin",
+      "--watch",
       cd: Path.expand("../apps/demon_spirit_web/assets", __DIR__)
     ]
   ]
