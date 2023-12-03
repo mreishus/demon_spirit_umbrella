@@ -40,7 +40,7 @@ defmodule DemonSpiritWeb.MixProject do
       {:phoenix_view, "~> 2.0"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_view, "~> 0.18.18"},
-      {:phoenix_live_dashboard, "~> 0.7.2"},
+      {:phoenix_live_dashboard, "~> 0.8.0"},
       {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_ecto, "~> 4.2"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
